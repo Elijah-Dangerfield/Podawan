@@ -10,6 +10,8 @@ import com.dangerfield.libraries.navigation.Router
 import com.dangerfield.libraries.ui.components.dialog.bottomsheet.BottomSheetState
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.channels.Channel
+import kotlinx.coroutines.flow.Flow
+import kotlinx.coroutines.flow.MutableSharedFlow
 import kotlinx.coroutines.flow.receiveAsFlow
 import kotlinx.coroutines.launch
 import se.ansman.dagger.auto.AutoBind
@@ -24,15 +26,31 @@ class DelegatingRouter @Inject constructor(
 ) : Router {
 
     private var delegate: Router? = null
-    override val currentRouteName: String? get() = delegate?.currentRouteName
+
     private val rootNavigationRequests = Channel<Router.() -> Unit>(Channel.UNLIMITED)
 
-    fun setRouter(router: Router, lifecycle: Lifecycle) {
+    private val mutableCurrentRouteFlow = MutableSharedFlow<Route.Filled>(replay = 1)
+
+    override val currentRouteFlow: Flow<Route.Filled>
+        get() = mutableCurrentRouteFlow
+
+    fun setRouter(
+        router: Router,
+        lifecycle: Lifecycle,
+        startingRoute: Route.Filled
+    ) {
         delegate = router
 
         appScope.launch {
+
+            mutableCurrentRouteFlow.emit(startingRoute)
+
             rootNavigationRequests.receiveAsFlow().observeWithLifecycle(lifecycle) { action ->
                 action.invoke(router)
+            }
+
+            router.currentRouteFlow.observeWithLifecycle(lifecycle) {
+                mutableCurrentRouteFlow.emit(it)
             }
         }
     }

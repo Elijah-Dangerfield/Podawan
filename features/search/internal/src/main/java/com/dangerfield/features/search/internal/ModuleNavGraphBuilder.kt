@@ -5,6 +5,8 @@ import androidx.navigation.compose.composable
 import com.dangerfield.features.search.searchRoute
 import com.dangerfield.libraries.navigation.HomeTabNavBuilder
 import com.dangerfield.libraries.navigation.Router
+import com.dangerfield.libraries.ui.components.Screen
+import com.dangerfield.libraries.ui.components.text.Text
 import se.ansman.dagger.auto.AutoBindIntoSet
 import javax.inject.Inject
 
@@ -16,7 +18,9 @@ class ModuleNavGraphBuilder @Inject constructor(): HomeTabNavBuilder {
             route = searchRoute.navRoute,
             arguments = searchRoute.navArguments
         ) {
-            // TODO - add your feature composable here
+            Screen {
+                Text(text = "Search 2")
+            }
         }
     }
 }

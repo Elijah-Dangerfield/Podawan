@@ -3,11 +3,15 @@ package com.dangerfield.libraries.navigation.internal
 import android.net.Uri
 import androidx.navigation.NavBackStackEntry
 import androidx.navigation.NavHostController
+import com.dangerfield.libraries.coreflowroutines.collectIn
 import com.dangerfield.libraries.navigation.Route
 import com.dangerfield.libraries.navigation.Router
 import com.dangerfield.libraries.ui.components.dialog.bottomsheet.BottomSheetState
 import kotlinx.coroutines.CoroutineScope
+import kotlinx.coroutines.flow.MutableSharedFlow
 import kotlinx.coroutines.flow.launchIn
+import kotlinx.coroutines.flow.map
+import kotlinx.coroutines.flow.mapNotNull
 import kotlinx.coroutines.flow.onEach
 import kotlinx.coroutines.launch
 import podawan.core.Catching
@@ -21,20 +25,25 @@ class NavControllerRouter(
     private val coroutineScope: CoroutineScope
 ) : Router {
 
-    override val currentRouteName: String?
-        get() = navHostController.currentDestination?.route
+    private val _currentRouteFlow: MutableSharedFlow<Route.Filled> = MutableSharedFlow(replay = 1)
+    override val currentRouteFlow = _currentRouteFlow
+
+    private val routeToFilled = mutableMapOf<String, Route.Filled>()
 
     init {
         navHostController
             .currentBackStackEntryFlow
-            .onEach {
-                Timber.d("backstack: ${it.destination.route}")
+            .mapNotNull {
+                val route = it.destination.route
+                routeToFilled[route]
+            }.collectIn(coroutineScope) {
+                _currentRouteFlow.emit(it)
             }
-            .launchIn(coroutineScope)
     }
 
     override fun navigate(filledRoute: Route.Filled) {
         Catching {
+            routeToFilled[filledRoute.route] = filledRoute
             navHostController.navigate(filledRoute.route, filledRoute.navOptions())
         }
             .logOnFailure()
@@ -100,7 +109,7 @@ class NavControllerRouter(
     }
 
     override fun ifStillOn(backStackEntry: NavBackStackEntry, action: Router.() -> Unit) {
-        if (currentRouteName == backStackEntry.destination.route) {
+        if (navHostController.currentDestination?.route == backStackEntry.destination.route) {
             action.invoke(this)
         }
     }

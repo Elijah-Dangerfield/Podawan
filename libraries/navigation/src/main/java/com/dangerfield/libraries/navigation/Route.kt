@@ -30,10 +30,22 @@ class Route internal constructor() {
         private var baseRoute: String = ""
         private val arguments = mutableListOf<NamedNavArgument>()
         private var deepLinks = listOf<NavDeepLink>()
+        private var isTopLevel: Boolean? = null
 
-        fun route(route: String, deepLinks: List<NavDeepLink> = emptyList()): Route.Builder {
+        fun route(
+            route: String,
+            deepLinks: List<NavDeepLink> = emptyList(),
+            isTopLevel: Boolean? = null
+        ): Builder {
             this.baseRoute = route
             this.deepLinks = deepLinks
+            // only assign if passed in, otherwise leave as is
+            isTopLevel?.let { this.isTopLevel = it }
+            return this
+        }
+
+        fun isTopLevel(value: Boolean = true): Route.Builder {
+            isTopLevel = value
             return this
         }
 
@@ -89,7 +101,12 @@ class Route internal constructor() {
 
                 }
 
-            return Template(templatedRoute.toString(), safeArgs, deepLinks)
+            return Template(
+                navRoute = templatedRoute.toString(),
+                navArguments = safeArgs,
+                deepLinks = deepLinks,
+                isTopLevel = isTopLevel
+            )
         }
 
         private fun checkForUndefinedRoute() {
@@ -118,14 +135,16 @@ class Route internal constructor() {
     class Template internal constructor(
         val navRoute: String,
         val navArguments: List<NamedNavArgument>,
-        val deepLinks: List<NavDeepLink>
+        val deepLinks: List<NavDeepLink>,
+        val isTopLevel: Boolean?
     ) {
 
         fun noArgRoute(singleTop: Boolean = true): Filled {
             val filler = Filler(
                 navRoute,
                 navArguments,
-                deepLinks
+                deepLinks,
+                isTopLevel
             )
 
             filler.launchSingleTop(singleTop)
@@ -135,7 +154,8 @@ class Route internal constructor() {
         class Filler internal constructor(
             val navRoute: String,
             val navArguments: List<NamedNavArgument>,
-            val deepLinks: List<NavDeepLink>
+            val deepLinks: List<NavDeepLink>,
+            var isTopLevel: Boolean? = null
         ) {
 
             private val filledRouteBuilder = StringBuilder(navRoute)
@@ -193,6 +213,10 @@ class Route internal constructor() {
                 return this
             }
 
+            fun topLevel(value: Boolean = true) {
+                isTopLevel = value
+            }
+
             fun fill(vararg args: Pair<NamedNavArgument, Any?>): Filler {
                 args.forEach { (argument, value) ->
                     fill(argument, value)
@@ -217,6 +241,7 @@ class Route internal constructor() {
                 return Filled(
                     route = filledRouteBuilder.toString(),
                     popUpTo = popUpTo,
+                    isTopLevel = isTopLevel,
                     isLaunchSingleTop = isLaunchSingleTop,
                     navAnimBuilder = navAnimBuilder,
                 )
@@ -224,17 +249,21 @@ class Route internal constructor() {
         }
     }
 
-    @Stable
+    @Immutable
     class Filled internal constructor(
         val route: String,
         val popUpTo: NavPopUp? = null,
         val isLaunchSingleTop: Boolean? = null,
         val navAnimBuilder: NavAnimBuilder? = null,
+        val isTopLevel: Boolean? = null,
         val restoreState: Boolean? = null
     )
 }
 
-fun fillRoute(template: Route.Template, block: Route.Template.Filler.() -> Unit): Route.Filled {
+fun fillRoute(
+    template: Route.Template,
+    block: Route.Template.Filler.() -> Unit
+): Route.Filled {
     val filler = Route.Template.Filler(template.navRoute, template.navArguments, template.deepLinks)
     filler.block()
     return filler.build()
@@ -246,9 +275,14 @@ fun route(block: Route.Builder.() -> Unit): Route.Template {
     return builder.build()
 }
 
-fun route(name: String, block: Route.Builder.() -> Unit = {}): Route.Template {
+fun route(
+    name: String,
+    isTopLevel: Boolean? = null,
+    block: Route.Builder.() -> Unit = {}
+): Route.Template {
     val builder = Route.Builder()
     builder.block()
     builder.route(name)
+    isTopLevel?.let { builder.isTopLevel(it) }
     return builder.build()
 }

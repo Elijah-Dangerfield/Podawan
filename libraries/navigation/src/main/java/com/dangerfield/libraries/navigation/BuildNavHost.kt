@@ -11,5 +11,5 @@ import androidx.compose.runtime.Stable
 interface BuildNavHost {
     
     @Composable
-    operator fun invoke(startingRoute: String)
+    operator fun invoke(startingRoute: Route.Filled)
 }

@@ -7,6 +7,7 @@ import com.dangerfield.libraries.navigation.route
 fun Router.navigateToLibrary() {
     navigate(
         fillRoute(libraryRoute) {
+            this.navArguments
             //fill(someArgument, someValue)
         }
     )

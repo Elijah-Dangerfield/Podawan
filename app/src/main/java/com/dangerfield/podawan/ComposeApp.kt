@@ -26,6 +26,7 @@ import com.dangerfield.features.inAppMessaging.UpdateStatus
 import com.dangerfield.features.inAppMessaging.internal.update.DownloadProgressBar
 import com.dangerfield.features.login.loginRoute
 import com.dangerfield.libraries.coreflowroutines.observeWithLifecycle
+import com.dangerfield.libraries.navigation.Route
 import com.dangerfield.libraries.network.internal.OfflineBar
 import com.dangerfield.libraries.ui.LocalAppState
 import com.dangerfield.libraries.ui.components.PodawanSnackbarVisuals
@@ -44,7 +45,7 @@ fun PodawanApp(
     updateStatus: UpdateStatus?,
     isUpdateRequired: Boolean,
     hasBlockingError: Boolean,
-    buildNavHost: @Composable (String) -> Unit
+    buildNavHost: @Composable (Route.Filled) -> Unit
 ) {
 
     val isOffline by LocalAppState.current.isOffline.collectAsStateWithLifecycle()
@@ -119,7 +120,7 @@ fun PodawanApp(
             ) {
                 OfflineBar(isOffline)
                 DownloadProgressBar(updateStatus)
-                buildNavHost(startingRoute.route)
+                buildNavHost(startingRoute)
             }
         }
     }
