@@ -12,6 +12,30 @@ fun Router.navigateToSearch() {
     )
 }
 
+fun Router.navigateToSearchA() {
+    navigate(searchA.noArgRoute())
+}
+
+fun Router.navigateToSearchB() {
+    navigate(searchB.noArgRoute())
+}
+
+fun Router.navigateToSearchC() {
+    navigate(searchC.noArgRoute())
+}
+
 val searchRoute = route("search") {
+    // argument(someArgument)
+}
+
+val searchA = route("searchA") {
+    // argument(someArgument)
+}
+
+val searchB = route("searchB") {
+    // argument(someArgument)
+}
+
+val searchC = route("searchC") {
     // argument(someArgument)
 }

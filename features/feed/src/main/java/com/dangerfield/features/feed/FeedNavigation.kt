@@ -1,19 +1,32 @@
 package com.dangerfield.features.feed
 
-import com.dangerfield.features.login.loginRoute
 import com.dangerfield.libraries.navigation.Router
-import com.dangerfield.libraries.navigation.fillRoute
 import com.dangerfield.libraries.navigation.route
 
-fun Router.navigateToFeed() {
-    navigate(
-        fillRoute(feedRoute) {
-            //fill(someArgument, someValue)
-            popUpTo(loginRoute, inclusive = true)
-        }
-    )
+fun Router.navigateToFeedA() {
+    navigate(feedA.noArgRoute())
+}
+
+fun Router.navigateToFeedB() {
+    navigate(feedB.noArgRoute())
+}
+
+fun Router.navigateToFeedC() {
+    navigate(feedC.noArgRoute())
 }
 
 val feedRoute = route("feed") {
+    // argument(someArgument)
+}
+
+val feedA = route("feedA") {
+    // argument(someArgument)
+}
+
+val feedB = route("feedB") {
+    // argument(someArgument)
+}
+
+val feedC = route("feedC") {
     // argument(someArgument)
 }

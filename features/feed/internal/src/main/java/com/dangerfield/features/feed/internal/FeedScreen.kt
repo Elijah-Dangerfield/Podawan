@@ -9,11 +9,13 @@ import com.dangerfield.libraries.ui.Dimension
 import com.dangerfield.libraries.ui.Preview
 import com.dangerfield.libraries.ui.VerticalSpacerD1000
 import com.dangerfield.libraries.ui.components.Screen
+import com.dangerfield.libraries.ui.components.button.Button
 import com.dangerfield.libraries.ui.components.text.Text
 import com.dangerfield.libraries.ui.theme.PodawanTheme
 
 @Composable
 fun FeedScreen(
+    onClick: () -> Unit = {},
     modifier: Modifier = Modifier,
 ) {
     Screen(modifier) {
@@ -31,7 +33,10 @@ fun FeedScreen(
 
             VerticalSpacerD1000()
 
-
+            Button(
+                onClick = { onClick() }) {
+                Text(text = "To Feed A")
+            }
         }
     }
 }
