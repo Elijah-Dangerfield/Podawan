@@ -1,0 +1,977 @@
+{
+  "type": "location",
+  "version": 0,
+  "languageCode": "de",
+  "packs": [
+    {
+      "name": "Sehenswürdigkeiten",
+      "locations": [
+        {
+          "roles": [
+            "Pharao",
+            "Schreiber",
+            "Pyramidenbauer",
+            "Priester",
+            "Händler",
+            "Forscher",
+            "Archäologe",
+            "Tourist",
+            "Historiker"
+          ],
+          "name": "Die Große Pyramide von Gizeh"
+        },
+        {
+          "roles": [
+            "Tourist",
+            "Maler",
+            "Ingenieur",
+            "Straßenkünstler",
+            "Fotograf",
+            "Einheimischer Student",
+            "Kellner",
+            "Mode Designer",
+            "Romantisches Paar"
+          ],
+          "name": "Der Eiffelturm"
+        },
+        {
+          "roles": [
+            "Reiseleiter",
+            "Einwanderer",
+            "Fotograf",
+            "Historiker",
+            "Park Ranger",
+            "Künstler",
+            "Student",
+            "Aktivist",
+            "Straßenverkäufer"
+          ],
+          "name": "Die Freiheitsstatue"
+        },
+        {
+          "roles": [
+            "Gladiator",
+            "Senator",
+            "Händler",
+            "Tourist",
+            "Historiker",
+            "Archäologe",
+            "Taschendieb",
+            "Schauspieler",
+            "Führer"
+          ],
+          "name": "Das Kolosseum"
+        },
+        {
+          "roles": [
+            "Kaiser",
+            "Soldat",
+            "Bauer",
+            "Mongolischer Eroberer",
+            "Bauer",
+            "Historiker",
+            "Tourist",
+            "Fotograf",
+            "Lehrer"
+          ],
+          "name": "Die Große Mauer von China"
+        },
+        {
+          "roles": [
+            "Inka-Kaiser",
+            "Priester",
+            "Bauer",
+            "Forscher",
+            "Archäologe",
+            "Tourist",
+            "Historiker",
+            "Fotograf",
+            "Wanderer"
+          ],
+          "name": "Machu Picchu"
+        },
+        {
+          "roles": [
+            "Mughalischer Kaiser",
+            "Prinzessin",
+            "Architekt",
+            "Tourist",
+            "Historiker",
+            "Fotograf",
+            "Gärtner",
+            "Dichter",
+            "Führer"
+          ],
+          "name": "Tadsch Mahal"
+        },
+        {
+          "roles": [
+            "Druide",
+            "Keltischer Krieger",
+            "Archäologe",
+            "Tourist",
+            "Historiker",
+            "Fotograf",
+            "Heide Anbeter",
+            "Alien-Enthusiast",
+            "Wanderer"
+          ],
+          "name": "Stonehenge"
+        },
+        {
+          "roles": [
+            "Opernsänger",
+            "Architekt",
+            "Tourist",
+            "Fotograf",
+            "Balletttänzer",
+            "Musiker",
+            "Führer",
+            "Kunstkritiker",
+            "Straßenkünstler"
+          ],
+          "name": "Opernhaus Sydney"
+        },
+        {
+          "roles": [
+            "Bergsteiger",
+            "Sherpa",
+            "Fotograf",
+            "Dokumentarfilmer",
+            "Geologe",
+            "Tourist",
+            "Umweltwissenschaftler",
+            "Historiker",
+            "Abenteurer"
+          ],
+          "name": "Mount Everest"
+        },
+        {
+          "roles": [
+            "Gondoliere",
+            "Tourist",
+            "Künstler",
+            "Einheimischer Bewohner",
+            "Historiker",
+            "Fotograf",
+            "Straßenverkäufer",
+            "Koch",
+            "Museumsführer"
+          ],
+          "name": "Venezianische Kanäle"
+        },
+        {
+          "roles": [
+            "Tourist",
+            "Straßenkünstler",
+            "Broadway-Schauspieler",
+            "Fotograf",
+            "Geschäftsinhaber",
+            "Einheimischer Bewohner",
+            "Polizist",
+            "Journalist",
+            "Essensverkäufer"
+          ],
+          "name": "Times Square"
+        }
+      ]
+    },
+    {
+      "name": "Disney Pack",
+      "locations": [
+        {
+          "roles": [
+            "Simba",
+            "Mufasa",
+            "Nala",
+            "Scar",
+            "Timon",
+            "Pumbaa",
+            "Rafiki",
+            "Zazu",
+            "Shenzi"
+          ],
+          "name": "Der König der Löwen"
+        },
+        {
+          "roles": [
+            "Mulan",
+            "Mushu",
+            "Li Shang",
+            "Fa Zhou",
+            "Fa Li",
+            "Großmutter Fa",
+            "Shan Yu",
+            "Yao",
+            "Ling",
+            "Chien-Po"
+          ],
+          "name": "Mulan"
+        },
+        {
+          "roles": [
+            "Vaiana",
+            "Maui",
+            "Häuptling Tui",
+            "Sina",
+            "Großmutter Tala",
+            "Tamatoa",
+            "Hei Hei",
+            "Pua",
+            "Te Fiti"
+          ],
+          "name": "Vaiana"
+        },
+        {
+          "roles": [
+            "Elsa",
+            "Anna",
+            "Olaf",
+            "Kristoff",
+            "Sven",
+            "Hans",
+            "Herzog von Pitzbühl",
+            "Marshmallow",
+            "Oaken"
+          ],
+          "name": "Die Eiskönigin"
+        },
+        {
+          "roles": [
+            "Arielle",
+            "Prinz Eric",
+            "König Triton",
+            "Ursula",
+            "Sebastian",
+            "Fabius",
+            "Scuttle",
+            "Melodie",
+            "Morgana"
+          ],
+          "name": "Arielle, die Meerjungfrau"
+        },
+        {
+          "roles": [
+            "Judy Hopps",
+            "Nick Wilde",
+            "Chef Bogo",
+            "Flash",
+            "Yax",
+            "Dawn Bellwether",
+            "Gazelle",
+            "Mr. Big",
+            "Finnick"
+          ],
+          "name": "Zoomania"
+        },
+        {
+          "roles": [
+            "Hiro Hamada",
+            "Baymax",
+            "Go Go Tomago",
+            "Wasabi",
+            "Honey Lemon",
+            "Fred",
+            "Professor Callaghan",
+            "Tadashi Hamada",
+            "Tante Cass"
+          ],
+          "name": "Baymax - Riesiges Robowabohu"
+        },
+        {
+          "roles": [
+            "Rapunzel",
+            "Flynn Rider",
+            "Mutter Gothel",
+            "Pascal",
+            "Maximus",
+            "König Frederic",
+            "Königin Arianna",
+            "Stabbington-Brüder",
+            "Varian"
+          ],
+          "name": "Rapunzel - Neu verföhnt"
+        },
+        {
+          "roles": [
+            "Miguel",
+            "Hector",
+            "Ernesto de la Cruz",
+            "Mama Imelda",
+            "Mama Coco",
+            "Papa Julio",
+            "Dante",
+            "Pepita",
+            "Abuelita"
+          ],
+          "name": "Coco - Lebendiger als das Leben"
+        },
+        {
+          "roles": [
+            "Woody",
+            "Buzz Lightyear",
+            "Jessie",
+            "Bo Peep",
+            "Rex",
+            "Slinky Dog",
+            "Mr. Potato Head",
+            "Hamm",
+            "Forky"
+          ],
+          "name": "Toy Story"
+        },
+        {
+          "roles": [
+            "Aladdin",
+            "Jasmin",
+            "Dschinni",
+            "Dschafar",
+            "Jago",
+            "Abu",
+            "Sultan",
+            "Radscha",
+            "Zauberflieger"
+          ],
+          "name": "Aladdin"
+        },
+        {
+          "roles": [
+            "Belle",
+            "Biest",
+            "Gaston",
+            "Lumière",
+            "Cogsworth",
+            "Mrs. Potts",
+            "Chip",
+            "Maurice",
+            "LeFou"
+          ],
+          "name": "Die Schöne und das Biest"
+        },
+        {
+          "roles": [
+            "Iron Man",
+            "Captain America",
+            "Thor",
+            "Hulk",
+            "Black Widow",
+            "Hawkeye",
+            "Loki",
+            "Thanos",
+            "Nick Fury"
+          ],
+          "name": "Die Avengers"
+        }
+      ]
+    },
+    {
+      "name": "Spezial-Pack",
+      "locations": [
+        {
+          "roles": [
+            "ein Assistent des Regionalmanagers",
+            "ein Regionalmanager",
+            "der Leiter des Vertriebs",
+            "eine Empfangsdame",
+            "ein HR-Vertreter",
+            "ein Lagerhausleiter",
+            "der Temp",
+            "der Buchhalter"
+          ],
+          "name": "Papierfirma"
+        },
+        {
+          "roles": [
+            "Batman",
+            "Joker",
+            "Harley Quinn",
+            "Kommissar Gordon",
+            "Catwoman",
+            "Der Riddler",
+            "Zwei-Face",
+            "Pinguin",
+            "Robin"
+          ],
+          "name": "Gotham City"
+        },
+        {
+          "roles": [
+            "Sherlock Holmes",
+            "Dr. John Watson",
+            "Mycroft Holmes",
+            "Frau Hudson",
+            "Professor Moriarty",
+            "Irene Adler",
+            "Mary Watson",
+            "Inspektor Lestrade",
+            "Molly Hooper"
+          ],
+          "name": "Baker Street"
+        },
+        {
+          "roles": [
+            "Mann im schwarzen Helm, auch Lukes Vater",
+            "Lucas Airwalker",
+            "Kleines grünes Wesen",
+            "Chewy",
+            "Harrison Ford in einer Weste",
+            "Prinzessin / Lukes Schwester",
+            "Sturmtruppler",
+            "R2-D2"
+          ],
+          "name": "Die Todeskugel"
+        },
+        {
+          "roles": [
+            "ein verärgerter Manager",
+            "Hotelpage mit langem Namen",
+            "blonde Süßigkeitenverkäuferin",
+            "Zwilling Nummer 1",
+            "Zwilling Nummer 2",
+            "Mutter von Zwillingssöhnen, die ihr Bestes gibt",
+            "Tochter des Hotelbesitzers",
+            "ein zufälliger Gast"
+          ],
+          "name": "Das Tipton Hotel"
+        },
+        {
+          "roles": [
+            "Mario",
+            "Luigi",
+            "Bowser",
+            "Yoshi",
+            "Toad",
+            "Peach",
+            "Donkey Kong",
+            "Wario (Rivale von Mario)"
+          ],
+          "name": "Pilzkönigreich"
+        },
+        {
+          "roles": [
+            "Jon Schnee",
+            "Daenerys Targaryen",
+            "Tyrion Lennister",
+            "Cersei Lennister",
+            "Arya Stark",
+            "Sansa Stark",
+            "Joffrey Baratheon",
+            "Khal Drogo",
+            "Melisandre"
+          ],
+          "name": "Westeros"
+        },
+        {
+          "roles": [
+            "du bist du",
+            "du bist du",
+            "du bist du",
+            "du bist du",
+            "du bist du",
+            "du bist du",
+            "du bist du",
+            "du bist du"
+          ],
+          "name": "Der Raum, in dem du bist"
+        },
+        {
+          "roles": [
+            "ein Zauberer",
+            "ein Platzwart",
+            "ein Drache",
+            "ein Professor für Zaubertränke",
+            "ein kopfloser Geist",
+            "ein nasenloser Bösewicht",
+            "der Auserwählte",
+            "ein Quidditch-Trainer"
+          ],
+          "name": "Zauberschule"
+        },
+        {
+          "roles": [
+            "Dr. Alan Grant",
+            "Dr. Ellie Sattler",
+            "Dr. Ian Malcolm",
+            "John Hammond",
+            "Robert Muldoon",
+            "Dennis Nedry",
+            "Lex Murphy",
+            "Tim Murphy",
+            "Velociraptor"
+          ],
+          "name": "Jurassic Park"
+        },
+        {
+          "roles": [
+            "Elf",
+            "Mike Wheeler",
+            "Dustin Henderson",
+            "Lucas Sinclair",
+            "Will Byers",
+            "Jim Hopper",
+            "Joyce Byers",
+            "Jonathan Byers",
+            "Nancy Wheeler"
+          ],
+          "name": "Die andere Seite"
+        },
+        {
+          "roles": [
+            "Homer Simpson",
+            "Marge Simpson",
+            "Bart Simpson",
+            "Lisa Simpson",
+            "Mr. Burns",
+            "Ned Flanders",
+            "Krusty der Clown",
+            "Moe Szyslak",
+            "Chief Wiggum"
+          ],
+          "name": "Springfield"
+        },
+        {
+          "roles": [
+            "Jack",
+            "Rose",
+            "Servicepersonal",
+            "der Kapitän",
+            "die Tür",
+            "der Eisberg",
+            "ein reicher Passagier",
+            "Schiffsmusiker"
+          ],
+          "name": "Die Titanic"
+        },
+        {
+          "roles": [
+            "Rachel Green",
+            "Monica Geller",
+            "Phoebe Buffay",
+            "Joey Tribbiani",
+            "Chandler Bing",
+            "Ross Geller",
+            "Gunther",
+            "Janice",
+            "Mike Hannigan"
+          ],
+          "name": "Central Perk"
+        },
+        {
+          "roles": [
+            "Frodo Beutlin",
+            "Samweis Gamdschie",
+            "Gandalf",
+            "Aragorn",
+            "Legolas",
+            "Gimli",
+            "Boromir",
+            "Saruman",
+            "Galadriel"
+          ],
+          "name": "Das Auenland"
+        },
+        {
+          "roles": [
+            "Leslie Knope",
+            "Ron Swanson",
+            "Tom Haverford",
+            "April Ludgate",
+            "Andy Dwyer",
+            "Ann Perkins",
+            "Chris Traeger",
+            "Ben Wyatt",
+            "Jerry Gergich"
+          ],
+          "name": "Pawnee"
+        },
+        {
+          "roles": [
+            "ein sprechender Schwamm",
+            "ein sprechender Seestern",
+            "ein Eichhörnchen, das unter Wasser lebt",
+            "David Hasselhoff",
+            "ein geldgieriger Krabbe",
+            "ein diabolischer Plankton",
+            "ein Rettungsschwimmer-Lobster",
+            "ein Wal namens Perle"
+          ],
+          "name": "Bikini Bottom"
+        }
+      ]
+    },
+    {
+      "name": "Standard-Pack",
+      "locations": [
+        {
+          "roles": [
+            "ein Protestierender gegen den Bau",
+            "ein Klempner",
+            "ein Elektriker",
+            "ein Projektmanager",
+            "ein Arbeiter",
+            "ein Vorarbeiter",
+            "ein Rohrinstallateur",
+            "ein Sicherheitsinspektor"
+          ],
+          "name": "Baustelle"
+        },
+        {
+          "roles": [
+            "ein Obdachloser",
+            "ein Manager",
+            "ein Kind im Auto auf dem Weg nach Disney World",
+            "ein Biker",
+            "ein Kassierer",
+            "ein Lastwagenfahrer",
+            "ein College-Student auf einem Roadtrip",
+            "eine Person, die Benzin kauft"
+          ],
+          "name": "Tankstelle"
+        },
+        {
+          "roles": [
+            "ein Spieler",
+            "der Schiedsrichter",
+            "Jemand, der es zu ernst nimmt",
+            "Camper",
+            "ein Kind auf einer Geburtstagsfeier",
+            "ein Spieler",
+            "ein Elternteil",
+            "ein Teenager, der Geburtstag feiert"
+          ],
+          "name": "Lasertag-Spiel"
+        },
+        {
+          "roles": [
+            "ein Camper",
+            "ein Bigfoot-Jäger",
+            "ein Lagerberater",
+            "ein Ranger",
+            "ein Camper",
+            "ein Vater im Familienurlaub",
+            "ein Wanderer",
+            "ein Tierfotograf"
+          ],
+          "name": "Campingplatz"
+        },
+        {
+          "roles": [
+            "ein Sänger",
+            "ein Gitarrist",
+            "ein Rapper",
+            "ein Schlagzeuger",
+            "ein Zuschauer",
+            "ein Tourmanager",
+            "ein Sicherheitsbeamter",
+            "ein Zuschauer"
+          ],
+          "name": "Konzert"
+        },
+        {
+          "roles": [
+            "ein Polizist",
+            "ein Forensiker",
+            "ein Reporter",
+            "das Opfer",
+            "der verdeckte Täter",
+            "ein Polizist",
+            "ein Passant",
+            "ein Detektiv"
+          ],
+          "name": "Tatort"
+        },
+        {
+          "roles": [
+            "ein Astronaut",
+            "ein Astronaut",
+            "ein Forscher",
+            "ein Mechaniker",
+            "ein Wissenschaftler",
+            "ein Ingenieur",
+            "Elon Musk",
+            "ein Wissenschaftler"
+          ],
+          "name": "Weltraumstation"
+        },
+        {
+          "roles": [
+            "ein Rettungsschwimmer",
+            "eine Person, die sich bräunt",
+            "ein Surfer",
+            "ein Muschelsammler",
+            "ein Urlauber",
+            "eine Person, die eine Sandburg baut",
+            "eine Person, die schwimmt",
+            "ein Volleyballspieler"
+          ],
+          "name": "Strand"
+        },
+        {
+          "roles": [
+            "ein Mathematiklehrer",
+            "ein Sportlehrer",
+            "ein Schüler, der nach Hause gehen möchte",
+            "ein besorgter Elternteil",
+            "ein Schulleiter",
+            "ein Naturwissenschaftslehrer",
+            "eine Küchenfrau",
+            "ein Schüler"
+          ],
+          "name": "Schule"
+        },
+        {
+          "roles": [
+            "ein Kunde",
+            "der Besitzer",
+            "der Manager",
+            "ein Kassierer",
+            "ein Apotheker",
+            "ein kranker Patient",
+            "ein Kunde",
+            "ein Kunde"
+          ],
+          "name": "Apotheke"
+        },
+        {
+          "roles": [
+            "ein Manager",
+            "ein Meisterkegler",
+            "ein Junge, der deinen Geburtstag feiert",
+            "ein Kind auf einer Geburtstagsfeier",
+            "ein Schuhputzer",
+            "ein Hausmeister",
+            "ein Kassierer",
+            "ein Mitglied der Wettbewerbsliga"
+          ],
+          "name": "Bowlingbahn"
+        },
+        {
+          "roles": [
+            "ein Arzt",
+            "ein schmerzgeplagter Patient",
+            "eine Krankenschwester",
+            "ein Traumachirurg",
+            "eine Bonbonstreifen-Trägerin",
+            "eine Empfangsdame",
+            "ein angehender Arzt",
+            "ein Medizinstudent"
+          ],
+          "name": "Krankenhaus"
+        },
+        {
+          "roles": [
+            "Weinendes Baby",
+            "ein Teenager, der seinen Führerschein bekommt",
+            "ein Angestellter",
+            "ein Fahrlehrer",
+            "Fotograf",
+            "eine wartende Mutter",
+            "eine Person mit abgelaufenem Führerschein",
+            "ein ungeduldiger Kunde"
+          ],
+          "name": "Die Kfz-Zulassungsstelle"
+        },
+        {
+          "roles": [
+            "ein Party-Crasher",
+            "eine Empfangsdame",
+            "Janice aus der Buchhaltung",
+            "Bill aus dem Vertrieb",
+            "der Hauptbüro-Scherzkeks",
+            "ein DJ",
+            "ein Manager einer scheiternden Niederlassung",
+            "ein Praktikant"
+          ],
+          "name": "Büroparty"
+        }
+      ]
+    },
+    {
+      "name": "Standard Pack (2)",
+      "locations": [
+        {
+          "roles": [
+            "ein Hipster",
+            "ein Drehbuchautor, der an einem Meisterwerk arbeitet",
+            "ein Barista",
+            "ein Manager",
+            "ein Kassierer",
+            "ein Teenager bei einem Date",
+            "ein Geschäftsmann",
+            "ein Stammkunde"
+          ],
+          "name": "Café"
+        },
+        {
+          "roles": [
+            "ein Bankangestellter",
+            "ein Manager",
+            "ein ungeduldiger Kunde",
+            "ein Banker",
+            "ein Bankräuber",
+            "ein Sicherheitsbeamter",
+            "ein Münzsammler",
+            "ein IT-Mitarbeiter"
+          ],
+          "name": "Bank"
+        },
+        {
+          "roles": [
+            "ein Löwe",
+            "ein Löwenbändiger",
+            "ein Feuerschlucker",
+            "ein Seiltänzer",
+            "ein Trapezkünstler",
+            "ein Magier",
+            "eine bärtige Frau",
+            "ein Clown"
+          ],
+          "name": "Zirkus"
+        },
+        {
+          "roles": [
+            "ein Hausmeister",
+            "ein Kind auf einem Schulausflug",
+            "ein Tourist",
+            "ein Museumsführer",
+            "ein Historiker",
+            "ein Sicherheitsbeamter",
+            "ein Freiwilliger",
+            "ein Kunstdieb"
+          ],
+          "name": "Museum"
+        },
+        {
+          "roles": [
+            "Zimmerservice",
+            "der Casinomanager",
+            "ein Entertainer",
+            "der Kapitän",
+            "ein Kind im Familienurlaub",
+            "ein Koch",
+            "ein Kellner",
+            "ein Flitterwochenpaar"
+          ],
+          "name": "Kreuzfahrtschiff"
+        },
+        {
+          "roles": [
+            "ein Luftmarschall",
+            "ein Pilot",
+            "eine Flugbegleiterin",
+            "ein Passagier",
+            "ein alter Mann",
+            "ein Copilot",
+            "ein Baby",
+            "ein übermäßig gesprächiger Sitznachbar"
+          ],
+          "name": "Flugzeug"
+        },
+        {
+          "roles": [
+            "ein Gefängniswärter",
+            "der Wärter",
+            "der Sanitäter",
+            "ein Gefängniswärter",
+            "ein Insasse",
+            "ein Insasse",
+            "ein Besucher",
+            "ein Insasse"
+          ],
+          "name": "Gefängnis"
+        },
+        {
+          "roles": [
+            "ein Richter",
+            "ein Anwalt",
+            "der Kläger",
+            "ein Polizist",
+            "der Angeklagte",
+            "ein Jurymitglied",
+            "ein Zeuge",
+            "ein Gerichtsreporter"
+          ],
+          "name": "Gerichtsgebäude"
+        },
+        {
+          "roles": [
+            "der Bräutigam",
+            "die Braut",
+            "ein wütender Vater",
+            "der Trauzeuge",
+            "eine Brautjungfer",
+            "ein Ringträger",
+            "ein Hochzeitscrasher",
+            "ein entfernter Verwandter"
+          ],
+          "name": "Hochzeit"
+        },
+        {
+          "roles": [
+            "ein Hausmeister",
+            "ein Kartenabreißer",
+            "ein Kinobesucher",
+            "ein Baby",
+            "ein Verkaufsmitarbeiter",
+            "ein Teenager bei einem Date",
+            "der Manager",
+            "ein Filmkritiker"
+          ],
+          "name": "Kino"
+        },
+        {
+          "roles": [
+            "ein Zoologe",
+            "ein hungriger Löwe",
+            "ein Tierarzt",
+            "ein Zoo-Direktor",
+            "ein Zoowärter",
+            "ein Löwenbändiger",
+            "ein Kind auf einem Schulausflug",
+            "der Löwe"
+          ],
+          "name": "Zoo"
+        },
+        {
+          "roles": [
+            "Schiedsrichter",
+            "Verteidigungsspieler mit Wutproblemen",
+            "Torwart",
+            "Großer Fan",
+            "Spielansager",
+            "Trainer",
+            "Mann, der Zuckerwatte verteilt",
+            "ein Zamboni-Fahrer"
+          ],
+          "name": "Eishockeyspiel"
+        },
+        {
+          "roles": [
+            "ein Polizeichef",
+            "ein Polizist",
+            "ein Detektiv",
+            "ein Zivilist unter Arrest",
+            "ein Portraitzeichner",
+            "ein Zeuge",
+            "ein Bewährungshelfer",
+            "ein Polizist"
+          ],
+          "name": "Polizeistation"
+        },
+        {
+          "roles": [
+            "Fußgänger",
+            "Bettler",
+            "Wütender Fahrer",
+            "Schild-Träger",
+            "Verlorenes Kätzchen",
+            "Polizist",
+            "Uber-Fahrer",
+            "ein Radfahrer"
+          ],
+          "name": "Voll befahrene Straße"
+        }
+      ]
+    }
+  ]
+}
