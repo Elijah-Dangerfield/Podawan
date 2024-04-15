@@ -18,7 +18,7 @@ import androidx.navigation.compose.composable
 import com.dangerfield.features.consent.OpenGDRPConsentForm
 import com.dangerfield.features.consent.consentRoute
 import com.dangerfield.libraries.dictionary.LocalDictionary
-import com.dangerfield.libraries.navigation.HomeTabNavBuilder
+import com.dangerfield.libraries.navigation.GlobalNavBuilder
 import com.dangerfield.libraries.navigation.Router
 import com.dangerfield.libraries.ui.components.CircularProgressIndicator
 import com.dangerfield.oddoneoout.features.consent.internal.R
@@ -31,10 +31,10 @@ import javax.inject.Inject
 
 @AutoBindIntoSet
 @ActivityScoped
-class HomeTabNavGraphBuilder @Inject constructor(
+class TopLevelNavGraphBuilder @Inject constructor(
     @ActivityContext private val context: Context,
     private val openGDRPConsentForm: OpenGDRPConsentForm
-) : HomeTabNavBuilder {
+) : GlobalNavBuilder {
 
     override fun NavGraphBuilder.addDestinations(router: Router) {
         composable(

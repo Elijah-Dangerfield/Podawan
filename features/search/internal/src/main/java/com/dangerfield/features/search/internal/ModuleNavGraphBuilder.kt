@@ -9,8 +9,8 @@ import com.dangerfield.features.search.searchA
 import com.dangerfield.features.search.searchB
 import com.dangerfield.features.search.searchC
 import com.dangerfield.features.search.searchRoute
-import com.dangerfield.libraries.navigation.HomeTabNavBuilder
 import com.dangerfield.libraries.navigation.Router
+import com.dangerfield.libraries.navigation.SearchTabNavBuilder
 import com.dangerfield.libraries.ui.components.Screen
 import com.dangerfield.libraries.ui.components.button.Button
 import com.dangerfield.libraries.ui.components.text.Text
@@ -18,7 +18,7 @@ import se.ansman.dagger.auto.AutoBindIntoSet
 import javax.inject.Inject
 
 @AutoBindIntoSet
-class ModuleNavGraphBuilder @Inject constructor(): HomeTabNavBuilder {
+class ModuleNavGraphBuilder @Inject constructor(): SearchTabNavBuilder {
 
     override fun NavGraphBuilder.addDestinations(router: Router) {
         composable(

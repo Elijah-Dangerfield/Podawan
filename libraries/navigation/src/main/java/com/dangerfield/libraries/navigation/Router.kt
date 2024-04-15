@@ -1,6 +1,7 @@
 package com.dangerfield.libraries.navigation
 
 import androidx.navigation.NavBackStackEntry
+import androidx.navigation.NavDestination
 import com.dangerfield.libraries.ui.components.dialog.bottomsheet.BottomSheetState
 import kotlinx.coroutines.flow.Flow
 
@@ -15,6 +16,7 @@ interface Router {
 
     fun navigate(filledRoute: Route.Filled)
     fun goBack()
+    fun startDestination(): NavDestination?
     fun openWebLink(url: String, openInApp: Boolean = true)
     fun popBackTo(route: Route.Template, inclusive: Boolean = false)
     fun dismissSheet(sheetState: BottomSheetState)

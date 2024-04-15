@@ -2,22 +2,31 @@ package com.dangerfield.libraries.navigation.internal
 
 import androidx.navigation.NavOptions
 import com.dangerfield.libraries.navigation.Route
+import com.dangerfield.oddoneoout.libraries.navigation.internal.R
 
 fun Route.Filled.navOptions(): NavOptions {
     val builder = NavOptions.Builder()
+
     this.popUpTo?.let {
-        builder.setPopUpTo(it.popUpToRoute.navRoute, it.popUpToInclusive)
+        val id = it.popUpToId
+
+        if (id != null) {
+            builder.setPopUpTo(
+                destinationId = id,
+                inclusive = it.popUpToInclusive,
+                saveState = it.saveState
+            )
+        } else {
+            builder.setPopUpTo(
+                route = it.popUpToRoute,
+                inclusive = it.popUpToInclusive,
+                saveState = it.saveState
+            )
+        }
     }
 
     this.restoreState?.let {
         builder.setRestoreState(it)
-    }
-
-    this.navAnimBuilder?.let {
-        builder.setEnterAnim(it.enter)
-        builder.setExitAnim(it.exit)
-        builder.setPopEnterAnim(it.popEnter)
-        builder.setPopExitAnim(it.popExit)
     }
 
     this.isLaunchSingleTop?.let {

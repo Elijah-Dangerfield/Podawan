@@ -28,7 +28,7 @@ import com.dangerfield.features.settings.settingsNavigationRoute
 import com.dangerfield.libraries.analytics.PageLogEffect
 import com.dangerfield.libraries.analytics.PageType
 import com.dangerfield.libraries.dictionary.Dictionary
-import com.dangerfield.libraries.navigation.HomeTabNavBuilder
+import com.dangerfield.libraries.navigation.GlobalNavBuilder
 import com.dangerfield.libraries.navigation.Router
 import com.dangerfield.libraries.session.SessionFlow
 import com.dangerfield.oddoneoout.features.settings.internal.R
@@ -42,14 +42,14 @@ import javax.inject.Inject
 
 @AutoBindIntoSet
 @ActivityScoped
-class SettingsHomeTabNavGraphBuilder @Inject constructor(
+class SettingsTopLevelNavGraphBuilder @Inject constructor(
     private val buildInfo: BuildInfo,
     private val sessionFlow: SessionFlow,
     private val dictionary: Dictionary,
     private val shouldShowGDRPSettingsOption: ShouldShowGDRPSettingsOption,
     private val openGDRPConsentForm: OpenGDRPConsentForm,
     private val isReferralFeatureEnabled: IsReferralFeatureEnabled
-) : HomeTabNavBuilder {
+) : GlobalNavBuilder {
 
     @Suppress("LongMethod")
     override fun NavGraphBuilder.addDestinations(router: Router) {

@@ -27,6 +27,7 @@ import com.dangerfield.features.inAppMessaging.internal.update.DownloadProgressB
 import com.dangerfield.features.login.loginRoute
 import com.dangerfield.libraries.coreflowroutines.observeWithLifecycle
 import com.dangerfield.libraries.navigation.Route
+import com.dangerfield.libraries.navigation.mainRoute
 import com.dangerfield.libraries.network.internal.OfflineBar
 import com.dangerfield.libraries.ui.LocalAppState
 import com.dangerfield.libraries.ui.components.PodawanSnackbarVisuals
@@ -45,6 +46,7 @@ fun PodawanApp(
     updateStatus: UpdateStatus?,
     isUpdateRequired: Boolean,
     hasBlockingError: Boolean,
+    isSingleNavGraph: Boolean,
     buildNavHost: @Composable (Route.Filled) -> Unit
 ) {
 
@@ -65,7 +67,13 @@ fun PodawanApp(
                 isInMaintenanceMode -> maintenanceRoute.noArgRoute()
                 hasBlockingError -> blockingErrorRoute.noArgRoute()
                 consentStatus in listOf(ConsentDenied, ConsentNeeded) -> consentRoute.noArgRoute()
-                isLoggedIn -> feedRoute.noArgRoute()
+                isLoggedIn -> {
+                    if (isSingleNavGraph) {
+                        feedRoute.noArgRoute()
+                    } else {
+                        mainRoute.noArgRoute()
+                    }
+                }
                 else -> loginRoute.noArgRoute()
             }.also {
                 Timber.d("Starting route changed: ${it.route}")

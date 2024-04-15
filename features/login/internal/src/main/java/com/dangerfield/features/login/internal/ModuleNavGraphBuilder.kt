@@ -10,7 +10,7 @@ import com.dangerfield.features.login.internal.LoginViewModel.Action.UpdateEmail
 import com.dangerfield.features.login.internal.LoginViewModel.Action.UpdatePassword
 import com.dangerfield.features.login.loginRoute
 import com.dangerfield.libraries.coreflowroutines.ObserveWithLifecycle
-import com.dangerfield.libraries.navigation.HomeTabNavBuilder
+import com.dangerfield.libraries.navigation.GlobalNavBuilder
 import com.dangerfield.libraries.navigation.Router
 import com.dangerfield.libraries.navigation.floatingwindow.dialog
 import com.dangerfield.libraries.navigation.navArgument
@@ -18,7 +18,7 @@ import se.ansman.dagger.auto.AutoBindIntoSet
 import javax.inject.Inject
 
 @AutoBindIntoSet
-class ModuleNavGraphBuilder @Inject constructor() : HomeTabNavBuilder {
+class ModuleNavGraphBuilder @Inject constructor() : GlobalNavBuilder {
 
     override fun NavGraphBuilder.addDestinations(router: Router) {
         composable(

@@ -10,7 +10,7 @@ import androidx.navigation.compose.composable
 import com.dangerfield.features.qa.qaNavigationRoute
 import com.dangerfield.libraries.analytics.PageLogEffect
 import com.dangerfield.libraries.analytics.PageType
-import com.dangerfield.libraries.navigation.HomeTabNavBuilder
+import com.dangerfield.libraries.navigation.GlobalNavBuilder
 import com.dangerfield.libraries.navigation.Router
 import com.dangerfield.libraries.session.Session
 import com.dangerfield.libraries.ui.LocalBuildInfo
@@ -22,10 +22,10 @@ import javax.inject.Inject
 
 @AutoBindIntoSet
 @ActivityScoped
-class QaHomeTabNavGraphBuilder @Inject constructor(
+class QaTopLevelNavGraphBuilder @Inject constructor(
     @ActivityContext private val context: Context,
     private val session: Session,
-) : HomeTabNavBuilder {
+) : GlobalNavBuilder {
 
     override fun NavGraphBuilder.addDestinations(router: Router) {
         composable(

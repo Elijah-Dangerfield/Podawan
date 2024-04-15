@@ -9,8 +9,8 @@ import com.dangerfield.libraries.navigation.route
 fun Router.navigateToLanguageSupportDialog(supportLevelName: String, languageDisplayName: String) {
     navigate(
         fillRoute(languageSupportRoute) {
-            fill(supportLevelNameNavArgument, supportLevelName)
-            fill(languageNavArgument, languageDisplayName)
+            fillArg(supportLevelNameNavArgument, supportLevelName)
+            fillArg(languageNavArgument, languageDisplayName)
         }
     )
 }

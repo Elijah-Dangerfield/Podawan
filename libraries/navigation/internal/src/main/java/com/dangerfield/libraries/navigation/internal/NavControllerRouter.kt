@@ -1,7 +1,10 @@
 package com.dangerfield.libraries.navigation.internal
 
 import android.net.Uri
+import android.util.Log
 import androidx.navigation.NavBackStackEntry
+import androidx.navigation.NavDestination
+import androidx.navigation.NavGraph.Companion.findStartDestination
 import androidx.navigation.NavHostController
 import com.dangerfield.libraries.coreflowroutines.collectIn
 import com.dangerfield.libraries.navigation.Route
@@ -9,28 +12,36 @@ import com.dangerfield.libraries.navigation.Router
 import com.dangerfield.libraries.ui.components.dialog.bottomsheet.BottomSheetState
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.flow.MutableSharedFlow
-import kotlinx.coroutines.flow.launchIn
-import kotlinx.coroutines.flow.map
+import kotlinx.coroutines.flow.MutableStateFlow
+import kotlinx.coroutines.flow.distinctUntilChanged
 import kotlinx.coroutines.flow.mapNotNull
-import kotlinx.coroutines.flow.onEach
 import kotlinx.coroutines.launch
 import podawan.core.Catching
 import podawan.core.debugSnackOnError
 import podawan.core.logOnFailure
 import podawan.core.throwIfDebug
-import timber.log.Timber
 
 class NavControllerRouter(
     val navHostController: NavHostController,
-    private val coroutineScope: CoroutineScope
+    private val coroutineScope: CoroutineScope,
+    private val startingRoute: Route.Filled
 ) : Router {
 
-    private val _currentRouteFlow: MutableSharedFlow<Route.Filled> = MutableSharedFlow(replay = 1)
-    override val currentRouteFlow = _currentRouteFlow
-
+    private val _currentRouteFlow: MutableSharedFlow<Route.Filled> = MutableStateFlow(startingRoute)
     private val routeToFilled = mutableMapOf<String, Route.Filled>()
 
+    override val currentRouteFlow = _currentRouteFlow
+
+    fun addRoutes(list: List<Route.Filled>) {
+        list.forEach {
+            routeToFilled[it.route] = it
+        }
+    }
+
     init {
+        navHostController.addOnDestinationChangedListener { a,b,c ->
+            b
+        }
         navHostController
             .currentBackStackEntryFlow
             .mapNotNull {
@@ -43,8 +54,9 @@ class NavControllerRouter(
 
     override fun navigate(filledRoute: Route.Filled) {
         Catching {
+            val navOptions = filledRoute.navOptions()
             routeToFilled[filledRoute.route] = filledRoute
-            navHostController.navigate(filledRoute.route, filledRoute.navOptions())
+            navHostController.navigate(filledRoute.route, navOptions)
         }
             .logOnFailure()
             .throwIfDebug()
@@ -56,6 +68,10 @@ class NavControllerRouter(
         }
             .logOnFailure()
             .throwIfDebug()
+    }
+
+    override fun startDestination(): NavDestination {
+        return navHostController.graph.findStartDestination()
     }
 
     override fun openWebLink(url: String, openInApp: Boolean) {

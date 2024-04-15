@@ -1,5 +1,6 @@
 package com.dangerfield.features.library
 
+import com.dangerfield.libraries.navigation.NavAnimType
 import com.dangerfield.libraries.navigation.Router
 import com.dangerfield.libraries.navigation.fillRoute
 import com.dangerfield.libraries.navigation.route

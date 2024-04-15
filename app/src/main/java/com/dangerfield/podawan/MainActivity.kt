@@ -25,9 +25,12 @@ import podawan.core.Message
 import podawan.core.SnackBarPresenter
 import podawan.core.doNothing
 import javax.inject.Inject
+import javax.inject.Named
 
 @AndroidEntryPoint
 class MainActivity : ComponentActivity() {
+
+    private val isSingleNavGraph = false
 
     private val mainActivityViewModel: MainActivityViewModel by viewModels()
 
@@ -35,7 +38,12 @@ class MainActivity : ComponentActivity() {
     lateinit var splashScreenBuilder: SplashScreenBuilder
 
     @Inject
-    lateinit var buildNavHost: BuildNavHost
+    @Named("SingleGraphNavHost")
+    lateinit var buildNavHostSingleGraph: BuildNavHost
+
+    @Inject
+    @Named("MultiGraphNavHost")
+    lateinit var buildNavHostMultiGraph: BuildNavHost
 
     @Inject
     lateinit var compositionLocalsProvider: CompositionLocalsProvider
@@ -88,8 +96,14 @@ class MainActivity : ComponentActivity() {
                     consentStatus = state.consentStatus,
                     isInMaintenanceMode = state.isInMaintenanceMode,
                     updateStatus = state.inAppUpdateStatus,
-                    buildNavHost = { buildNavHost(it) },
-                    isLoggedIn = state.isLoggedIn
+                    buildNavHost = {
+                        if (isSingleNavGraph)
+                            buildNavHostSingleGraph(it)
+                        else
+                            buildNavHostMultiGraph(it)
+                    },
+                    isLoggedIn = state.isLoggedIn,
+                    isSingleNavGraph = isSingleNavGraph
                 )
             }
         }

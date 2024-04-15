@@ -2,6 +2,7 @@ package com.dangerfield.features.blockingerror
 
 import androidx.navigation.NavType
 import androidx.navigation.navArgument
+import com.dangerfield.libraries.navigation.NavAnimType
 import com.dangerfield.libraries.navigation.Router
 import com.dangerfield.libraries.navigation.fillRoute
 import com.dangerfield.libraries.navigation.route
@@ -11,7 +12,10 @@ val blockingErrorRoute = route("blocking_error")
 val maintenanceRoute = route("maintenance")
 
 fun Router.navigateToBlockingError() {
-    this.navigate(blockingErrorRoute.noArgRoute())
+    navigate(blockingErrorRoute.noArgRoute(
+        isTopLevel = true,
+        navAnimType = NavAnimType.SlideOver
+    ))
 }
 
 val errorClassArgument = navArgument("error_class") {
@@ -28,7 +32,7 @@ fun Router.navigateToGeneralErrorDialog(
 ) {
     this.navigate(
         fillRoute(generalErrorDialog) {
-            fill(errorClassArgument, errorClass)
+            fillArg(errorClassArgument, errorClass)
         }
     )
 }

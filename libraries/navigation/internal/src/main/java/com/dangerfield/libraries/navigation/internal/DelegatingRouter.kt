@@ -3,8 +3,10 @@ package com.dangerfield.libraries.navigation.internal
 import androidx.compose.runtime.Stable
 import androidx.lifecycle.Lifecycle
 import androidx.navigation.NavBackStackEntry
+import androidx.navigation.NavDestination
 import com.dangerfield.libraries.coreflowroutines.AppScope
 import com.dangerfield.libraries.coreflowroutines.observeWithLifecycle
+import com.dangerfield.libraries.coreflowroutines.observeWithLifecycleIn
 import com.dangerfield.libraries.navigation.Route
 import com.dangerfield.libraries.navigation.Router
 import com.dangerfield.libraries.ui.components.dialog.bottomsheet.BottomSheetState
@@ -12,6 +14,7 @@ import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.channels.Channel
 import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.flow.MutableSharedFlow
+import kotlinx.coroutines.flow.distinctUntilChanged
 import kotlinx.coroutines.flow.receiveAsFlow
 import kotlinx.coroutines.launch
 import se.ansman.dagger.auto.AutoBind
@@ -29,10 +32,10 @@ class DelegatingRouter @Inject constructor(
 
     private val rootNavigationRequests = Channel<Router.() -> Unit>(Channel.UNLIMITED)
 
-    private val mutableCurrentRouteFlow = MutableSharedFlow<Route.Filled>(replay = 1)
+    private val mutableCurrentRouteFlow = MutableSharedFlow<Route.Filled>()
 
     override val currentRouteFlow: Flow<Route.Filled>
-        get() = mutableCurrentRouteFlow
+        get() = mutableCurrentRouteFlow.distinctUntilChanged()
 
     fun setRouter(
         router: Router,
@@ -42,13 +45,14 @@ class DelegatingRouter @Inject constructor(
         delegate = router
 
         appScope.launch {
-
             mutableCurrentRouteFlow.emit(startingRoute)
 
             rootNavigationRequests.receiveAsFlow().observeWithLifecycle(lifecycle) { action ->
                 action.invoke(router)
             }
+        }
 
+        router.currentRouteFlow.observeWithLifecycleIn(lifecycle, appScope) {
             router.currentRouteFlow.observeWithLifecycle(lifecycle) {
                 mutableCurrentRouteFlow.emit(it)
             }
@@ -62,6 +66,10 @@ class DelegatingRouter @Inject constructor(
 
     override fun goBack() {
         rootNavigationRequests.trySend { goBack() }
+    }
+
+    override fun startDestination(): NavDestination? {
+        return delegate?.startDestination()
     }
 
     override fun openWebLink(url: String, openInApp: Boolean) {

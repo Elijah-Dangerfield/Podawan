@@ -6,7 +6,7 @@ import com.dangerfield.libraries.analytics.PageLogEffect
 import com.dangerfield.libraries.analytics.PageType
 import com.dangerfield.libraries.dictionary.LanguageSupportLevel
 import com.dangerfield.libraries.dictionary.supportLevelNameMap
-import com.dangerfield.libraries.navigation.HomeTabNavBuilder
+import com.dangerfield.libraries.navigation.GlobalNavBuilder
 import com.dangerfield.libraries.navigation.Router
 import com.dangerfield.libraries.navigation.floatingwindow.dialog
 import com.dangerfield.libraries.navigation.navArgument
@@ -14,7 +14,7 @@ import se.ansman.dagger.auto.AutoBindIntoSet
 import javax.inject.Inject
 
 @AutoBindIntoSet
-class HomeTabNavGraphBuilder @Inject constructor(): HomeTabNavBuilder {
+class TopLevelNavGraphBuilder @Inject constructor(): GlobalNavBuilder {
 
     override fun NavGraphBuilder.addDestinations(router: Router) {
         dialog(

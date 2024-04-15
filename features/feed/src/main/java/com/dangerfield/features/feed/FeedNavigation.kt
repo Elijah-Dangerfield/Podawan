@@ -1,10 +1,14 @@
 package com.dangerfield.features.feed
 
+import com.dangerfield.libraries.navigation.NavAnimType
 import com.dangerfield.libraries.navigation.Router
+import com.dangerfield.libraries.navigation.fillRoute
 import com.dangerfield.libraries.navigation.route
 
 fun Router.navigateToFeedA() {
-    navigate(feedA.noArgRoute())
+    navigate(
+        feedA.noArgRoute()
+    )
 }
 
 fun Router.navigateToFeedB() {
@@ -12,7 +16,12 @@ fun Router.navigateToFeedB() {
 }
 
 fun Router.navigateToFeedC() {
-    navigate(feedC.noArgRoute())
+    navigate(
+        fillRoute(feedC) {
+            isTopLevel = true
+            navAnimType = NavAnimType.SlideOver
+        }
+    )
 }
 
 val feedRoute = route("feed") {
@@ -27,6 +36,7 @@ val feedB = route("feedB") {
     // argument(someArgument)
 }
 
-val feedC = route("feedC") {
+val feedC = route("feedC", isTopLevel = true) {
     // argument(someArgument)
+    isTopLevel(true)
 }

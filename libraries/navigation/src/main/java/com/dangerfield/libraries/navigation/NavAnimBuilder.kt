@@ -1,44 +1,24 @@
 package com.dangerfield.libraries.navigation
 
-import androidx.annotation.AnimRes
-import androidx.annotation.AnimatorRes
+import androidx.compose.animation.AnimatedContentTransitionScope
+import androidx.compose.animation.EnterTransition
+import androidx.compose.animation.ExitTransition
+import androidx.navigation.NavBackStackEntry
 
 class NavAnimBuilder {
-    /**
-     * The custom Animation or Animator resource for the enter animation.
-     *
-     * Note: Animator resources are not supported for navigating to a new Activity
-     */
-    @AnimRes
-    @AnimatorRes
-    public var enter: Int = -1
+    var enterTransition : AnimatedContentTransitionScope<NavBackStackEntry>.() -> EnterTransition = {
+        fadeInToStartAnim()
+    }
 
-    /**
-     * The custom Animation or Animator resource for the exit animation.
-     *
-     * Note: Animator resources are not supported for navigating to a new Activity
-     */
-    @AnimRes
-    @AnimatorRes
-    public var exit: Int = -1
+    var exitTransition : AnimatedContentTransitionScope<NavBackStackEntry>.() -> ExitTransition = {
+        fadeOutToStart()
+    }
 
-    /**
-     * The custom Animation or Animator resource for the enter animation
-     * when popping off the back stack.
-     *
-     * Note: Animator resources are not supported for navigating to a new Activity
-     */
-    @AnimRes
-    @AnimatorRes
-    public var popEnter: Int = -1
+    var popEnterTransition : AnimatedContentTransitionScope<NavBackStackEntry>.() -> EnterTransition = {
+        fadeInToEndAnim()
+    }
 
-    /**
-     * The custom Animation or Animator resource for the exit animation
-     * when popping off the back stack.
-     *
-     * Note: Animator resources are not supported for navigating to a new Activity
-     */
-    @AnimRes
-    @AnimatorRes
-    public var popExit: Int = -1
+    var popExitTransition : AnimatedContentTransitionScope<NavBackStackEntry>.() -> ExitTransition = {
+        fadeOutToEndAnim()
+    }
 }

@@ -1,5 +1,12 @@
 package com.dangerfield.libraries.coreflowroutines
 
+import androidx.compose.runtime.Composable
+import androidx.compose.runtime.State
+import androidx.compose.runtime.produceState
+import androidx.compose.ui.platform.LocalLifecycleOwner
+import androidx.lifecycle.Lifecycle
+import androidx.lifecycle.LifecycleOwner
+import androidx.lifecycle.repeatOnLifecycle
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.Job
 import kotlinx.coroutines.channels.Channel
@@ -10,6 +17,9 @@ import kotlinx.coroutines.flow.buffer
 import kotlinx.coroutines.flow.channelFlow
 import kotlinx.coroutines.flow.first
 import kotlinx.coroutines.launch
+import kotlinx.coroutines.withContext
+import kotlin.coroutines.CoroutineContext
+import kotlin.coroutines.EmptyCoroutineContext
 
 /**
  * Collects the flow and calls the collector with the previous and current value.
@@ -23,7 +33,7 @@ suspend fun <T : Any> Flow<T>.collect(collector: suspend (previous: T?, current:
     }
 }
 
-suspend fun <T : Any> Flow<T>.collectInWithPrevious(
+fun <T> Flow<T>.collectInWithPrevious(
     scope: CoroutineScope,
     collector: suspend (previous: T?, current: T) -> Unit
 ) {
@@ -32,6 +42,41 @@ suspend fun <T : Any> Flow<T>.collectInWithPrevious(
         collect {
             collector(previous, it)
             previous = it
+        }
+    }
+}
+
+suspend fun <T> Flow<T>.collectWithPrevious(
+    collector: suspend (previous: T?, current: T) -> Unit
+) {
+    var previous: T? = null
+    collect {
+        collector(previous, it)
+        previous = it
+    }
+}
+
+@Composable
+fun <T> Flow<T>.collectWithPreviousAsStateWithLifecycle(
+    initialValue: T,
+    lifecycleOwner: LifecycleOwner = LocalLifecycleOwner.current,
+    minActiveState: Lifecycle.State = Lifecycle.State.STARTED,
+    context: CoroutineContext = EmptyCoroutineContext
+): State<Pair<T?, T>> {
+    val initial: Pair<T?, T> = (null to initialValue)
+    return produceState(initial, this, lifecycleOwner.lifecycle, minActiveState, context) {
+
+        lifecycleOwner.lifecycle.repeatOnLifecycle(minActiveState) {
+            if (context == EmptyCoroutineContext) {
+
+                this@collectWithPreviousAsStateWithLifecycle.collectWithPrevious { previous, current ->
+                    this@produceState.value = previous to current
+                }
+            } else withContext(context) {
+                this@collectWithPreviousAsStateWithLifecycle.collectWithPrevious { previous, current ->
+                    this@produceState.value = previous to current
+                }
+            }
         }
     }
 }

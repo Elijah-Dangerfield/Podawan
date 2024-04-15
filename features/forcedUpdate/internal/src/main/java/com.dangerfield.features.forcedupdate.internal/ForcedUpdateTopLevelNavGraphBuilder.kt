@@ -6,7 +6,7 @@ import androidx.navigation.compose.composable
 import com.dangerfield.features.forcedupdate.forcedUpdateNavigationRoute
 import com.dangerfield.libraries.analytics.PageLogEffect
 import com.dangerfield.libraries.analytics.PageType
-import com.dangerfield.libraries.navigation.HomeTabNavBuilder
+import com.dangerfield.libraries.navigation.GlobalNavBuilder
 import com.dangerfield.libraries.navigation.Router
 import se.ansman.dagger.auto.AutoBindIntoSet
 import podawan.core.BuildInfo
@@ -14,9 +14,9 @@ import podawan.core.openStoreLinkToApp
 import javax.inject.Inject
 
 @AutoBindIntoSet
-class ForcedUpdateHomeTabNavGraphBuilder @Inject constructor(
+class ForcedUpdateTopLevelNavGraphBuilder @Inject constructor(
     private val buildInfo: BuildInfo
-): HomeTabNavBuilder {
+): GlobalNavBuilder {
 
 
     override fun NavGraphBuilder.addDestinations(router: Router) {

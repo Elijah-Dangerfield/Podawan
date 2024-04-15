@@ -18,7 +18,7 @@ val loginErrorDialogRoute = route("login_error_dialog") {
 fun Router.navigateToLoginError(errorClass: String?) {
     navigate(
         fillRoute(loginErrorDialogRoute) {
-            fill(errorClassArgument, errorClass)
+            fillArg(errorClassArgument, errorClass)
         }
     )
 }

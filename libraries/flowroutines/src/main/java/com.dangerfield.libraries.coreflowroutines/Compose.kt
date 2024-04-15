@@ -5,8 +5,10 @@ import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.ui.platform.LocalLifecycleOwner
 import androidx.lifecycle.Lifecycle
 import androidx.lifecycle.repeatOnLifecycle
+import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.flow.Flow
+import kotlinx.coroutines.launch
 import kotlinx.coroutines.withContext
 
 /**
@@ -30,6 +32,29 @@ fun <T> ObserveWithLifecycle(flow: Flow<T>, onItem: (T) -> Unit) {
 }
 
 /**
+ * Observe a flow with the provided lifecycle and scope
+ * @param onItem the action to take when an item is emitted from the flow
+ *
+ * starts collection when the lifecycle reaches the started state,
+ * stops collection when the lifecycle falls below the started state,
+ *
+ * Observes on main immediate which ensures no emissions are missed
+ */
+ fun <T> Flow<T>.observeWithLifecycleIn(
+    lifecycleOwner: Lifecycle,
+    scope: CoroutineScope,
+    onItem: suspend (T) -> Unit
+) {
+    scope.launch {
+        lifecycleOwner.repeatOnLifecycle(Lifecycle.State.STARTED) {
+            withContext(Dispatchers.Main.immediate) {
+                collect(onItem)
+            }
+        }
+    }
+}
+
+/**
  * Observe a flow with the provided lifecycle
  * @param onItem the action to take when an item is emitted from the flow
  *
@@ -38,7 +63,10 @@ fun <T> ObserveWithLifecycle(flow: Flow<T>, onItem: (T) -> Unit) {
  *
  * Observes on main immediate which ensures no emissions are missed
  */
-suspend fun <T> Flow<T>.observeWithLifecycle(lifecycleOwner: Lifecycle, onItem: suspend (T) -> Unit) {
+suspend fun <T> Flow<T>.observeWithLifecycle(
+    lifecycleOwner: Lifecycle,
+    onItem: suspend (T) -> Unit
+) {
     lifecycleOwner.repeatOnLifecycle(Lifecycle.State.STARTED) {
         withContext(Dispatchers.Main.immediate) {
             collect(onItem)

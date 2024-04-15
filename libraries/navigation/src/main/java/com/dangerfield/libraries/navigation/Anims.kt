@@ -22,7 +22,7 @@ fun AnimatedContentTransitionScope<NavBackStackEntry>.fadeInToStartAnim(): Enter
         towards = AnimatedContentTransitionScope.SlideDirection.Start
     )
 
-fun AnimatedContentTransitionScope<NavBackStackEntry>.fadeOutToStartAnim(): ExitTransition =
+fun AnimatedContentTransitionScope<NavBackStackEntry>.fadeOutToStart(): ExitTransition =
     fadeOut(
         animationSpec = tween(
             300, easing = LinearEasing
@@ -31,6 +31,12 @@ fun AnimatedContentTransitionScope<NavBackStackEntry>.fadeOutToStartAnim(): Exit
         animationSpec = tween(300, easing = EaseOut),
         towards = AnimatedContentTransitionScope.SlideDirection.Start
     )
+
+fun AnimatedContentTransitionScope<NavBackStackEntry>.noAnimExit(): ExitTransition =
+     fadeOut(tween(durationMillis = 0))
+
+fun AnimatedContentTransitionScope<NavBackStackEntry>.noAnimEnter(): EnterTransition =
+    fadeIn(tween(durationMillis = 0))
 
 fun AnimatedContentTransitionScope<NavBackStackEntry>.fadeInToEndAnim(): EnterTransition =
     fadeIn(

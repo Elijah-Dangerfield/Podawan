@@ -35,7 +35,7 @@ fun FeedScreen(
 
             Button(
                 onClick = { onClick() }) {
-                Text(text = "To Feed A")
+                Text(text = "Go to blocking error")
             }
         }
     }
@@ -45,7 +45,6 @@ fun FeedScreen(
 @Preview
 private fun PreviewScreen() {
     Preview {
-        FeedScreen(
-        )
+        FeedScreen()
     }
 }

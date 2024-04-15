@@ -11,20 +11,19 @@ import com.dangerfield.features.blockingerror.generalErrorDialog
 import com.dangerfield.features.blockingerror.maintenanceRoute
 import com.dangerfield.libraries.analytics.PageLogEffect
 import com.dangerfield.libraries.analytics.PageType
-import com.dangerfield.libraries.navigation.HomeTabNavBuilder
 import com.dangerfield.libraries.navigation.Router
+import com.dangerfield.libraries.navigation.GlobalNavBuilder
 import com.dangerfield.libraries.navigation.navArgument
 import dagger.hilt.android.qualifiers.ActivityContext
 import dagger.hilt.android.scopes.ActivityScoped
 import se.ansman.dagger.auto.AutoBindIntoSet
 import javax.inject.Inject
 
-
 @AutoBindIntoSet
 @ActivityScoped
 class BlockingErrorNavGraphBuilder @Inject constructor(
     @ActivityContext private val context: Context,
-) : HomeTabNavBuilder {
+) : GlobalNavBuilder {
 
     override fun NavGraphBuilder.addDestinations(router: Router) {
         composable(
@@ -39,9 +38,8 @@ class BlockingErrorNavGraphBuilder @Inject constructor(
 
             BlockingErrorScreen(
                 onBackPressed = {
-                    (context as? Activity)?.let {
-                        it.finish()
-                    }
+                    router.goBack()
+                   // (context as? Activity)?.let { it.finish() }
                 }
             )
         }
