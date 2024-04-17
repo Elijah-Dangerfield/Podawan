@@ -8,5 +8,7 @@ interface UserRepository {
 
     suspend fun login(email: String, password: String): Catching<LoginResult>
 
+    suspend fun signup(email: String, password: String): Catching<SignupResult>
+
     fun logout(): Catching<Unit>
 }

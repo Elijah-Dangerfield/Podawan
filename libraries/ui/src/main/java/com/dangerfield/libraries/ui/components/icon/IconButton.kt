@@ -24,6 +24,7 @@ import androidx.compose.ui.unit.dp
 import com.dangerfield.libraries.ui.Dimension
 import com.dangerfield.libraries.ui.Preview
 import com.dangerfield.libraries.ui.Radii
+import com.dangerfield.libraries.ui.bounceClick
 import com.dangerfield.libraries.ui.color.ColorResource
 import com.dangerfield.libraries.ui.components.Surface
 import com.dangerfield.libraries.ui.components.text.Text
@@ -70,6 +71,7 @@ fun IconButton(
 
 object IconButton {
     enum class Size {
+        Smallest,
         Small,
         Medium,
         Large,
@@ -78,6 +80,7 @@ object IconButton {
 
 internal val IconButton.Size.padding: Dp
     get() = when (this) {
+        IconButton.Size.Smallest -> Dimension.D100
         IconButton.Size.Small -> Dimension.D100
         IconButton.Size.Medium -> Dimension.D100
         IconButton.Size.Large -> Dimension.D200
@@ -85,6 +88,7 @@ internal val IconButton.Size.padding: Dp
 
 internal val IconButton.Size.iconSize: IconSize
     get() = when (this) {
+        IconButton.Size.Smallest -> IconSize.Smallest
         IconButton.Size.Small -> IconSize.Small
         IconButton.Size.Medium -> IconSize.Medium
         IconButton.Size.Large -> IconSize.Large
@@ -100,7 +104,7 @@ private val iconButtons = listOf(
     PodawanIcon.Person(""),
     PodawanIcon.Settings(""),
     PodawanIcon.Share(""),
-    )
+)
 
 @Suppress("MagicNumber")
 @Preview(device = "spec:shape=Normal,width=1200,height=400,unit=dp,dpi=150")

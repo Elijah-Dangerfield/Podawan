@@ -1,22 +1,21 @@
 package com.dangerfield.features.feed.internal
 
+import androidx.compose.foundation.layout.Box
+import androidx.compose.foundation.layout.fillMaxSize
+import androidx.compose.runtime.getValue
+import androidx.compose.ui.Alignment.Companion.Center
+import androidx.compose.ui.Modifier
+import androidx.hilt.navigation.compose.hiltViewModel
+import androidx.lifecycle.compose.collectAsStateWithLifecycle
 import androidx.navigation.NavGraphBuilder
 import androidx.navigation.compose.composable
-import com.dangerfield.features.blockingerror.navigateToBlockingError
-import com.dangerfield.features.feed.feedA
-import com.dangerfield.features.feed.feedB
-import com.dangerfield.features.feed.feedC
+import com.dangerfield.features.blockingerror.navigateToGeneralErrorDialog
 import com.dangerfield.features.feed.feedRoute
-import com.dangerfield.features.feed.navigateToFeedA
-import com.dangerfield.features.feed.navigateToFeedB
-import com.dangerfield.features.feed.navigateToFeedC
+import com.dangerfield.libraries.coreflowroutines.ObserveWithLifecycle
 import com.dangerfield.libraries.navigation.HomeTabNavBuilder
 import se.ansman.dagger.auto.AutoBindIntoSet
 import com.dangerfield.libraries.navigation.Router
-import com.dangerfield.libraries.ui.components.Screen
-import com.dangerfield.libraries.ui.components.button.Button
-import com.dangerfield.libraries.ui.components.text.Text
-import com.dangerfield.libraries.ui.theme.PodawanTheme
+import com.dangerfield.libraries.ui.components.CircularProgressIndicator
 import javax.inject.Inject
 
 @AutoBindIntoSet
@@ -27,45 +26,33 @@ class ModuleNavGraphBuilder @Inject constructor() : HomeTabNavBuilder {
             route = feedRoute.navRoute,
             arguments = feedRoute.navArguments
         ) {
-            FeedScreen(
-                onClick = {
-                    router.navigateToBlockingError()
-                }
-            )
-        }
+            val viewModel: FeedViewModel = hiltViewModel()
+            val state by viewModel.stateFlow.collectAsStateWithLifecycle()
 
-        composable(
-            route = feedA.navRoute,
-            arguments = feedA.navArguments
-        ) {
-            Screen {
-                Text("Feed A")
-                Button(onClick = { router.navigateToFeedB() }) {
-                    Text(text = "To Feed B")
+            ObserveWithLifecycle(flow = viewModel.eventFlow) {
+                when (it) {
+                    FeedViewModel.Event.LoadFailed -> router.navigateToGeneralErrorDialog()
                 }
             }
-        }
 
-        composable(
-            route = feedB.navRoute,
-            arguments = feedB.navArguments
-        ) {
-            Screen {
-                Text("Feed B")
-                Button(onClick = { router.navigateToFeedC() }) {
-                    Text(text = "Feed C")
+            if (state.isLoading) {
+                Box(modifier = Modifier.fillMaxSize(), contentAlignment = Center) {
+                    CircularProgressIndicator()
                 }
-            }
-        }
-
-        composable(
-            route = feedC.navRoute,
-            arguments = feedC.navArguments
-        ) {
-            Screen(
-                containerColor = PodawanTheme.colors.accent.color
-            ) {
-                Text("Feed C")
+            } else {
+                FeedScreen(
+                    title = state.podcastShow?.title.orEmpty(),
+                    episodes = state.episodes,
+                    onEpisodePlayClicked = {
+                        viewModel.takeAction(FeedViewModel.Action.PlayEpisode(it))
+                    },
+                    onEpisodePauseClicked = {
+                        viewModel.takeAction(FeedViewModel.Action.PauseEpisode(it))
+                    },
+                    onEpisodeDownloadClicked = {
+                        viewModel.takeAction(FeedViewModel.Action.DownloadEpisode(it))
+                    },
+                )
             }
         }
     }

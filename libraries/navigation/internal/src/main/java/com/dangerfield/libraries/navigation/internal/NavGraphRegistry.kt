@@ -12,7 +12,7 @@ class NavGraphRegistry @Inject constructor(
     private val homeTabNavBuilders: Set<@JvmSuppressWildcards HomeTabNavBuilder>,
     private val searchTabNavBuilders: Set<@JvmSuppressWildcards SearchTabNavBuilder>,
     private val libraryTabNavBuilders: Set<@JvmSuppressWildcards LibraryTabNavBuilder>,
-    private val topLevelNavBuilders: Set<@JvmSuppressWildcards GlobalNavBuilder>,
+    private val globalNavBuilders: Set<@JvmSuppressWildcards GlobalNavBuilder>,
     private val router: Router
 ) {
 
@@ -40,8 +40,8 @@ class NavGraphRegistry @Inject constructor(
         }
     }
     
-    fun addTopLevelDestinations(navGraphBuilder: NavGraphBuilder) {
-        topLevelNavBuilders.forEach { moduleNavBuilder ->
+    fun addGlobalDestinations(navGraphBuilder: NavGraphBuilder) {
+        globalNavBuilders.forEach { moduleNavBuilder ->
             with(moduleNavBuilder) {
                 navGraphBuilder.addDestinations(router)
             }

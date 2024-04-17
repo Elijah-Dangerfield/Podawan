@@ -35,6 +35,7 @@ fun Header(
     liftOnScroll: Boolean = scrollState != null,
     windowInsets: WindowInsets = TopAppBarDefaults.windowInsets,
 ) {
+
     MaterialTopAppBar(
         title = {
             Text(text = title, typography = typographyToken)

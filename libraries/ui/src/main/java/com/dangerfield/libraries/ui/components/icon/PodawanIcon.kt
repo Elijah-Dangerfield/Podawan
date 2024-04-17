@@ -14,6 +14,8 @@ import androidx.compose.foundation.lazy.grid.items
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.Alarm
 import androidx.compose.material.icons.filled.Android
+import androidx.compose.material.icons.filled.ArrowCircleDown
+import androidx.compose.material.icons.filled.ArrowDownward
 import androidx.compose.material.icons.filled.ArrowDropDown
 import androidx.compose.material.icons.filled.AutoGraph
 import androidx.compose.material.icons.filled.Bookmarks
@@ -29,6 +31,8 @@ import androidx.compose.material.icons.filled.IosShare
 import androidx.compose.material.icons.filled.LibraryMusic
 import androidx.compose.material.icons.filled.MoreVert
 import androidx.compose.material.icons.filled.Palette
+import androidx.compose.material.icons.filled.Pause
+import androidx.compose.material.icons.filled.PlayArrow
 import androidx.compose.material.icons.filled.QuestionMark
 import androidx.compose.material.icons.filled.Search
 import androidx.compose.material.icons.filled.Videocam
@@ -228,6 +232,21 @@ sealed class PodawanIcon(
         imageVector = Icons.Default.AutoGraph,
         contentDescription = contentDescription
     )
+
+    class Play(contentDescription: String?) : PodawanIcon(
+        imageVector = Icons.Default.PlayArrow,
+        contentDescription = contentDescription
+    )
+
+    class Pause(contentDescription: String?) : PodawanIcon(
+        imageVector = Icons.Default.Pause,
+        contentDescription = contentDescription
+    )
+
+    class ArrowCircleDown(contentDescription: String?) : PodawanIcon(
+        imageVector = Icons.Default.ArrowCircleDown,
+        contentDescription = contentDescription
+    )
 }
 
 private val allIcons = listOf(
@@ -270,6 +289,9 @@ private val allIcons = listOf(
     PodawanIcon.SearchFilled(""),
     PodawanIcon.LibraryOutline(""),
     PodawanIcon.LibraryFilled(""),
+    PodawanIcon.Play(""),
+    PodawanIcon.Pause(""),
+    PodawanIcon.ArrowCircleDown(""),
 )
 
 @Preview(device = "spec:id=reference_phone,shape=Normal,width=1000,height=1800,unit=dp,dpi=200")

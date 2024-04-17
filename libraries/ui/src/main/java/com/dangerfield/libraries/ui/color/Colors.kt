@@ -27,6 +27,7 @@ class Colors internal constructor(
 
     /* Texts */
     val text: ColorResource,
+    val textSecondary: ColorResource,
     val textDisabled: ColorResource,
     val textWarning: ColorResource,
 
@@ -58,6 +59,7 @@ class Colors internal constructor(
             borderDisabled = ColorResource.Black600,
             text = ColorResource.White900,
             backgroundOverlay = ColorResource.Black900_A_70,
+            textSecondary = ColorResource.Black500,
         )
     }
 }

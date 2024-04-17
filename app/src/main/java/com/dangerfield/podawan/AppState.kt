@@ -6,7 +6,9 @@ import androidx.compose.runtime.remember
 import androidx.compose.runtime.rememberCoroutineScope
 import com.dangerfield.libraries.network.NetworkMonitor
 import kotlinx.coroutines.CoroutineScope
+import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.SharingStarted
+import kotlinx.coroutines.flow.StateFlow
 import kotlinx.coroutines.flow.map
 import kotlinx.coroutines.flow.stateIn
 import podawan.core.AppState
@@ -45,4 +47,7 @@ class PodawanAppState(
             started = SharingStarted.WhileSubscribed(5_000),
             initialValue = false,
         )
+
+    override val isPlayingContent: StateFlow<Boolean>
+        get() = MutableStateFlow(false)
 }

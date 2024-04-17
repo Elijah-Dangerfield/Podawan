@@ -16,6 +16,7 @@ import com.dangerfield.libraries.ui.Dimension.D1000
 import com.dangerfield.libraries.ui.Dimension.D1200
 import com.dangerfield.libraries.ui.Dimension.D1300
 import com.dangerfield.libraries.ui.Dimension.D400
+import com.dangerfield.libraries.ui.Dimension.D600
 import com.dangerfield.libraries.ui.Dimension.D800
 import com.dangerfield.libraries.ui.Preview
 import com.dangerfield.libraries.ui.components.text.Text
@@ -79,7 +80,7 @@ fun LargeIcon(
 }
 
 enum class IconSize(val dp: Dp) {
-    Smallest(D400),
+    Smallest(D600),
     Small(D800),
     Medium(D1000),
     Large(D1200),

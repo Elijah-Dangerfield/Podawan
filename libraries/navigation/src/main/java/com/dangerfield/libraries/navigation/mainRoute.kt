@@ -1,3 +1,3 @@
 package com.dangerfield.libraries.navigation
 
-val mainRoute = route("mainGraph")
+val mainGraphRoute = route("mainGraph")

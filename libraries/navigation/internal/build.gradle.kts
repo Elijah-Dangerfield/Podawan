@@ -17,7 +17,7 @@ dependencies {
     implementation(projects.libraries.resources)
     implementation(projects.libraries.ui)
     implementation(projects.features.feed)
-    implementation(projects.features.login)
+    implementation(projects.features.auth)
     implementation(projects.features.search)
     implementation(projects.features.library)
     implementation(libs.browser)

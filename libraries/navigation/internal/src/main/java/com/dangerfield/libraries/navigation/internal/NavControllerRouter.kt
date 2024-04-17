@@ -39,9 +39,6 @@ class NavControllerRouter(
     }
 
     init {
-        navHostController.addOnDestinationChangedListener { a,b,c ->
-            b
-        }
         navHostController
             .currentBackStackEntryFlow
             .mapNotNull {

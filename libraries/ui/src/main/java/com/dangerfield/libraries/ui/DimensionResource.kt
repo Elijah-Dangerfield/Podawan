@@ -24,6 +24,10 @@ sealed class DimensionResource(val dp: Dp) {
     data object D1400 : DimensionResource(58.dp)
     data object D1500 : DimensionResource(70.dp)
     data object D1600 : DimensionResource(84.dp)
+    data object D1700 : DimensionResource(90.dp)
+    data object D1800 : DimensionResource(94.dp)
+    data object D1900 : DimensionResource(100.dp)
+
 }
 
 object Dimension {
@@ -45,6 +49,9 @@ object Dimension {
     val D1400 = DimensionResource.D1400.dp // 58 dp
     val D1500 = DimensionResource.D1500.dp // 70 dp
     val D1600 = DimensionResource.D1600.dp // 84 dp
+    val D1700 = DimensionResource.D1700.dp // 90 dp
+    val D1800 = DimensionResource.D1800.dp // 94 dp
+    val D1900 = DimensionResource.D1900.dp // 100 dp
 }
 
 fun Dp.sp(): TextUnit = this.value.sp

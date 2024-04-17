@@ -1,17 +1,15 @@
 package com.dangerfield.libraries.navigation.internal
 
+import android.util.Log
 import androidx.compose.animation.AnimatedVisibility
 import androidx.compose.animation.expandVertically
 import androidx.compose.animation.shrinkVertically
-import androidx.compose.foundation.layout.padding
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.Stable
-import androidx.compose.runtime.getValue
 import androidx.compose.runtime.remember
 import androidx.compose.runtime.rememberCoroutineScope
-import androidx.compose.ui.Modifier
 import androidx.compose.ui.platform.LocalLifecycleOwner
-import androidx.navigation.NavDestination.Companion.hierarchy
 import androidx.navigation.compose.NavHost
 import androidx.navigation.compose.navigation
 import androidx.navigation.compose.rememberNavController
@@ -23,19 +21,17 @@ import com.dangerfield.libraries.navigation.BuildNavHost
 import com.dangerfield.libraries.navigation.NavAnimType
 import com.dangerfield.libraries.navigation.Route
 import com.dangerfield.libraries.navigation.fillRoute
+import com.dangerfield.libraries.navigation.floatingwindow.FloatingWindowHost
 import com.dangerfield.libraries.navigation.floatingwindow.FloatingWindowNavigator
-import com.dangerfield.libraries.navigation.noAnimEnter
-import com.dangerfield.libraries.navigation.noAnimExit
-import com.dangerfield.libraries.navigation.route
+import com.dangerfield.libraries.navigation.getFloatingWindowNavigator
+import com.dangerfield.libraries.navigation.mainGraphRoute
 import com.dangerfield.libraries.ui.components.Screen
-import com.dangerfield.libraries.ui.components.icon.PodawanIcon
+import kotlinx.coroutines.flow.map
 import se.ansman.dagger.auto.AutoBind
 import javax.inject.Inject
-import javax.inject.Named
 
 @AutoBind
 @Stable
-@Named("MultiGraphNavHost")
 class MultiGraphNavHost @Inject constructor(
     private val navGraphRegistry: NavGraphRegistry,
     private val delegatingRouter: DelegatingRouter,
@@ -56,21 +52,31 @@ class MultiGraphNavHost @Inject constructor(
             )
         }
 
-        val routeInfo by delegatingRouter.currentRouteFlow.collectWithPreviousAsStateWithLifecycle(
-            startingRoute
-        )
-        val (prevRoute, currentRoute) = routeInfo
+        val (prevRoute, currentRoute) = delegatingRouter
+            .currentRouteFlow
+            .collectWithPreviousAsStateWithLifecycle(startingRoute)
+            .value
 
-        val backStackEntryInfo by actualRouter.navHostController.currentBackStackEntryFlow.collectWithPreviousAsStateWithLifecycle(
-            initialValue = null
-        )
-
-        val (previousBackStackEntry,currentBackStackEntry ) = backStackEntryInfo
-
-        val currentDestination = currentBackStackEntry?.destination
-        val previousDestination = previousBackStackEntry?.destination
+        val (previousDestination, currentDestination) = actualRouter
+            .navHostController
+            .currentBackStackEntryFlow
+            .map { it.destination }
+            .collectWithPreviousAsStateWithLifecycle(initialValue = null)
+            .value
 
         val shouldHideBottomBar = currentRoute.isTopLevel == true
+        val currentSelectedTabRoute = currentDestination?.bottomTabRoute() ?: homeGraphRoute
+
+        LaunchedEffect(currentRoute, currentDestination) {
+
+            Log.d("Elijah", """
+                ------------------------------------------------------------------
+                currentRoute: ${currentRoute.route}
+                isTopLevel: ${currentRoute.isTopLevel}
+                currentDestination: ${currentDestination?.route}
+                ------------------------------------------------------------------
+            """.trimIndent())
+        }
 
         Screen(
             bottomBar = {
@@ -79,42 +85,16 @@ class MultiGraphNavHost @Inject constructor(
                     enter = expandVertically(),
                     exit = shrinkVertically(),
                 ) {
-                    BottomBar(
-                        items = listOf(
-                            BottomBarItem(
-                                title = "Home",
-                                route = "homeGraph",
-                                isSelected = currentDestination?.hierarchy?.any { it.route == "homeGraph" } == true,
-                                selectedIcon = PodawanIcon.HomeFilled("Home"),
-                                unselectedIcon = PodawanIcon.HomeOutline("Home")
-                            ),
-                            BottomBarItem(
-                                title = "Search",
-                                route = "searchGraph",
-                                selectedIcon = PodawanIcon.SearchFilled("Search"),
-                                unselectedIcon = PodawanIcon.SearchOutline("Search"),
-                                badgeAmount = 2,
-                                isSelected = currentDestination?.hierarchy?.any { it.route == "searchGraph" } == true
-                            ),
-                            BottomBarItem(
-                                title = "Library",
-                                route = "libraryGraph",
-                                selectedIcon = PodawanIcon.LibraryFilled("Library"),
-                                unselectedIcon = PodawanIcon.LibraryOutline("Library"),
-                                isSelected = currentDestination?.hierarchy?.any { it.route == "libraryGraph" } == true
-                            )
-                        ),
+                    AppBottomBar(
+                        currentTabRoute = currentSelectedTabRoute,
                         onItemClick = { item ->
                             actualRouter.navigate(
-                                fillRoute(route(item.route)) {
-
+                                fillRoute(item) {
                                     popUpTo(
                                         id = actualRouter.startDestination().id,
                                         saveState = true
                                     )
-
                                     launchSingleTop = true
-                                    // Restore state when reselecting a previously selected item
                                     restoreState = true
                                 }
                             )
@@ -124,32 +104,28 @@ class MultiGraphNavHost @Inject constructor(
             }
         ) {
 
-            val currentDestinationTab = currentDestination?.hierarchy?.find {
-                it.route in listOf("homeGraph", "searchGraph", "libraryGraph")
-            }?.route
-
-            val prevDestinationTab = previousDestination?.hierarchy?.find {
-                it.route in listOf("homeGraph", "searchGraph", "libraryGraph")
-            }?.route
-
-            val isBottomBarNav = currentDestinationTab != null
-                    && prevDestinationTab != null
-                    && currentDestinationTab != prevDestinationTab
-
-            val navAnim = remember (currentRoute, prevRoute) {
-                determineNavAnimation(currentRoute, prevRoute)
+            val navAnim = remember(currentRoute, prevRoute, currentDestination, previousDestination) {
+                determineNavAnimation(
+                    to = currentRoute,
+                    from = prevRoute,
+                    currentDestination = currentDestination,
+                    previousDestination = previousDestination
+                )
             }
 
             NavHost(
-                modifier = Modifier.padding(it),
+                //modifier = Modifier.padding(it),
                 navController = actualRouter.navHostController,
                 startDestination = startingRoute.route,
-                enterTransition = if (isBottomBarNav) { {noAnimEnter()} } else navAnim.enter,
-                exitTransition =  if (isBottomBarNav) { {noAnimExit()} } else navAnim.exit,
-                popEnterTransition = if (isBottomBarNav) { {noAnimEnter()} } else navAnim.popEnter,
-                popExitTransition = if (isBottomBarNav) { {noAnimExit()} } else navAnim.popExit
+                enterTransition = navAnim.enter,
+                exitTransition = navAnim.exit,
+                popEnterTransition = navAnim.popEnter,
+                popExitTransition = navAnim.popExit
             ) {
 
+                // the base screens of a tab are never navigated to, so they are never added to the
+                // list inside the router that allows us to track the current route
+                // which we use for determining the nav animation. So we need to manually add them
                 actualRouter.addRoutes(
                     listOf(
                         startingRoute,
@@ -159,41 +135,48 @@ class MultiGraphNavHost @Inject constructor(
                     )
                 )
 
-                navGraphRegistry.addTopLevelDestinations(this)
+                navGraphRegistry.addGlobalDestinations(this)
 
                 navigation(
-                    route = "mainGraph",
-                    startDestination = "homeGraph",
+                    route = mainGraphRoute.navRoute,
+                    startDestination = homeGraphRoute.navRoute,
                 ) {
                     navigation(
-                        route = "homeGraph",
+                        route = homeGraphRoute.navRoute,
                         startDestination = feedRoute.navRoute,
                     ) {
                         navGraphRegistry.addHomeDestinations(this)
                     }
 
                     navigation(
-                        route = "searchGraph",
+                        route = searchGraphRoute.navRoute,
                         startDestination = searchRoute.navRoute
                     ) {
-                        // add all search destinations
                         navGraphRegistry.addSearchDestinations(this)
                     }
 
                     navigation(
-                        route = "libraryGraph",
+                        route = libraryGraphRoute.navRoute,
                         startDestination = libraryRoute.navRoute
                     ) {
-                        // add all library destinations
                         navGraphRegistry.addLibraryDestinations(this)
                     }
                 }
+
 
                 delegatingRouter.setRouter(
                     router = actualRouter,
                     lifecycle = lifecycle,
                     startingRoute = startingRoute
                 )
+            }
+
+            val floatingWindowNavigator = remember {
+                actualRouter.navHostController.getFloatingWindowNavigator()
+            }
+
+            floatingWindowNavigator?.let {
+                FloatingWindowHost(floatingWindowNavigator)
             }
         }
     }

@@ -25,6 +25,7 @@ internal fun Project.configureAndroidCompose(
             add("implementation", platform(bom))
             add("implementation", libs.androidx.compose.runtime)
             add("implementation", libs.androidx.lifecycle.runtimeCompose)
+            add("implementation", libs.coil)
             add("implementation", libs.androidx.lifecycle)
             add("implementation", libs.hilt.navigation.compose)
             add("implementation", libs.androidx.navigation.compose)

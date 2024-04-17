@@ -12,10 +12,12 @@ val blockingErrorRoute = route("blocking_error")
 val maintenanceRoute = route("maintenance")
 
 fun Router.navigateToBlockingError() {
-    navigate(blockingErrorRoute.noArgRoute(
-        isTopLevel = true,
-        navAnimType = NavAnimType.SlideOver
-    ))
+    navigate(
+        blockingErrorRoute.noArgRoute(
+            isTopLevel = true,
+            navAnimType = NavAnimType.SlideOver
+        )
+    )
 }
 
 val errorClassArgument = navArgument("error_class") {

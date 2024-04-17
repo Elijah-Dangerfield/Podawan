@@ -135,8 +135,8 @@ private fun ButtonType.contentColor(style: ButtonStyle, enabled: Boolean): Color
         ButtonStyle.NoBackground -> when {
             !enabled -> PodawanTheme.colors.textDisabled
             else -> when (this) {
-                ButtonType.Primary -> PodawanTheme.colors.onSurfacePrimary
-                ButtonType.Secondary -> PodawanTheme.colors.onSurfaceSecondary
+                ButtonType.Primary -> PodawanTheme.colors.onBackground
+                ButtonType.Secondary -> PodawanTheme.colors.onBackground
             }
         }
     }

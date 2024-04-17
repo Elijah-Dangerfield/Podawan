@@ -6,10 +6,12 @@ import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.BoxScope
 import androidx.compose.foundation.layout.PaddingValues
 import androidx.compose.foundation.layout.padding
+import androidx.compose.material3.BottomAppBar
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.CompositionLocalProvider
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.platform.LocalContext
+import androidx.compose.ui.tooling.preview.datasource.LoremIpsum
 import androidx.compose.ui.unit.dp
 import com.dangerfield.libraries.dictionary.Dictionary
 import com.dangerfield.libraries.dictionary.LocalDictionary
@@ -66,4 +68,11 @@ fun Preview(
             }
         }
     }
+}
+
+fun loremIpsum(wordCount: Int = 10): String {
+    return LoremIpsum(wordCount).values.joinToString(" ")
+}
+fun loremIpsum(wordCountRange: IntRange = 2..10): String {
+    return LoremIpsum(wordCountRange.random()).values.joinToString(" ")
 }

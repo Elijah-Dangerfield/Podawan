@@ -20,14 +20,13 @@ import com.dangerfield.features.consent.ConsentStatus
 import com.dangerfield.features.consent.ConsentStatus.ConsentDenied
 import com.dangerfield.features.consent.ConsentStatus.ConsentNeeded
 import com.dangerfield.features.consent.consentRoute
-import com.dangerfield.features.feed.feedRoute
 import com.dangerfield.features.forcedupdate.forcedUpdateNavigationRoute
 import com.dangerfield.features.inAppMessaging.UpdateStatus
 import com.dangerfield.features.inAppMessaging.internal.update.DownloadProgressBar
-import com.dangerfield.features.login.loginRoute
+import com.dangerfield.features.auth.loginRoute
 import com.dangerfield.libraries.coreflowroutines.observeWithLifecycle
 import com.dangerfield.libraries.navigation.Route
-import com.dangerfield.libraries.navigation.mainRoute
+import com.dangerfield.libraries.navigation.mainGraphRoute
 import com.dangerfield.libraries.network.internal.OfflineBar
 import com.dangerfield.libraries.ui.LocalAppState
 import com.dangerfield.libraries.ui.components.PodawanSnackbarVisuals
@@ -46,7 +45,6 @@ fun PodawanApp(
     updateStatus: UpdateStatus?,
     isUpdateRequired: Boolean,
     hasBlockingError: Boolean,
-    isSingleNavGraph: Boolean,
     buildNavHost: @Composable (Route.Filled) -> Unit
 ) {
 
@@ -63,18 +61,12 @@ fun PodawanApp(
     ) {
         derivedStateOf {
             when {
-                isUpdateRequired -> forcedUpdateNavigationRoute.noArgRoute()
-                isInMaintenanceMode -> maintenanceRoute.noArgRoute()
-                hasBlockingError -> blockingErrorRoute.noArgRoute()
-                consentStatus in listOf(ConsentDenied, ConsentNeeded) -> consentRoute.noArgRoute()
-                isLoggedIn -> {
-                    if (isSingleNavGraph) {
-                        feedRoute.noArgRoute()
-                    } else {
-                        mainRoute.noArgRoute()
-                    }
-                }
-                else -> loginRoute.noArgRoute()
+                isUpdateRequired -> forcedUpdateNavigationRoute.noArgRoute(isTopLevel = true)
+                isInMaintenanceMode -> maintenanceRoute.noArgRoute(isTopLevel = true)
+                hasBlockingError -> blockingErrorRoute.noArgRoute(isTopLevel = true)
+                consentStatus in listOf(ConsentDenied, ConsentNeeded) -> consentRoute.noArgRoute(isTopLevel = true)
+                isLoggedIn -> mainGraphRoute.noArgRoute()
+                else -> loginRoute.noArgRoute(isTopLevel = true)
             }.also {
                 Timber.d("Starting route changed: ${it.route}")
             }

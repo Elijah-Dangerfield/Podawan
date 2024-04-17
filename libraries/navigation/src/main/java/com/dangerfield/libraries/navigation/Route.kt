@@ -154,11 +154,9 @@ class Route internal constructor() {
                 navRoute,
                 navArguments,
                 deepLinks,
-                isTopLevel = isTopLevel,
+                isTopLevel = isTopLevel ?: this.isTopLevel,
                 navAnimType = navAnimType,
             )
-
-            isTopLevel?.let { filler.topLevel(it) }
 
             filler.launchSingleTop(singleTop)
             return filler.build()

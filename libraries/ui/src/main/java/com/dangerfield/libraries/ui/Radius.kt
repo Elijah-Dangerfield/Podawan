@@ -64,6 +64,8 @@ object Radii {
         get() = Radius(
             topStart = CornerSize(DimensionResource.D400.dp),
             topEnd = CornerSize(DimensionResource.D400.dp),
+            bottomEnd =  CornerSize(DimensionResource.D400.dp),
+            bottomStart =  CornerSize(DimensionResource.D400.dp)
         )
 
     val IconButton get() = Round
