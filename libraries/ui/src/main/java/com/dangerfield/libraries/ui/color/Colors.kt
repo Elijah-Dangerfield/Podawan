@@ -6,6 +6,7 @@ import androidx.compose.foundation.lazy.grid.items
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.CompositionLocalProvider
 import androidx.compose.runtime.Immutable
+import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.tooling.preview.Preview
 import com.dangerfield.libraries.ui.LocalContentColor
 import com.dangerfield.libraries.ui.Preview
@@ -41,8 +42,8 @@ class Colors internal constructor(
 
     ) {
     internal companion object {
-        fun getColors() = Colors(
-            accent = ColorResource.Purple500,
+        fun getColors(accentColor: ColorResource) = Colors(
+            accent = accentColor,
             onAccent = ColorResource.Black800,
             shadow = ColorResource.Black800,
             textDisabled = ColorResource.Black600,
@@ -68,7 +69,7 @@ class Colors internal constructor(
 @Composable
 private fun PreviewColorSwatch() {
     Preview(showBackground = false) {
-        val colors = Colors.getColors().let {
+        val colors = Colors.getColors(ColorResource.MintyFresh300).let {
             // map of color resource to name
             listOf(
                 it.accent to "accent",

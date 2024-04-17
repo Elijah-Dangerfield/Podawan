@@ -13,6 +13,7 @@ import androidx.compose.ui.text.TextStyle
 import com.dangerfield.libraries.ui.LocalColors
 import com.dangerfield.libraries.ui.LocalContentColor
 import com.dangerfield.libraries.ui.LocalTypography
+import com.dangerfield.libraries.ui.color.ColorResource
 import com.dangerfield.libraries.ui.color.Colors
 import com.dangerfield.libraries.ui.typography.DefaultTypography
 
@@ -30,9 +31,10 @@ object PodawanTheme {
 
 @Composable
 fun PodawanTheme(
+    accentColor: ColorResource,
     content: @Composable () -> Unit
 ) {
-    val colors = remember() { Colors.getColors() }
+    val colors = remember() { Colors.getColors(accentColor) }
 
     val textSelectionColors = TextSelectionColors(
         handleColor = colors.accent.color,

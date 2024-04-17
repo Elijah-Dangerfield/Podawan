@@ -64,7 +64,6 @@ fun FeedScreen(
 ) {
     val scrollState = rememberLazyListState()
 
-    scrollState.firstVisibleItemScrollOffset
     Screen(modifier) {
         Column(
             Modifier

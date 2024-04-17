@@ -56,7 +56,9 @@ fun Preview(
         LocalContext provides context,
         LocalDictionary provides previewDictionary,
     ) {
-        PodawanTheme {
+        PodawanTheme(
+            accentColor = ColorResource.MintyFresh300,
+        ) {
             Box(
                 modifier = modifier
                     .thenIf(showBackground) {

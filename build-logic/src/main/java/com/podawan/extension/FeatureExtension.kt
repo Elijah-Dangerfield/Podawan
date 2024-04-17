@@ -103,6 +103,7 @@ abstract class FeatureExtension {
             add("implementation", project.libs.firebase.auth)
             add("implementation", project.libs.firebase.firestore)
             add("implementation", project.libs.firebase.analytics)
+            add("implementation", project.libs.firebase.crashlytics)
             add("implementation", project.libs.firebase.storage)
             add("implementation", project.libs.firebase.database)
             add("implementation", project.libs.kotlinx.coroutines.play.services)

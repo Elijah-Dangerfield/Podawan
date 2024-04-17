@@ -55,6 +55,9 @@ material3Android = "1.2.1"
 material3 = "1.2.1"
 androidx-browser = "1.7.0"
 uiToolingVersion = "1.6.1"
+firebaseFirestoreKtxVersion = "24.11.1"
+playServicesMeasurementApi = "21.6.2"
+lifecycleProcess = "2.7.0"
 
 [libraries]
 # AndroidX
@@ -230,6 +233,9 @@ androidx-navigation-common-ktx = { group = "androidx.navigation", name = "naviga
 androidx-material3-android = { group = "androidx.compose.material3", name = "material3-android", version.ref = "material3Android" }
 androidx-material3 = { group = "androidx.compose.material3", name = "material3", version.ref = "material3" }
 browser = { group = "androidx.browser", name = "browser", version.ref = "androidx-browser" }
+google-firebase-firestore-ktx = { group = "com.google.firebase", name = "firebase-firestore-ktx", version.ref = "firebaseFirestoreKtxVersion" }
+play-services-measurement-api = { group = "com.google.android.gms", name = "play-services-measurement-api", version.ref = "playServicesMeasurementApi" }
+androidx-lifecycle-process = { group = "androidx.lifecycle", name = "lifecycle-process", version.ref = "lifecycleProcess" }
 
 
 [plugins]

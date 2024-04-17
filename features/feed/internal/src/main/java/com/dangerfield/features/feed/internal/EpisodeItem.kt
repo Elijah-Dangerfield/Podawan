@@ -69,7 +69,7 @@ fun EpisodeItem(
         Row {
             Image(
                 modifier = Modifier
-                    .width(50.dp)
+                    .width(60.dp)
                     .aspectRatio(1f)
                     .clip(Radii.Card.shape)
                     .border(
