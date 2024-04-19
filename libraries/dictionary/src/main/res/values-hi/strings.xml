@@ -4,7 +4,6 @@
     <string name="appLanguageCode">hi</string>
 
     <!-- App Wide Strings -->
-    <string name="app_name_text">Odd One Out</string>
     <string name="app_tryAgainErrorDialog_header">फिर से कोशिश करें</string>
     <string name="app_submit_action">जमा करें</string>
     <string name="app_somethingWentWrong_text">कुछ गलत हो गया</string>

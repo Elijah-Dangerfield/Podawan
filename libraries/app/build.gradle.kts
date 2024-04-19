@@ -19,11 +19,14 @@ dependencies {
     implementation(projects.features.inAppMessaging)
     implementation(projects.libraries.session)
 
+    implementation(projects.libraries.ui)
+    implementation(projects.libraries.ui.components)
+    implementation(projects.libraries.ui.preview)
+
     implementation(project(":features:forcedUpdate"))
     implementation(project(":features:blockingError"))
     implementation(project(":features:auth"))
     implementation(project(":libraries:flowroutines"))
-    implementation(project(":libraries:ui"))
     implementation(project(":libraries:network:internal"))
     implementation(project(":features:inAppMessaging:internal"))
     implementation(project(":libraries:network"))

@@ -7,11 +7,10 @@ import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.tooling.preview.Preview
 import com.dangerfield.libraries.dictionary.dictionaryString
-import com.dangerfield.libraries.ui.components.button.Button
-import com.dangerfield.libraries.ui.components.button.ButtonType
-import com.dangerfield.libraries.ui.components.dialog.BasicDialog
-import com.dangerfield.libraries.ui.components.text.Text
-import com.dangerfield.libraries.ui.Preview
+import com.dangerfield.ui.components.button.Button
+import com.dangerfield.ui.components.button.ButtonType
+import com.dangerfield.ui.components.dialog.BasicDialog
+import com.dangerfield.ui.components.text.Text
 import com.dangerfield.oddoneoout.libraries.dictionary.internal.R
 
 @Composable
@@ -64,7 +63,7 @@ fun LanguageSupportDialog(
 @Preview
 @Composable
 private fun LanguageSupportDialogPreview() {
-    Preview {
+    com.dangerfield.libraries.ui.preview.Preview {
         LanguageSupportDialog(
             onDismissRequest = { -> },
             language = "English",
@@ -76,7 +75,7 @@ private fun LanguageSupportDialogPreview() {
 @Preview(locale = "fr")
 @Composable
 private fun LanguageSupportDialogPartialPreviewFrench() {
-    Preview(
+    com.dangerfield.libraries.ui.preview.Preview(
     ) {
         LanguageSupportDialog(
             onDismissRequest = { -> },
@@ -89,7 +88,7 @@ private fun LanguageSupportDialogPartialPreviewFrench() {
 @Preview(locale = "zh")
 @Composable
 private fun LanguageSupportDialogPartialPreviewZh() {
-    Preview(
+    com.dangerfield.libraries.ui.preview.Preview(
     ) {
         LanguageSupportDialog(
             onDismissRequest = { -> },

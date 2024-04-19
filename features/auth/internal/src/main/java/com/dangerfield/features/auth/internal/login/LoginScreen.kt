@@ -1,33 +1,48 @@
 package com.dangerfield.features.auth.internal.login
 
+import androidx.compose.foundation.Image
+import androidx.compose.foundation.border
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Spacer
+import androidx.compose.foundation.layout.aspectRatio
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.padding
+import androidx.compose.foundation.rememberScrollState
 import androidx.compose.foundation.text.KeyboardActions
 import androidx.compose.foundation.text.KeyboardOptions
+import androidx.compose.foundation.verticalScroll
 import androidx.compose.runtime.Composable
+import androidx.compose.ui.Alignment
 import androidx.compose.ui.Alignment.Companion.Center
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.draw.clip
 import androidx.compose.ui.focus.FocusRequester
+import androidx.compose.ui.layout.ContentScale
 import androidx.compose.ui.platform.LocalFocusManager
 import androidx.compose.ui.text.input.ImeAction.Companion.Done
 import androidx.compose.ui.text.input.ImeAction.Companion.Next
 import androidx.compose.ui.text.input.KeyboardType.Companion.Email
 import androidx.compose.ui.text.input.KeyboardType.Companion.Password
+import androidx.compose.ui.text.style.LineBreak
+import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.tooling.preview.Preview
+import androidx.compose.ui.unit.dp
 import com.dangerfield.libraries.ui.Dimension
 import com.dangerfield.libraries.ui.FieldState
-import com.dangerfield.libraries.ui.Preview
+import com.dangerfield.libraries.ui.LocalAppConfiguration
+import com.dangerfield.libraries.ui.Radii
 import com.dangerfield.libraries.ui.VerticalSpacerD1000
-import com.dangerfield.libraries.ui.components.CircularProgressIndicator
-import com.dangerfield.libraries.ui.components.Screen
-import com.dangerfield.libraries.ui.components.button.Button
-import com.dangerfield.libraries.ui.components.button.ButtonStyle
-import com.dangerfield.libraries.ui.components.text.InputField
-import com.dangerfield.libraries.ui.components.text.Text
+import com.dangerfield.libraries.ui.makeClickable
 import com.dangerfield.libraries.ui.theme.PodawanTheme
+import com.dangerfield.libraries.ui.toPainter
+import com.dangerfield.ui.components.CircularProgressIndicator
+import com.dangerfield.ui.components.Screen
+import com.dangerfield.ui.components.button.Button
+import com.dangerfield.ui.components.button.ButtonStyle
+import com.dangerfield.ui.components.text.InputField
+import com.dangerfield.ui.components.text.Text
+import podawan.core.App
 
 @Composable
 fun LoginScreen(
@@ -43,15 +58,36 @@ fun LoginScreen(
 ) {
     val focusManager = LocalFocusManager.current
     val passwordFocusRequester = FocusRequester()
+    val appConfiguration = LocalAppConfiguration.current
 
     Screen(modifier) {
         Column(
             Modifier
+                .verticalScroll(rememberScrollState())
                 .padding(it)
-                .padding(horizontal = Dimension.D1000)
+                .padding(horizontal = Dimension.D1000),
+            horizontalAlignment = Alignment.CenterHorizontally
         ) {
 
             VerticalSpacerD1000()
+
+            Image(
+                modifier = Modifier
+                    .fillMaxWidth(0.3f)
+                    .aspectRatio(1f)
+                    .clip(Radii.Card.shape)
+                    .border(
+                        2.dp,
+                        PodawanTheme.colors.border.color,
+                        Radii.Card.shape
+                    ),
+                painter = appConfiguration.image.toPainter(),
+                contentDescription = "",
+                contentScale = ContentScale.FillWidth,
+            )
+
+            VerticalSpacerD1000()
+
 
             Text(
                 text = "Log in with your email and password",
@@ -124,7 +160,16 @@ fun LoginScreen(
                         style = ButtonStyle.NoBackground,
                         onClick = onSignupClicked,
                     ) {
-                        Text(text = "New to XYZ? Sign up")
+                        Text(
+                            text = "New to ${appConfiguration.appName}? Sign up".makeClickable(linkText = "Sign up"),
+                            maxLines = 2,
+                            textAlign = TextAlign.Center,
+                            lineBreak = LineBreak(
+                                strategy = LineBreak.Strategy.Balanced,
+                                strictness = LineBreak.Strictness.Normal,
+                                wordBreak = LineBreak.WordBreak.Default,
+                            )
+                        )
                     }
                     VerticalSpacerD1000()
 
@@ -139,7 +184,24 @@ fun LoginScreen(
 @Composable
 @Preview
 private fun PreviewScreen() {
-    Preview {
+    com.dangerfield.libraries.ui.preview.Preview(app = App.TMG) {
+        LoginScreen(
+            emailFieldState = FieldState.Idle(""),
+            passwordFieldState = FieldState.Idle(""),
+            isFormValid = false,
+            onEmailChanged = {},
+            onPasswordChanged = {},
+            onLoginClicked = {},
+            isLoading = false,
+            onSignupClicked = {}
+        )
+    }
+}
+
+@Composable
+@Preview
+private fun PreviewScreenStuffYouShouldKnow() {
+    com.dangerfield.libraries.ui.preview.Preview(app = App.StuffYouShouldKnow) {
         LoginScreen(
             emailFieldState = FieldState.Idle(""),
             passwordFieldState = FieldState.Idle(""),

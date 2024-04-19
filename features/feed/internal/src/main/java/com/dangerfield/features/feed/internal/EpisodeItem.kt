@@ -7,7 +7,6 @@ import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.Spacer
 import androidx.compose.foundation.layout.aspectRatio
 import androidx.compose.foundation.layout.fillMaxWidth
-import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.width
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.getValue
@@ -27,14 +26,14 @@ import coil.request.ImageRequest
 import coil.size.Size
 import com.dangerfield.libraries.ui.HorizontalSpacerD200
 import com.dangerfield.libraries.ui.HorizontalSpacerD500
-import com.dangerfield.libraries.ui.Preview
+import com.dangerfield.libraries.ui.preview.Preview
 import com.dangerfield.libraries.ui.Radii
 import com.dangerfield.libraries.ui.VerticalSpacerD300
 import com.dangerfield.libraries.ui.VerticalSpacerD500
-import com.dangerfield.libraries.ui.components.icon.IconButton
-import com.dangerfield.libraries.ui.components.icon.PodawanIcon
-import com.dangerfield.libraries.ui.components.text.Text
-import com.dangerfield.libraries.ui.loremIpsum
+import com.dangerfield.ui.components.icon.IconButton
+import com.dangerfield.ui.components.icon.PodawanIcon
+import com.dangerfield.ui.components.text.Text
+import com.dangerfield.libraries.ui.preview.loremIpsum
 import com.dangerfield.libraries.ui.theme.PodawanTheme
 import com.dangerfield.podawan.features.feed.internal.R
 
@@ -154,13 +153,13 @@ fun EpisodeItem(
 @Composable
 @Preview
 private fun PreviewEpisodeItem() {
-    Preview {
+    com.dangerfield.libraries.ui.preview.Preview {
         EpisodeItem(
             episode = DisplayableEpisode(
-                title = loremIpsum(3..10),
+                title = com.dangerfield.libraries.ui.preview.loremIpsum(3..10),
                 releaseDate = "Dec 12, 2021",
                 imageUrl = "",
-                description = loremIpsum(20..30),
+                description = com.dangerfield.libraries.ui.preview.loremIpsum(20..30),
                 fallbackImageUrl = "",
                 isPlaying = false,
                 isDownloaded = false,
@@ -173,13 +172,13 @@ private fun PreviewEpisodeItem() {
 @Composable
 @Preview
 private fun PreviewEpisodeItemPlaying() {
-    Preview {
+    com.dangerfield.libraries.ui.preview.Preview {
         EpisodeItem(
             episode = DisplayableEpisode(
-                title = loremIpsum(3..10),
+                title = com.dangerfield.libraries.ui.preview.loremIpsum(3..10),
                 releaseDate = "Dec 12, 2021",
                 imageUrl = "",
-                description = loremIpsum(20..30),
+                description = com.dangerfield.libraries.ui.preview.loremIpsum(20..30),
                 fallbackImageUrl = "",
                 isPlaying = true,
                 isDownloaded = true,

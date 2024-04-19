@@ -6,8 +6,8 @@ import androidx.compose.foundation.layout.height
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Modifier
 import com.dangerfield.libraries.ui.Dimension
-import com.dangerfield.libraries.ui.components.HorizontalDivider
-import com.dangerfield.libraries.ui.components.text.Text
+import com.dangerfield.ui.components.HorizontalDivider
+import com.dangerfield.ui.components.text.Text
 import com.dangerfield.libraries.ui.theme.PodawanTheme
 
 @Composable

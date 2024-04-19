@@ -16,6 +16,7 @@ import androidx.compose.foundation.layout.width
 import androidx.compose.foundation.lazy.grid.GridCells
 import androidx.compose.foundation.lazy.grid.LazyVerticalGrid
 import androidx.compose.foundation.lazy.grid.items
+import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.Stable
 import androidx.compose.runtime.State
@@ -28,11 +29,8 @@ import androidx.compose.ui.graphics.luminance
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import com.dangerfield.libraries.ui.Dimension
-import com.dangerfield.libraries.ui.Preview
 import com.dangerfield.libraries.ui.Radii
 import com.dangerfield.libraries.ui.VerticalSpacerD100
-import com.dangerfield.libraries.ui.components.text.Text
-import com.dangerfield.libraries.ui.theme.PodawanTheme
 
 @Suppress("ClassNaming")
 @Stable
@@ -128,7 +126,6 @@ private val colors = listOf(
 @Preview(widthDp = 400, heightDp = 1500, showBackground = false)
 @Composable
 private fun PreviewColorSwatch() {
-    Preview(showBackground = false) {
         LazyVerticalGrid(
             columns = GridCells.Fixed(3)
         ) {
@@ -140,7 +137,6 @@ private fun PreviewColorSwatch() {
                 )
             }
         }
-    }
 }
 
 
@@ -168,16 +164,14 @@ internal fun ColorCard(
 
             Text(
                 text = title,
-                colorResource = ColorResource.Black900,
-                typography = PodawanTheme.typography.Label.L400.Bold,
+                color = Color.Black
             )
 
             VerticalSpacerD100()
 
             Text(
                 text = description,
-                colorResource = ColorResource.Black600,
-                typography = PodawanTheme.typography.Label.L400.SemiBold,
+                color = Color.Black
             )
         }
 

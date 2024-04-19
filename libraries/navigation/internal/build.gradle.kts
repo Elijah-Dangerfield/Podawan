@@ -16,6 +16,8 @@ dependencies {
     implementation(projects.libraries.common)
     implementation(projects.libraries.resources)
     implementation(projects.libraries.ui)
+    implementation(projects.libraries.ui.preview)
+    implementation(projects.libraries.ui.components)
     implementation(projects.features.feed)
     implementation(projects.features.auth)
     implementation(projects.features.search)

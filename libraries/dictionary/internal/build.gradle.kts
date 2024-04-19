@@ -17,6 +17,8 @@ dependencies {
     implementation(projects.libraries.storage)
     implementation(projects.libraries.config)
     implementation(projects.libraries.ui)
+    implementation(projects.libraries.ui.components)
+    implementation(projects.libraries.ui.preview)
     implementation(projects.libraries.analytics)
     implementation(projects.libraries.navigation)
     implementation(projects.libraries.common)

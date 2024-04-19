@@ -10,6 +10,10 @@ import com.dangerfield.libraries.network.NetworkMonitor
 import com.dangerfield.libraries.ui.LocalAppState
 import com.dangerfield.libraries.ui.LocalBuildInfo
 import com.dangerfield.libraries.app.rememberAppState
+import com.dangerfield.libraries.ui.LocalAppConfiguration
+import com.dangerfield.libraries.ui.LocalColors
+import com.dangerfield.libraries.ui.color.Colors
+import oddoneout.core.AppConfiguration
 import podawan.core.BuildInfo
 import javax.inject.Inject
 
@@ -25,7 +29,9 @@ class CompositionLocalsProvider @Inject constructor(
     private val metricsTracker: MetricsTracker,
     private val buildInfo: BuildInfo,
     private val dictionary: Dictionary,
-    private val networkMonitor: NetworkMonitor
+    private val colors: Colors,
+    private val networkMonitor: NetworkMonitor,
+    private val appConfiguration: AppConfiguration
 ){
 
     @Composable
@@ -34,6 +40,8 @@ class CompositionLocalsProvider @Inject constructor(
         val appState = rememberAppState(networkMonitor = networkMonitor)
 
         CompositionLocalProvider(
+            LocalColors provides colors,
+            LocalAppConfiguration provides appConfiguration,
             LocalMetricsTracker provides metricsTracker,
             LocalDictionary provides dictionary,
             LocalBuildInfo provides buildInfo,

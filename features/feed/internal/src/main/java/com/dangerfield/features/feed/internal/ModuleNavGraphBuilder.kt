@@ -9,13 +9,14 @@ import androidx.hilt.navigation.compose.hiltViewModel
 import androidx.lifecycle.compose.collectAsStateWithLifecycle
 import androidx.navigation.NavGraphBuilder
 import androidx.navigation.compose.composable
+import com.dangerfield.features.blockingerror.navigateToBlockingError
 import com.dangerfield.features.blockingerror.navigateToGeneralErrorDialog
 import com.dangerfield.features.feed.feedRoute
 import com.dangerfield.libraries.coreflowroutines.ObserveWithLifecycle
 import com.dangerfield.libraries.navigation.HomeTabNavBuilder
 import se.ansman.dagger.auto.AutoBindIntoSet
 import com.dangerfield.libraries.navigation.Router
-import com.dangerfield.libraries.ui.components.CircularProgressIndicator
+import com.dangerfield.ui.components.CircularProgressIndicator
 import javax.inject.Inject
 
 @AutoBindIntoSet
@@ -52,6 +53,9 @@ class ModuleNavGraphBuilder @Inject constructor() : HomeTabNavBuilder {
                     onEpisodeDownloadClicked = {
                         viewModel.takeAction(FeedViewModel.Action.DownloadEpisode(it))
                     },
+                    onClickTitle =  {
+                        router.navigateToBlockingError()
+                    }
                 )
             }
         }

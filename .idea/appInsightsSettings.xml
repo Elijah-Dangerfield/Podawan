@@ -28,8 +28,8 @@
             <InsightsFilterSettings>
               <option name="connection">
                 <ConnectionSetting>
-                  <option name="appId" value="com.dangerfield.podawan.debug" />
-                  <option name="mobileSdkAppId" value="1:379879852781:android:4a85083301d9aec03c9ae4" />
+                  <option name="appId" value="com.dangerfield.podawan.theBenAndEmilShow.debug" />
+                  <option name="mobileSdkAppId" value="1:379879852781:android:5aa8afdda6428c5a3c9ae4" />
                   <option name="projectId" value="podawan-63ec0" />
                   <option name="projectNumber" value="379879852781" />
                 </ConnectionSetting>

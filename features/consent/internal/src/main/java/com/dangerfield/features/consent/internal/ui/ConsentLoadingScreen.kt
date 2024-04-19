@@ -11,11 +11,11 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.tooling.preview.Preview
 import com.dangerfield.libraries.ui.Dimension
-import com.dangerfield.libraries.ui.Preview
+import com.dangerfield.libraries.ui.preview.Preview
 import com.dangerfield.libraries.ui.VerticalSpacerD1000
-import com.dangerfield.libraries.ui.components.CircularProgressIndicator
-import com.dangerfield.libraries.ui.components.Screen
-import com.dangerfield.libraries.ui.components.text.Text
+import com.dangerfield.ui.components.CircularProgressIndicator
+import com.dangerfield.ui.components.Screen
+import com.dangerfield.ui.components.text.Text
 import com.dangerfield.libraries.ui.theme.PodawanTheme
 
 @Composable
@@ -54,7 +54,7 @@ fun ConsentLoadingScreen() {
 @Preview
 @Composable
 private fun PreviewConsentLoadingScreen() {
-    Preview {
+    com.dangerfield.libraries.ui.preview.Preview {
         ConsentLoadingScreen()
     }
 }

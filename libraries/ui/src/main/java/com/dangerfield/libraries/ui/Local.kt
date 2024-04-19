@@ -5,10 +5,11 @@ import androidx.compose.runtime.staticCompositionLocalOf
 import com.dangerfield.libraries.ui.color.ColorResource
 import com.dangerfield.libraries.ui.color.Colors
 import com.dangerfield.libraries.ui.typography.DefaultTypography
+import oddoneout.core.AppConfiguration
 import podawan.core.AppState
 import podawan.core.BuildInfo
 
-internal val LocalColors = compositionLocalOf<Colors> {
+val LocalColors = compositionLocalOf<Colors> {
     error("PodawanTheme wasn't applied")
 }
 
@@ -26,4 +27,8 @@ val LocalBuildInfo = staticCompositionLocalOf<BuildInfo> {
 
 val LocalAppState = staticCompositionLocalOf<AppState> {
     error("No LocalAppState provided")
+}
+
+val LocalAppConfiguration = staticCompositionLocalOf<AppConfiguration> {
+    error("No AppConfiguration provided")
 }

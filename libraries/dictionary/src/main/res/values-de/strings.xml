@@ -3,7 +3,6 @@
     <string name="appLanguageCode">de</string>
 
     <!-- App Wide String Strings -->
-    <string name="app_name_text">Odd one out</string>
     <string name="app_tryAgainErrorDialog_header">Versuchen wir es noch einmal</string>
     <string name="app_submit_action">Absenden</string>
     <string name="app_somethingWentWrong_text">Etwas ist schief gelaufen</string>

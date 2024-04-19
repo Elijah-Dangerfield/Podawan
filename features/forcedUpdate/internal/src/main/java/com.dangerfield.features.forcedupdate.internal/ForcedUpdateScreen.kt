@@ -13,11 +13,11 @@ import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.tooling.preview.Preview
 import com.dangerfield.libraries.dictionary.dictionaryString
 import com.dangerfield.libraries.ui.Dimension
-import com.dangerfield.libraries.ui.components.Screen
-import com.dangerfield.libraries.ui.components.button.Button
-import com.dangerfield.libraries.ui.components.button.ButtonType
-import com.dangerfield.libraries.ui.components.text.Text
-import com.dangerfield.libraries.ui.Preview
+import com.dangerfield.ui.components.Screen
+import com.dangerfield.ui.components.button.Button
+import com.dangerfield.ui.components.button.ButtonType
+import com.dangerfield.ui.components.text.Text
+import com.dangerfield.libraries.ui.preview.Preview
 import com.dangerfield.libraries.ui.theme.PodawanTheme
 import com.dangerfield.oddoneoout.features.forcedupdate.internal.R
 
@@ -72,7 +72,7 @@ fun ForcedUpdateScreen(
 @Composable
 @Preview
 private fun PreviewForcedUpdateScreen() {
-    Preview {
+    com.dangerfield.libraries.ui.preview.Preview {
         ForcedUpdateScreen(
             onOpenAppStoreClicked = {},
         )

@@ -9,9 +9,9 @@ import androidx.compose.foundation.layout.height
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.tooling.preview.Preview
-import com.dangerfield.libraries.ui.Preview
-import com.dangerfield.libraries.ui.components.text.ProvideTextConfig
-import com.dangerfield.libraries.ui.components.text.Text
+import com.dangerfield.libraries.ui.preview.Preview
+import com.dangerfield.ui.components.text.ProvideTextConfig
+import com.dangerfield.ui.components.text.Text
 import com.dangerfield.libraries.ui.theme.PodawanTheme
 
 @Composable
@@ -50,7 +50,7 @@ fun ProgressRow(
 @Preview
 @Composable
 fun ProgressRowPreview() {
-    Preview(
+    com.dangerfield.libraries.ui.preview.Preview(
     ) {
         ProgressRow(progress = 0.5f) {
             Text("Hello")

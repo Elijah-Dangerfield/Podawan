@@ -9,7 +9,7 @@ import com.dangerfield.libraries.coreflowroutines.observeWithLifecycle
 import com.dangerfield.libraries.coreflowroutines.observeWithLifecycleIn
 import com.dangerfield.libraries.navigation.Route
 import com.dangerfield.libraries.navigation.Router
-import com.dangerfield.libraries.ui.components.dialog.bottomsheet.BottomSheetState
+import com.dangerfield.ui.components.dialog.bottomsheet.BottomSheetState
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.channels.Channel
 import kotlinx.coroutines.flow.Flow

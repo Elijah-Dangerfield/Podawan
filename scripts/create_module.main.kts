@@ -149,7 +149,7 @@ fun createDirectory(baseDir: String, moduleName: String, parentModule: String?):
 }
 
 fun updateAppGradleFile(moduleType: String, moduleName: String, isInternal: Boolean) {
-    val appBuildGradleFile = File("app/build.gradle.kts")
+    val appBuildGradleFile = File("libraries/app/build.gradle.kts")
 
     val internalAddition = if (isInternal) ".internal" else ""
     val moduleParentName = if (moduleType == "library") "libraries" else "features"

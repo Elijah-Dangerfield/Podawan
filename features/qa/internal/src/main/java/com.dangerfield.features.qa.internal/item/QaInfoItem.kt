@@ -6,12 +6,12 @@ import androidx.compose.runtime.Composable
 import androidx.compose.runtime.remember
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.tooling.preview.Preview
-import com.dangerfield.libraries.ui.Preview
-import com.dangerfield.libraries.ui.components.ListItem
-import com.dangerfield.libraries.ui.components.text.ProvideTextConfig
-import com.dangerfield.libraries.ui.components.text.Text
-import com.dangerfield.libraries.ui.components.icon.Icon
-import com.dangerfield.libraries.ui.components.icon.PodawanIcon
+import com.dangerfield.libraries.ui.preview.Preview
+import com.dangerfield.ui.components.ListItem
+import com.dangerfield.ui.components.text.ProvideTextConfig
+import com.dangerfield.ui.components.text.Text
+import com.dangerfield.ui.components.icon.Icon
+import com.dangerfield.ui.components.icon.PodawanIcon
 import com.dangerfield.libraries.ui.theme.PodawanTheme
 
 @Composable
@@ -54,7 +54,7 @@ fun QaInfoItem(
 @Preview
 @Composable
 private fun PreviewQaInfoItemItem() {
-    Preview {
+    com.dangerfield.libraries.ui.preview.Preview {
         QaInfoItem {
             Text("Title")
         }

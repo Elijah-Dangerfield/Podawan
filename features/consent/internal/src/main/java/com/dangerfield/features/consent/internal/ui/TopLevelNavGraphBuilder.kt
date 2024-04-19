@@ -20,7 +20,7 @@ import com.dangerfield.features.consent.consentRoute
 import com.dangerfield.libraries.dictionary.LocalDictionary
 import com.dangerfield.libraries.navigation.GlobalNavBuilder
 import com.dangerfield.libraries.navigation.Router
-import com.dangerfield.libraries.ui.components.CircularProgressIndicator
+import com.dangerfield.ui.components.CircularProgressIndicator
 import com.dangerfield.oddoneoout.features.consent.internal.R
 import dagger.hilt.android.qualifiers.ActivityContext
 import dagger.hilt.android.scopes.ActivityScoped

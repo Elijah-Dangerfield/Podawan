@@ -8,31 +8,36 @@ internal fun Project.checkForAppModuleSecretFiles() {
 
     val secretFiledNeeded = listOf(
         // used to talk to release firebase project by app
-        File("${project.projectDir}/src/release/google-services.json"),
+        File("${project.projectDir.path}/src/release/google-services.json"),
 
         // used to talk to release firebase project by scripts
-        File("${project.projectDir}/src/release/service-account-key.json"),
+        File("${project.projectDir.path}/src/release/service-account-key.json"),
 
         // used to talk to release firebase project by app for qa
-        File("${project.projectDir}/src/qa/google-services.json"),
+        File("${project.projectDir.path}/src/qa/google-services.json"),
 
         // used to talk to release firebase project by scripts for qa
-        File("${project.projectDir}/src/qa/service-account-key.json"),
+        File("${project.projectDir.path}/src/qa/service-account-key.json"),
 
         // used to talk to debug firebase project by app
-        File("${project.projectDir}/src/debug/google-services.json"),
+        File("${project.projectDir.path}/src/debug/google-services.json"),
 
         // used to talk to debug firebase project by scripts
-        File("${project.projectDir}/src/debug/service-account-key.json")
+        File("${project.projectDir.path}/src/debug/service-account-key.json")
     )
 
     fun isAppMissingSecretFiles(): Boolean = secretFiledNeeded.any { !it.isFile }
 
     fun installSecretFiles() {
 
-        val serviceKeyPath = getenv("SPYFALL_SERVICE_KEY_PATH")
-            ?: "${project.rootDir}/service_key.json".takeIf { File(it).isFile }
-            ?: "${project.rootDir}/app/service_key.json".takeIf { File(it).isFile }
+        val paths = listOfNotNull(
+            projectDir.path + "/service_key.json",
+            "${project.rootDir}/service_key.json",
+            "${project.rootDir}/app/service_key.json"
+        )
+        val serviceKeyPath = getenv("SPYFALL_SERVICE_KEY_PATH") ?: paths.firstOrNull {
+            File(it).isFile
+        }
 
         if (serviceKeyPath == null || !File(serviceKeyPath).isFile) {
             @Suppress("UseCheckOrError")
@@ -41,6 +46,9 @@ internal fun Project.checkForAppModuleSecretFiles() {
                    \\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\
                     
                     Could not find the service_key.json needed to download secret files from google drive. 
+                    
+                    We checked the following paths: 
+                    `${paths.joinToString(", ")}`
                     Please download the service_key.json here: 
                     https://drive.google.com/file/d/1t456fo07BN9NF0a3e1Ds9KNBccV1X1AQ/view?usp=share_link
                     
@@ -57,7 +65,7 @@ internal fun Project.checkForAppModuleSecretFiles() {
                 """.trimIndent()
             )
         } else {
-            val result = ProcessBuilder("./scripts/get_secret_files.main.kts", serviceKeyPath)
+            val result = ProcessBuilder("./scripts/get_secret_files.main.kts", projectDir.path, serviceKeyPath)
                 .redirectOutput(ProcessBuilder.Redirect.INHERIT)
                 .redirectError(ProcessBuilder.Redirect.INHERIT)
                 .start()

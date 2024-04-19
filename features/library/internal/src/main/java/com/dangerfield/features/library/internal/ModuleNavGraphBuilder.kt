@@ -5,8 +5,8 @@ import androidx.navigation.compose.composable
 import com.dangerfield.features.library.libraryRoute
 import com.dangerfield.libraries.navigation.LibraryTabNavBuilder
 import com.dangerfield.libraries.navigation.Router
-import com.dangerfield.libraries.ui.components.Screen
-import com.dangerfield.libraries.ui.components.text.Text
+import com.dangerfield.ui.components.Screen
+import com.dangerfield.ui.components.text.Text
 import se.ansman.dagger.auto.AutoBindIntoSet
 import javax.inject.Inject
 

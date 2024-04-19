@@ -56,7 +56,6 @@
     App Wide String:
     String used throughout the app in multiple screens/contexts.
     -->
-    <string name="app_name_text">podawan</string>
     <string name="app_tryAgainErrorDialog_header">Lets try that again</string>
     <string name="app_submit_action">Submit</string>
     <string name="app_somethingWentWrong_text">Something went wrong</string>

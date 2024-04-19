@@ -7,15 +7,14 @@ import androidx.compose.material3.MaterialTheme
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.CompositionLocalProvider
 import androidx.compose.runtime.ReadOnlyComposable
-import androidx.compose.runtime.remember
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.text.TextStyle
 import com.dangerfield.libraries.ui.LocalColors
 import com.dangerfield.libraries.ui.LocalContentColor
 import com.dangerfield.libraries.ui.LocalTypography
-import com.dangerfield.libraries.ui.color.ColorResource
 import com.dangerfield.libraries.ui.color.Colors
 import com.dangerfield.libraries.ui.typography.DefaultTypography
+import podawan.core.App
 
 object PodawanTheme {
     val colors: Colors
@@ -31,10 +30,10 @@ object PodawanTheme {
 
 @Composable
 fun PodawanTheme(
-    accentColor: ColorResource,
     content: @Composable () -> Unit
 ) {
-    val colors = remember() { Colors.getColors(accentColor) }
+
+    val colors = LocalColors.current
 
     val textSelectionColors = TextSelectionColors(
         handleColor = colors.accent.color,
@@ -43,7 +42,6 @@ fun PodawanTheme(
 
     MaterialWrapper {
         CompositionLocalProvider(
-            LocalColors provides colors,
             LocalContentColor provides colors.text,
             LocalTextSelectionColors provides textSelectionColors,
             LocalTypography provides DefaultTypography(),

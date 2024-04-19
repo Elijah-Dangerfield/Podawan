@@ -9,11 +9,11 @@ import androidx.compose.runtime.Composable
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import com.dangerfield.libraries.ui.bounceClick
-import com.dangerfield.libraries.ui.components.icon.Icon
-import com.dangerfield.libraries.ui.components.icon.IconSize
-import com.dangerfield.libraries.ui.components.icon.PodawanIcon
-import com.dangerfield.libraries.ui.components.text.Text
-import com.dangerfield.libraries.ui.Preview
+import com.dangerfield.ui.components.icon.Icon
+import com.dangerfield.ui.components.icon.IconSize
+import com.dangerfield.ui.components.icon.PodawanIcon
+import com.dangerfield.ui.components.text.Text
+import com.dangerfield.libraries.ui.preview.Preview
 import androidx.compose.ui.tooling.preview.Preview
 import com.dangerfield.libraries.ui.Dimension
 import com.dangerfield.libraries.ui.rememberRipple
@@ -64,7 +64,7 @@ fun SettingsOption(
 @Composable
 @Preview
 fun PreviewSettingsOption() {
-    Preview(showBackground = true) {
+    com.dangerfield.libraries.ui.preview.Preview(showBackground = true) {
         SettingsOption(
             leadingIcon = PodawanIcon.Settings("Example"),
             text = "Example",
@@ -76,7 +76,7 @@ fun PreviewSettingsOption() {
 @Composable
 @Preview
 fun PreviewSettingsOptionTrailing() {
-    Preview(showBackground = true) {
+    com.dangerfield.libraries.ui.preview.Preview(showBackground = true) {
         SettingsOption(
             trailingIcon = PodawanIcon.ChevronRight("Example"),
             text = "Example",

@@ -9,7 +9,7 @@ import androidx.navigation.NavHostController
 import com.dangerfield.libraries.coreflowroutines.collectIn
 import com.dangerfield.libraries.navigation.Route
 import com.dangerfield.libraries.navigation.Router
-import com.dangerfield.libraries.ui.components.dialog.bottomsheet.BottomSheetState
+import com.dangerfield.ui.components.dialog.bottomsheet.BottomSheetState
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.flow.MutableSharedFlow
 import kotlinx.coroutines.flow.MutableStateFlow

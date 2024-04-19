@@ -36,20 +36,20 @@ import com.airbnb.lottie.compose.rememberLottieComposition
 import com.dangerfield.libraries.dictionary.dictionaryString
 import com.dangerfield.libraries.ui.Dimension
 import com.dangerfield.libraries.ui.FieldState
-import com.dangerfield.libraries.ui.components.header.Header
-import com.dangerfield.libraries.ui.Preview
+import com.dangerfield.ui.components.header.Header
+import com.dangerfield.libraries.ui.preview.Preview
 import com.dangerfield.libraries.ui.VerticalSpacerD1200
 import com.dangerfield.libraries.ui.VerticalSpacerD800
-import com.dangerfield.libraries.ui.components.CircularProgressIndicator
-import com.dangerfield.libraries.ui.components.FormField
-import com.dangerfield.libraries.ui.components.Screen
-import com.dangerfield.libraries.ui.components.button.Button
-import com.dangerfield.libraries.ui.components.button.ButtonStyle
-import com.dangerfield.libraries.ui.components.radio.EnumRadioGroup
-import com.dangerfield.libraries.ui.components.radio.NewRadioButton
-import com.dangerfield.libraries.ui.components.text.AsteriskText
-import com.dangerfield.libraries.ui.components.text.OutlinedTextField
-import com.dangerfield.libraries.ui.components.text.Text
+import com.dangerfield.ui.components.CircularProgressIndicator
+import com.dangerfield.ui.components.FormField
+import com.dangerfield.ui.components.Screen
+import com.dangerfield.ui.components.button.Button
+import com.dangerfield.ui.components.button.ButtonStyle
+import com.dangerfield.ui.components.radio.EnumRadioGroup
+import com.dangerfield.ui.components.radio.NewRadioButton
+import com.dangerfield.ui.components.text.AsteriskText
+import com.dangerfield.ui.components.text.OutlinedTextField
+import com.dangerfield.ui.components.text.Text
 import com.dangerfield.libraries.ui.theme.PodawanTheme
 import com.dangerfield.oddoneoout.features.settings.internal.R
 
@@ -341,7 +341,7 @@ private fun ContactTypeOption(
 @Composable
 @Preview
 private fun PreviewSettingsScreen() {
-    Preview {
+    com.dangerfield.libraries.ui.preview.Preview {
         ContactUsScreen(
             isLoadingSubmit = false,
             isFormValid = false,
@@ -365,7 +365,7 @@ private fun PreviewSettingsScreen() {
 @Composable
 @Preview
 private fun PreviewSuccess() {
-    Preview {
+    com.dangerfield.libraries.ui.preview.Preview {
         ContactUsScreen(
             isLoadingSubmit = false,
             isFormValid = false,

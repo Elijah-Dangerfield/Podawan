@@ -34,8 +34,8 @@ val releaseGoogleServicesFileInfo =
         // https://drive.google.com/file/d/1UwdN7W1Fmy4Hp1Q2w0BSiGEHJu74cWnQ/view?usp=drive_link
         id = "1UwdN7W1Fmy4Hp1Q2w0BSiGEHJu74cWnQ",
         pathsToStore = listOf(
-            "app/src/release/google-services.json",
-            "app/src/qa/google-services.json",
+            "src/release/google-services.json",
+            "src/qa/google-services.json",
         )
     )
 
@@ -45,17 +45,16 @@ val releaseServiceAccountKeyFileInfo =
         // https://drive.google.com/file/d/1iv8zTDAaF5Nqgr2mwzGITPgC_b2lmU_I/view?usp=drive_link
         id = "1iv8zTDAaF5Nqgr2mwzGITPgC_b2lmU_I",
         pathsToStore = listOf(
-            "app/src/release/service-account-key.json",
-            "app/src/qa/service-account-key.json",
+            "src/release/service-account-key.json",
+            "src/qa/service-account-key.json",
         )
     )
 
 // Used to talk to the debug firebase project
 val debugGoogleServicesFileInfo =
     FileInfo(
-        // https://drive.google.com/file/d/1xgeDaLQ6ATM7qq35EksIbwA3ZQHIzEJV/view?usp=drive_link
-        id = "1xgeDaLQ6ATM7qq35EksIbwA3ZQHIzEJV",
-        pathsToStore = listOf("app/src/debug/google-services.json")
+        id = "1iynKy96WsSE6RlgDBWFqgGIxZhN-6d2k",
+        pathsToStore = listOf("src/debug/google-services.json")
     )
 
 // Used to make changes to the debug firestore project via scripts
@@ -63,7 +62,7 @@ val debugServiceAccountKeyFileInfo =
     FileInfo(
         //https://drive.google.com/file/d/11EFkoDwNz3th28UQAIdODWkZzGiNYZsD/view?usp=drive_link
         id = "11EFkoDwNz3th28UQAIdODWkZzGiNYZsD",
-        pathsToStore = listOf("app/src/debug/service-account-key.json")
+        pathsToStore = listOf("src/debug/service-account-key.json")
     )
 
 val fileInfoList = listOf(
@@ -96,7 +95,7 @@ if (isHelpCall) {
         You can download the service-key.json file from the following link: 
         https://drive.google.com/file/d/1t456fo07BN9NF0a3e1Ds9KNBccV1X1AQ/view?usp=share_link
         
-        Usage: ./create_google_json_files.main.kts [optional serviceAccountKeyPath]
+        Usage: ./create_google_json_files.main.kts [project root path, optional serviceAccountKeyPath]
     """.trimIndent()
     )
 
@@ -104,7 +103,9 @@ if (isHelpCall) {
     throw Exception("See Message Above")
 }
 
-val serviceAccountKeyPath = args.getOrNull(0) ?: run {
+val rootPath = args[0]
+
+val serviceAccountKeyPath = args.getOrNull(1) ?: run {
     if (File("service_key.json").isFile) return@run "service_key.json"
     if (File("app/service_key.json").isFile) return@run "app/service_key.json"
 
@@ -135,10 +136,8 @@ fun getFiles() {
         jsonFactory,
         HttpCredentialsAdapter(scopedCredentials)
     )
-        .setApplicationName("Odd One Out")
+        .setApplicationName("Podawan")
         .build()
-
-    println("Current working directory: ${System.getProperty("user.dir")}")
 
     ls()
 
@@ -146,7 +145,9 @@ fun getFiles() {
     fileInfoList.forEach {
         try {
 
-            it.pathsToStore.forEach { path ->
+            it.pathsToStore.forEach {
+                val path = "$rootPath/$it"
+
                 val file = File(path)
                 if (!file.isFile) {
                     file.createNewFile()
@@ -158,7 +159,8 @@ fun getFiles() {
             if (driveFile.mimeType == "application/json") {
                 val outputStream = ByteArrayOutputStream()
                 drive.files().get(it.id).executeMediaAndDownloadTo(outputStream)
-                val outputFiles = it.pathsToStore.map { path ->
+                val outputFiles = it.pathsToStore.map {
+                    val path = "$rootPath/$it"
                     FileOutputStream(path)
                 }
 

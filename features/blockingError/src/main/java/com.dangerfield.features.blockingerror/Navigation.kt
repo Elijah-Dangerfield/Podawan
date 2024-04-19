@@ -20,6 +20,15 @@ fun Router.navigateToBlockingError() {
     )
 }
 
+fun Router.navigateToBlockingErrorNoAnim() {
+    navigate(
+        blockingErrorRoute.noArgRoute(
+            isTopLevel = true,
+            navAnimType = NavAnimType.None
+        )
+    )
+}
+
 val errorClassArgument = navArgument("error_class") {
     type = NavType.StringType
     nullable = true

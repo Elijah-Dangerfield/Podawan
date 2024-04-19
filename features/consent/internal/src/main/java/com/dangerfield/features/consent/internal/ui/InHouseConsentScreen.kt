@@ -25,13 +25,13 @@ import com.dangerfield.libraries.ui.Dimension
 import com.dangerfield.libraries.ui.HorizontalSpacerD500
 import com.dangerfield.libraries.ui.VerticalSpacerD1200
 import com.dangerfield.libraries.ui.VerticalSpacerD800
-import com.dangerfield.libraries.ui.components.Screen
-import com.dangerfield.libraries.ui.components.button.Button
-import com.dangerfield.libraries.ui.components.button.ButtonStyle
-import com.dangerfield.libraries.ui.components.checkbox.Checkbox
-import com.dangerfield.libraries.ui.components.text.Text
+import com.dangerfield.ui.components.Screen
+import com.dangerfield.ui.components.button.Button
+import com.dangerfield.ui.components.button.ButtonStyle
+import com.dangerfield.ui.components.checkbox.Checkbox
+import com.dangerfield.ui.components.text.Text
 import com.dangerfield.libraries.ui.makeClickable
-import com.dangerfield.libraries.ui.Preview
+import com.dangerfield.libraries.ui.preview.Preview
 import com.dangerfield.libraries.ui.theme.PodawanTheme
 import com.dangerfield.oddoneoout.features.consent.internal.R
 
@@ -182,7 +182,7 @@ fun LinksSection(
 @Preview
 @Composable
 private fun PreviewBlockingErrorScreen() {
-    Preview {
+    com.dangerfield.libraries.ui.preview.Preview {
         InHouseConsentScreen(
             onAcceptClicked = { -> },
             onTermsOfServiceClicked = { -> },

@@ -2,7 +2,7 @@ package com.dangerfield.libraries.navigation
 
 import androidx.navigation.NavBackStackEntry
 import androidx.navigation.NavDestination
-import com.dangerfield.libraries.ui.components.dialog.bottomsheet.BottomSheetState
+import com.dangerfield.ui.components.dialog.bottomsheet.BottomSheetState
 import kotlinx.coroutines.flow.Flow
 
 /**

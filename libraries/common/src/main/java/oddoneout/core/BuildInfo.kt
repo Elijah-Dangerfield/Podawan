@@ -1,8 +1,6 @@
 package podawan.core
 
 import android.os.Build
-import podawan.core.common.BuildConfig
-
 
 /**
  * Typed wrapper around BuildConfig which can be injected anywhere to
@@ -13,6 +11,7 @@ data class BuildInfo(
     val versionName: String,
     val packageName: String,
     val buildType: BuildType,
+    val app: App,
     val deviceName: String = getDeviceName()
 ) {
     val playStorePackageName = packageName
@@ -29,6 +28,12 @@ enum class BuildType {
     DEBUG,
     RELEASE,
     QA
+}
+
+enum class App {
+    TMG,
+    TheBenAndEmilShow,
+    StuffYouShouldKnow
 }
 
 fun getDeviceName(): String {

@@ -1,7 +1,6 @@
 package com.podawan.plugin
 
 import com.android.build.gradle.LibraryExtension
-import com.podawan.extension.FeatureExtension
 import com.spyfall.podawan.util.SharedConstants
 import com.spyfall.podawan.util.configureKotlinAndroid
 import com.spyfall.podawan.util.libs
@@ -25,7 +24,7 @@ class AndroidLibraryConventionPlugin : Plugin<Project> {
         with(target) {
 
             if (extensions.findByName("podawan") == null) {
-                extensions.create("podawan", com.podawan.extension.FeatureExtension::class.java)
+                extensions.create("podawan", com.podawan.extension.LibraryExtension::class.java)
             }
 
             /*

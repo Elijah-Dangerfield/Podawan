@@ -30,10 +30,10 @@ import com.dangerfield.libraries.navigation.mainGraphRoute
 import com.dangerfield.libraries.network.internal.OfflineBar
 import com.dangerfield.libraries.ui.LocalAppState
 import com.dangerfield.libraries.ui.color.ColorResource
-import com.dangerfield.libraries.ui.components.PodawanSnackbarVisuals
-import com.dangerfield.libraries.ui.components.Screen
-import com.dangerfield.libraries.ui.components.Snackbar
-import com.dangerfield.libraries.ui.components.podawanSnackbarData
+import com.dangerfield.ui.components.PodawanSnackbarVisuals
+import com.dangerfield.ui.components.Screen
+import com.dangerfield.ui.components.Snackbar
+import com.dangerfield.ui.components.podawanSnackbarData
 import com.dangerfield.libraries.ui.theme.PodawanTheme
 import podawan.core.SnackBarPresenter
 import timber.log.Timber
@@ -95,9 +95,7 @@ fun PodawanApp(
                 }
             }
     }
-    PodawanTheme(
-        accentColor = accentColor
-    ) {
+    PodawanTheme {
         Screen(
             snackbarHost = {
                 SnackbarHost(

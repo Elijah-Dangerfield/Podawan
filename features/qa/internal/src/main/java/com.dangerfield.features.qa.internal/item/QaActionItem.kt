@@ -6,12 +6,12 @@ import androidx.compose.runtime.Composable
 import androidx.compose.runtime.remember
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.tooling.preview.Preview
-import com.dangerfield.libraries.ui.Preview
-import com.dangerfield.libraries.ui.components.ListItem
-import com.dangerfield.libraries.ui.components.button.Button
-import com.dangerfield.libraries.ui.components.button.ButtonSize
-import com.dangerfield.libraries.ui.components.text.ProvideTextConfig
-import com.dangerfield.libraries.ui.components.text.Text
+import com.dangerfield.libraries.ui.preview.Preview
+import com.dangerfield.ui.components.ListItem
+import com.dangerfield.ui.components.button.Button
+import com.dangerfield.ui.components.button.ButtonSize
+import com.dangerfield.ui.components.text.ProvideTextConfig
+import com.dangerfield.ui.components.text.Text
 import com.dangerfield.libraries.ui.theme.PodawanTheme
 
 @Composable
@@ -55,7 +55,7 @@ fun QaActionItem(
 @Preview
 @Composable
 private fun PreviewQaActionItem() {
-    Preview {
+    com.dangerfield.libraries.ui.preview.Preview {
         QaActionItem(
             onClick = { -> },
             actionText = "Reset",

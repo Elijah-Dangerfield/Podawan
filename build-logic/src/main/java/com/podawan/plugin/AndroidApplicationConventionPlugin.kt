@@ -1,6 +1,8 @@
 package com.podawan.plugin
 
 import com.android.build.api.dsl.ApplicationExtension
+import com.android.build.gradle.internal.scope.ProjectInfo.Companion.getBaseName
+import com.podawan.extension.AppExtension
 import com.podawan.extension.FeatureExtension
 import com.spyfall.podawan.util.BuildEnvironment
 import com.spyfall.podawan.util.SharedConstants
@@ -8,7 +10,6 @@ import com.spyfall.podawan.util.buildConfigField
 import com.spyfall.podawan.util.checkForAppModuleSecretFiles
 import com.spyfall.podawan.util.configureGitHooksCheck
 import com.spyfall.podawan.util.configureKotlinAndroid
-import com.spyfall.podawan.util.getPackageName
 import com.spyfall.podawan.util.getVersionCode
 import com.spyfall.podawan.util.getVersionName
 import com.spyfall.podawan.util.libs
@@ -21,15 +22,21 @@ import org.jetbrains.kotlin.gradle.plugin.mpp.pm20.util.archivesName
 
 class AndroidApplicationConventionPlugin : Plugin<Project> {
     override fun apply(target: Project) {
+
+        target.configureGitHooksCheck()
+        target.checkForAppModuleSecretFiles()
+
         with(target) {
             with(pluginManager) {
                 apply("com.android.application")
                 apply("org.jetbrains.kotlin.android")
             }
 
-            extensions.create("podawan", FeatureExtension::class.java)
+            extensions.create("podawan", AppExtension::class.java)
 
             extensions.configure<ApplicationExtension> {
+
+                namespace = "com.dangerfield.podawan.${project.name}"
 
                 configureKotlinAndroid(this)
 
@@ -37,7 +44,7 @@ class AndroidApplicationConventionPlugin : Plugin<Project> {
                     targetSdk = SharedConstants.targetSdk
                     versionName = getVersionName()
                     versionCode = getVersionCode()
-                    applicationId = getPackageName()
+                    applicationId = namespace
                     buildConfigField("VERSION_CODE", versionCode)
                     buildConfigField("VERSION_NAME", versionName)
                 }
@@ -74,9 +81,6 @@ class AndroidApplicationConventionPlugin : Plugin<Project> {
                     add("implementation", libs.timber)
                 }
             }
-
-            configureGitHooksCheck()
-            checkForAppModuleSecretFiles()
         }
     }
 }

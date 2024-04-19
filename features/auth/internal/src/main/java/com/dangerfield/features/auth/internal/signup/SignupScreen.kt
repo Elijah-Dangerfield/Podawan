@@ -19,15 +19,15 @@ import androidx.compose.ui.text.input.KeyboardType.Companion.Password
 import androidx.compose.ui.tooling.preview.Preview
 import com.dangerfield.libraries.ui.Dimension
 import com.dangerfield.libraries.ui.FieldState
-import com.dangerfield.libraries.ui.Preview
+import com.dangerfield.libraries.ui.preview.Preview
 import com.dangerfield.libraries.ui.VerticalSpacerD1000
-import com.dangerfield.libraries.ui.components.CircularProgressIndicator
-import com.dangerfield.libraries.ui.components.Screen
-import com.dangerfield.libraries.ui.components.button.Button
-import com.dangerfield.libraries.ui.components.icon.IconButton
-import com.dangerfield.libraries.ui.components.icon.PodawanIcon
-import com.dangerfield.libraries.ui.components.text.InputField
-import com.dangerfield.libraries.ui.components.text.Text
+import com.dangerfield.ui.components.CircularProgressIndicator
+import com.dangerfield.ui.components.Screen
+import com.dangerfield.ui.components.button.Button
+import com.dangerfield.ui.components.icon.IconButton
+import com.dangerfield.ui.components.icon.PodawanIcon
+import com.dangerfield.ui.components.text.InputField
+import com.dangerfield.ui.components.text.Text
 import com.dangerfield.libraries.ui.theme.PodawanTheme
 
 @Composable
@@ -133,7 +133,7 @@ fun SignupScreen(
 @Composable
 @Preview
 private fun PreviewScreen() {
-    Preview {
+    com.dangerfield.libraries.ui.preview.Preview {
         SignupScreen(
             emailFieldState = FieldState.Idle(""),
             passwordFieldState = FieldState.Idle(""),

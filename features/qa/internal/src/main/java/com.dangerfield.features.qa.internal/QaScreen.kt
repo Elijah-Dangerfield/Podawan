@@ -10,13 +10,13 @@ import com.dangerfield.features.qa.internal.QaViewModel.DisplayableConfigValue
 import com.dangerfield.features.qa.internal.QaViewModel.DisplayableExperiment
 import com.dangerfield.features.qa.internal.item.QASwitchItem
 import com.dangerfield.features.qa.internal.item.QaInfoItem
-import com.dangerfield.libraries.ui.Preview
+import com.dangerfield.libraries.ui.preview.Preview
 import androidx.compose.ui.tooling.preview.Preview
 import com.dangerfield.features.qa.internal.item.QaActionItem
 import com.dangerfield.libraries.ui.Dimension
-import com.dangerfield.libraries.ui.components.Screen
-import com.dangerfield.libraries.ui.components.header.Header
-import com.dangerfield.libraries.ui.components.text.Text
+import com.dangerfield.ui.components.Screen
+import com.dangerfield.ui.components.header.Header
+import com.dangerfield.ui.components.text.Text
 
 // TODO add support for devs to manually add their own QA items
 @Composable
@@ -210,7 +210,7 @@ private fun ExperimentsList(
 @Composable
 @Preview
 fun PreviewQaScreen() {
-    Preview {
+    com.dangerfield.libraries.ui.preview.Preview {
         QaScreen(
             configuredValues = Fakes.displayableConfigValues,
             experiments = Fakes.displayableExperiments,

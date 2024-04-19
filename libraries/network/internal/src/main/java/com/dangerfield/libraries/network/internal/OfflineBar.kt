@@ -11,9 +11,9 @@ import androidx.compose.runtime.Composable
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import com.dangerfield.libraries.dictionary.dictionaryString
-import com.dangerfield.libraries.ui.components.text.Text
 import com.dangerfield.libraries.ui.theme.PodawanTheme
 import com.dangerfield.oddoneoout.libraries.network.internal.R
+import com.dangerfield.ui.components.text.Text
 
 @Composable
 fun OfflineBar(isOffline: Boolean) {

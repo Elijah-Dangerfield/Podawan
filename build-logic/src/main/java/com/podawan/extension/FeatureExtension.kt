@@ -87,7 +87,7 @@ abstract class FeatureExtension {
             """.trimIndent()
             )
 
-        project.configureAndroidCompose(projectExt)
+        project.configureAndroidCompose(projectExt, true)
     }
 
     fun flowroutines() {

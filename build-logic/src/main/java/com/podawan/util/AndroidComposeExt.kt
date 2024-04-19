@@ -9,6 +9,7 @@ import org.gradle.kotlin.dsl.dependencies
  */
 internal fun Project.configureAndroidCompose(
     commonExtension: CommonExtension<*, *, *, *, *>,
+    isFeature: Boolean,
 ) {
     commonExtension.apply {
         buildFeatures {
@@ -21,6 +22,12 @@ internal fun Project.configureAndroidCompose(
 
         dependencies {
             val bom = libs.androidx.compose.bom
+
+            if (isFeature) {
+                add("implementation", getModule("libraries:ui"))
+                add("implementation", getModule("libraries:ui:components"))
+                add("implementation", getModule("libraries:ui:preview"))
+            }
 
             add("implementation", platform(bom))
             add("implementation", libs.androidx.compose.runtime)

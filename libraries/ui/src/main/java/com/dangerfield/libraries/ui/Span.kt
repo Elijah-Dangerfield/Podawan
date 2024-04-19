@@ -1,13 +1,14 @@
 package com.dangerfield.libraries.ui
 
 import androidx.compose.foundation.layout.Column
+import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.ReadOnlyComposable
 import androidx.compose.ui.text.AnnotatedString
 import androidx.compose.ui.text.SpanStyle
 import androidx.compose.ui.text.buildAnnotatedString
 import androidx.compose.ui.text.font.FontWeight
-import com.dangerfield.libraries.ui.components.text.Text
+import androidx.compose.ui.text.style.TextDecoration.Companion.Underline
 import androidx.compose.ui.tooling.preview.Preview
 import com.dangerfield.libraries.ui.theme.PodawanTheme
 import podawan.core.throwIfDebug
@@ -27,6 +28,25 @@ fun String.makeBold(boldString: String): AnnotatedString = buildAnnotatedString 
 
     addStyle(
         style = SpanStyle(fontWeight = FontWeight.W700),
+        start = startIndex,
+        end = endIndex
+    )
+    toAnnotatedString()
+}
+
+fun String.underline(underlinedString: String): AnnotatedString = buildAnnotatedString {
+    val startIndex = this@underline.indexOf(underlinedString)
+    val endIndex = startIndex + underlinedString.length
+
+    append(this@underline)
+
+    if (startIndex < 0) {
+        throwIfDebug(IllegalArgumentException("String ${this@underline} does not contain the specific text: $underlinedString"))
+        return@buildAnnotatedString
+    }
+
+    addStyle(
+        style = SpanStyle(textDecoration = Underline),
         start = startIndex,
         end = endIndex
     )
@@ -129,27 +149,29 @@ private val defaultStyle: SpanStyle
     get() = SpanStyle(
         color = PodawanTheme.colors.text.color,
         fontWeight = FontWeight.ExtraBold,
-        textDecoration = androidx.compose.ui.text.style.TextDecoration.Underline
+        textDecoration = Underline
     )
 
 @Preview()
 @Composable
 private fun MakeLinkPreview() {
     Preview {
+
         Column {
             val makeLink = "This is some random text. But this text is clickable".makeClickable(
                 "But this text is clickable"
             )
-            val makeURL = "makeWebLinkClickable: This is normal content, but this is a clickable url".addClickableUrl(
-                "clickable url",
-                "http://www.thisisurl.com"
-            )
+            val makeURL =
+                "makeWebLinkClickable: This is normal content, but this is a clickable url".addClickableUrl(
+                    "clickable url",
+                    "http://www.thisisurl.com"
+                )
 
-            Text(makeLink, typography = PodawanTheme.typography.Display.D1100)
+            Text(makeLink)
 
             VerticalSpacerD800()
 
-            Text(makeURL, typography = PodawanTheme.typography.Body.B600)
+            Text(makeURL)
 
         }
     }

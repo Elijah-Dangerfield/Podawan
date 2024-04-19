@@ -7,8 +7,8 @@ import com.dangerfield.libraries.analytics.PageLogEffect
 import com.dangerfield.libraries.analytics.PageType
 import com.dangerfield.libraries.dictionary.dictionaryString
 import com.dangerfield.libraries.navigation.route
-import com.dangerfield.libraries.ui.Preview
-import com.dangerfield.libraries.ui.components.dialog.BasicDialog
+import com.dangerfield.libraries.ui.preview.Preview
+import com.dangerfield.ui.components.dialog.BasicDialog
 import com.dangerfield.oddoneoout.libraries.dictionary.R
 
 @Composable
@@ -38,7 +38,7 @@ fun GeneralErrorDialog(
 @Composable
 @Preview
 private fun PreviewJoinGameErrorDialogUnknown() {
-    Preview {
+    com.dangerfield.libraries.ui.preview.Preview {
         GeneralErrorDialog(
             onDismiss = {},
             errorClass = null

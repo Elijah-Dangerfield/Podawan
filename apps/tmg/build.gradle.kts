@@ -73,8 +73,6 @@ android {
             isMinifyEnabled = true
         }
     }
-
-    namespace = "com.dangerfield.podawan"
 }
 
 dependencies {
@@ -115,6 +113,9 @@ dependencies {
     // data consent
     implementation(libs.user.messaging.platform)
 
+    implementation(projects.apps.tmg.config)
+
+
     /**
      * Project Modules
      * Both internal and external should be included here to make sure all objects
@@ -134,7 +135,7 @@ dependencies {
     implementation(projects.libraries.common)
     implementation(projects.libraries.common.internal)
     implementation(projects.libraries.ui)
-    implementation(projects.libraries.ui.internal)
+    implementation(projects.libraries.ui.components)
     implementation(projects.libraries.session)
     implementation(projects.libraries.session.internal)
     implementation(projects.features.qa)
@@ -168,7 +169,6 @@ dependencies {
 	implementation(projects.libraries.playback)
 	implementation(projects.libraries.playback.internal)
 	implementation(projects.libraries.app)
-	implementation(projects.libraries.app.internal)
     // STOP PROJECT MODULES (keep this line at the end of the project modules, used by ./create_module)
 
     testImplementation(libs.androidx.test.junit)

@@ -6,101 +6,94 @@ import androidx.compose.foundation.lazy.grid.items
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.CompositionLocalProvider
 import androidx.compose.runtime.Immutable
-import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.tooling.preview.Preview
 import com.dangerfield.libraries.ui.LocalContentColor
-import com.dangerfield.libraries.ui.Preview
 
 @Immutable
 @Suppress("LongParameterList")
-class Colors internal constructor(
+interface Colors {
 
-    val accent: ColorResource,
-    val onAccent: ColorResource,
+    val accent: ColorResource
+    val onAccent: ColorResource
 
     /* Backgrounds */
-    val shadow: ColorResource,
-    val background: ColorResource,
-    val backgroundOverlay: ColorResource,
-    val onBackground: ColorResource,
-    val border: ColorResource,
-    val borderDisabled: ColorResource,
+    val shadow: ColorResource
+    val background: ColorResource
+    val backgroundOverlay: ColorResource
+    val onBackground: ColorResource
+    val border: ColorResource
+    val borderDisabled: ColorResource
 
     /* Texts */
-    val text: ColorResource,
-    val textSecondary: ColorResource,
-    val textDisabled: ColorResource,
-    val textWarning: ColorResource,
+    val text: ColorResource
+    val textSecondary: ColorResource
+    val textDisabled: ColorResource
+    val textWarning: ColorResource
 
     /* Surfaces */
-    val surfacePrimary: ColorResource,
-    val onSurfacePrimary: ColorResource,
-    val surfaceSecondary: ColorResource,
-    val onSurfaceSecondary: ColorResource,
-    val surfaceDisabled: ColorResource,
-    val onSurfaceDisabled: ColorResource,
+    val surfacePrimary: ColorResource
+    val onSurfacePrimary: ColorResource
+    val surfaceSecondary: ColorResource
+    val onSurfaceSecondary: ColorResource
+    val surfaceDisabled: ColorResource
+    val onSurfaceDisabled: ColorResource
 
-    ) {
-    internal companion object {
-        fun getColors(accentColor: ColorResource) = Colors(
-            accent = accentColor,
-            onAccent = ColorResource.Black800,
-            shadow = ColorResource.Black800,
-            textDisabled = ColorResource.Black600,
-            textWarning = ColorResource.CherryPop700,
-            surfacePrimary = ColorResource.White900,
-            surfaceDisabled = ColorResource.Black600,
-            onSurfacePrimary = ColorResource.Black900,
-            surfaceSecondary = ColorResource.Black700,
-            onSurfaceSecondary = ColorResource.White900,
-            onSurfaceDisabled = ColorResource.Black700,
-            background = ColorResource.Black900,
-            onBackground = ColorResource.White900,
-            border = ColorResource.White900,
-            borderDisabled = ColorResource.Black600,
-            text = ColorResource.White900,
-            backgroundOverlay = ColorResource.Black900_A_70,
-            textSecondary = ColorResource.Black500,
-        )
-    }
 }
 
-@Preview(widthDp = 400, heightDp = 1500, showBackground = false)
+val defaultColors = object : Colors {
+    override val accent = ColorResource.MintyFresh300
+    override val onAccent = ColorResource.Black800
+    override val shadow = ColorResource.Black800
+    override val textDisabled = ColorResource.Black600
+    override val textWarning = ColorResource.CherryPop700
+    override val surfacePrimary = ColorResource.White900
+    override val surfaceDisabled = ColorResource.Black600
+    override val onSurfacePrimary = ColorResource.Black900
+    override val surfaceSecondary = ColorResource.Black700
+    override val onSurfaceSecondary = ColorResource.White900
+    override val onSurfaceDisabled = ColorResource.Black700
+    override val background = ColorResource.Black900
+    override val onBackground = ColorResource.White900
+    override val border = ColorResource.White900
+    override val borderDisabled = ColorResource.Black600
+    override val text = ColorResource.White900
+    override val backgroundOverlay = ColorResource.Black900_A_70
+    override val textSecondary = ColorResource.Black500
+}
+
 @Composable
-private fun PreviewColorSwatch() {
-    Preview(showBackground = false) {
-        val colors = Colors.getColors(ColorResource.MintyFresh300).let {
-            // map of color resource to name
-            listOf(
-                it.accent to "accent",
-                it.onAccent to "onAccent",
-                it.shadow to "shadow",
-                it.background to "background",
-                it.backgroundOverlay to "backgroundOverlay",
-                it.onBackground to "onBackground",
-                it.border to "border",
-                it.borderDisabled to "borderDisabled",
-                it.text to "text",
-                it.textDisabled to "textDisabled",
-                it.textWarning to "textWarning",
-                it.surfacePrimary to "surfacePrimary",
-                it.surfaceSecondary to "surfaceSecondary",
-                it.surfaceDisabled to "surfaceDisabled",
-                it.onSurfacePrimary to "onSurfacePrimary",
-                it.onSurfaceSecondary to "onSurfaceSecondary",
-                it.onSurfaceDisabled to "onSurfaceDisabled",
+fun PreviewColorSwatch(colors: Colors) {
+    val colors = colors.let {
+        // map of color resource to name
+        listOf(
+            it.accent to "accent",
+            it.onAccent to "onAccent",
+            it.shadow to "shadow",
+            it.background to "background",
+            it.backgroundOverlay to "backgroundOverlay",
+            it.onBackground to "onBackground",
+            it.border to "border",
+            it.borderDisabled to "borderDisabled",
+            it.text to "text",
+            it.textDisabled to "textDisabled",
+            it.textWarning to "textWarning",
+            it.surfacePrimary to "surfacePrimary",
+            it.surfaceSecondary to "surfaceSecondary",
+            it.surfaceDisabled to "surfaceDisabled",
+            it.onSurfacePrimary to "onSurfacePrimary",
+            it.onSurfaceSecondary to "onSurfaceSecondary",
+            it.onSurfaceDisabled to "onSurfaceDisabled",
+        )
+    }
+    LazyVerticalGrid(
+        columns = GridCells.Fixed(3)
+    ) {
+        items(colors) { (color, name) ->
+            ColorCard(
+                color,
+                title = name,
+                description = ""
             )
-        }
-        LazyVerticalGrid(
-            columns = GridCells.Fixed(3)
-        ) {
-            items(colors) {(color,name) ->
-                ColorCard(
-                    color,
-                    title = name,
-                    description = ""
-                )
-            }
         }
     }
 }

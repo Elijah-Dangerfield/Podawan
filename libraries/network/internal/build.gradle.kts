@@ -14,6 +14,7 @@ android {
 }
 dependencies {
     implementation(projects.libraries.ui)
+    implementation(projects.libraries.ui.components)
     implementation(projects.libraries.network)
     implementation(projects.libraries.common)
 }

@@ -7,14 +7,14 @@ import androidx.compose.runtime.Composable
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.text.style.TextAlign
 import com.dangerfield.libraries.dictionary.dictionaryString
-import com.dangerfield.libraries.ui.components.header.Header
-import com.dangerfield.libraries.ui.Preview
+import com.dangerfield.ui.components.header.Header
+import com.dangerfield.libraries.ui.preview.Preview
 import com.dangerfield.libraries.ui.VerticalSpacerD1200
 import androidx.compose.ui.tooling.preview.Preview
 import com.dangerfield.libraries.ui.Dimension
-import com.dangerfield.libraries.ui.components.icon.PodawanIcon
-import com.dangerfield.libraries.ui.components.Screen
-import com.dangerfield.libraries.ui.components.text.Text
+import com.dangerfield.ui.components.icon.PodawanIcon
+import com.dangerfield.ui.components.Screen
+import com.dangerfield.ui.components.text.Text
 import com.dangerfield.libraries.ui.theme.PodawanTheme
 import com.dangerfield.oddoneoout.features.settings.internal.R
 
@@ -92,7 +92,7 @@ fun SettingsScreen(
             )
 
             Text(
-                text = dictionaryString(id = R.string.app_name_text) + dictionaryString(
+                text = "LocalAppName.current" + dictionaryString(
                     R.string.settings_version_label,
                     "version" to versionName
                 ),
@@ -109,7 +109,7 @@ fun SettingsScreen(
 @Composable
 @Preview
 private fun PreviewSettingsScreen() {
-    Preview {
+    com.dangerfield.libraries.ui.preview.Preview {
         SettingsScreen(
             versionName = "X.Y.Z",
             isQaOptionEnabled = true,

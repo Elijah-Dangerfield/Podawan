@@ -14,24 +14,23 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.platform.LocalFocusManager
 import androidx.compose.ui.text.input.ImeAction
 import androidx.compose.ui.tooling.preview.Preview
-import com.dangerfield.libraries.ui.Card
+import com.dangerfield.ui.components.Card
 import com.dangerfield.libraries.ui.Dimension
 import com.dangerfield.libraries.ui.FieldState
 import com.dangerfield.libraries.ui.HorizontalSpacerD200
-import com.dangerfield.libraries.ui.Preview
 import com.dangerfield.libraries.ui.VerticalSpacerD1200
 import com.dangerfield.libraries.ui.VerticalSpacerD800
-import com.dangerfield.libraries.ui.components.CircularProgressIndicator
-import com.dangerfield.libraries.ui.components.ErrorBehavior
-import com.dangerfield.libraries.ui.components.HorizontalDivider
-import com.dangerfield.libraries.ui.components.Screen
-import com.dangerfield.libraries.ui.components.button.Button
-import com.dangerfield.libraries.ui.components.button.ButtonStyle
-import com.dangerfield.libraries.ui.components.header.Header
-import com.dangerfield.libraries.ui.components.icon.Icon
-import com.dangerfield.libraries.ui.components.icon.PodawanIcon
-import com.dangerfield.libraries.ui.components.text.InputField
-import com.dangerfield.libraries.ui.components.text.Text
+import com.dangerfield.ui.components.CircularProgressIndicator
+import com.dangerfield.ui.components.ErrorBehavior
+import com.dangerfield.ui.components.HorizontalDivider
+import com.dangerfield.ui.components.Screen
+import com.dangerfield.ui.components.button.Button
+import com.dangerfield.ui.components.button.ButtonStyle
+import com.dangerfield.ui.components.header.Header
+import com.dangerfield.ui.components.icon.Icon
+import com.dangerfield.ui.components.icon.PodawanIcon
+import com.dangerfield.ui.components.text.InputField
+import com.dangerfield.ui.components.text.Text
 import com.dangerfield.libraries.ui.theme.PodawanTheme
 
 @Composable
@@ -165,7 +164,7 @@ fun ReferralScreen(
 @Preview
 @Composable
 fun PreviewJoinGameScreenFeature() {
-    Preview {
+    com.dangerfield.libraries.ui.preview.Preview {
         ReferralScreen(
             referralCodeFieldState = FieldState.Idle(""),
             isFormValid = false,
@@ -185,7 +184,7 @@ fun PreviewJoinGameScreenFeature() {
 @Preview
 @Composable
 fun PreviewJoinGameScreen() {
-    Preview {
+    com.dangerfield.libraries.ui.preview.Preview {
         ReferralScreen(
             referralCodeFieldState = FieldState.Idle(""),
             isFormValid = false,

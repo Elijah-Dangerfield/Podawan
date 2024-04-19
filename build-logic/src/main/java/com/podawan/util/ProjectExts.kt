@@ -33,11 +33,9 @@ fun Project.getModuleSources(vararg excludeModules: String = emptyArray()): Arra
     return sources.toTypedArray()
 }
 
-fun Project.getVersionName(): String = loadAppProperty("versionName")
+fun Project.getVersionName(): String = loadAppProperty("${project.name}.versionName")
 
-fun Project.getVersionCode(): Int =loadAppProperty("versionCode").toInt()
-
-fun Project.getPackageName(): String = loadAppProperty("packageName")
+fun Project.getVersionCode(): Int = loadAppProperty("${project.name}.versionCode").toInt()
 
 val Project.commonExt: CommonExtension<*, *, *, *, *>
     get() = extensions.getByType(CommonExtension::class.java)

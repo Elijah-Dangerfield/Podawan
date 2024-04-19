@@ -20,9 +20,17 @@
         <option name="modules">
           <set>
             <option value="$PROJECT_DIR$" />
-            <option value="$PROJECT_DIR$/app" />
+            <option value="$PROJECT_DIR$/apps" />
+            <option value="$PROJECT_DIR$/apps/stuffYouShouldKnow" />
+            <option value="$PROJECT_DIR$/apps/stuffYouShouldKnow/config" />
+            <option value="$PROJECT_DIR$/apps/theBenAndEmilShow" />
+            <option value="$PROJECT_DIR$/apps/theBenAndEmilShow/config" />
+            <option value="$PROJECT_DIR$/apps/tmg" />
+            <option value="$PROJECT_DIR$/apps/tmg/config" />
             <option value="$PROJECT_DIR$/build-logic" />
             <option value="$PROJECT_DIR$/features" />
+            <option value="$PROJECT_DIR$/features/auth" />
+            <option value="$PROJECT_DIR$/features/auth/internal" />
             <option value="$PROJECT_DIR$/features/blockingError" />
             <option value="$PROJECT_DIR$/features/blockingError/internal" />
             <option value="$PROJECT_DIR$/features/consent" />
@@ -35,8 +43,6 @@
             <option value="$PROJECT_DIR$/features/inAppMessaging/internal" />
             <option value="$PROJECT_DIR$/features/library" />
             <option value="$PROJECT_DIR$/features/library/internal" />
-            <option value="$PROJECT_DIR$/features/login" />
-            <option value="$PROJECT_DIR$/features/login/internal" />
             <option value="$PROJECT_DIR$/features/qa" />
             <option value="$PROJECT_DIR$/features/qa/internal" />
             <option value="$PROJECT_DIR$/features/search" />
@@ -62,6 +68,10 @@
             <option value="$PROJECT_DIR$/libraries/navigation/internal" />
             <option value="$PROJECT_DIR$/libraries/network" />
             <option value="$PROJECT_DIR$/libraries/network/internal" />
+            <option value="$PROJECT_DIR$/libraries/playback" />
+            <option value="$PROJECT_DIR$/libraries/playback/internal" />
+            <option value="$PROJECT_DIR$/libraries/podcast" />
+            <option value="$PROJECT_DIR$/libraries/podcast/internal" />
             <option value="$PROJECT_DIR$/libraries/resources" />
             <option value="$PROJECT_DIR$/libraries/resources/internal" />
             <option value="$PROJECT_DIR$/libraries/session" />
@@ -72,7 +82,8 @@
             <option value="$PROJECT_DIR$/libraries/test" />
             <option value="$PROJECT_DIR$/libraries/test/internal" />
             <option value="$PROJECT_DIR$/libraries/ui" />
-            <option value="$PROJECT_DIR$/libraries/ui/internal" />
+            <option value="$PROJECT_DIR$/libraries/ui/components" />
+            <option value="$PROJECT_DIR$/libraries/ui/preview" />
           </set>
         </option>
         <option name="resolveExternalAnnotations" value="false" />
