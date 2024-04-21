@@ -1,57 +1,33 @@
 package com.dangerfield.libraries.app
 
 import android.util.Log
-import androidx.compose.animation.AnimatedVisibility
-import androidx.compose.animation.expandVertically
-import androidx.compose.animation.shrinkVertically
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.padding
-import androidx.compose.material3.SnackbarDuration
-import androidx.compose.material3.SnackbarHost
 import androidx.compose.material3.SnackbarHostState
-import androidx.compose.material3.SnackbarResult
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.remember
 import androidx.compose.runtime.rememberCoroutineScope
-import androidx.compose.runtime.saveable.rememberSaveable
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.platform.LocalLifecycleOwner
 import androidx.lifecycle.compose.collectAsStateWithLifecycle
-import androidx.navigation.NavGraph.Companion.findStartDestination
 import androidx.navigation.compose.NavHost
 import androidx.navigation.compose.navigation
 import androidx.navigation.compose.rememberNavController
 import com.dangerfield.features.feed.feedRoute
 import com.dangerfield.features.library.libraryRoute
 import com.dangerfield.features.search.searchRoute
-import com.dangerfield.libraries.coreflowroutines.collectWithPreviousAsStateWithLifecycle
-import com.dangerfield.libraries.coreflowroutines.observeWithLifecycle
-import com.dangerfield.libraries.navigation.DelegatingRouter
-import com.dangerfield.libraries.navigation.NavAnimType
-import com.dangerfield.libraries.navigation.NavControllerRouter
-import com.dangerfield.libraries.navigation.NavControllerRouterSaver
 import com.dangerfield.libraries.navigation.NavGraphRegistry
 import com.dangerfield.libraries.navigation.Route
-import com.dangerfield.libraries.navigation.fillRoute
 import com.dangerfield.libraries.navigation.floatingwindow.FloatingWindowHost
 import com.dangerfield.libraries.navigation.floatingwindow.FloatingWindowNavigator
 import com.dangerfield.libraries.navigation.getFloatingWindowNavigator
-import com.dangerfield.libraries.navigation.internal.determineNavAnimation
 import com.dangerfield.libraries.navigation.mainGraphRoute
-import com.dangerfield.libraries.network.internal.OfflineBar
 import com.dangerfield.libraries.ui.LocalAppState
 import com.dangerfield.libraries.ui.theme.PodawanTheme
-import com.dangerfield.ui.components.PodawanSnackbarVisuals
 import com.dangerfield.ui.components.Screen
-import com.dangerfield.ui.components.Snackbar
-import com.dangerfield.ui.components.podawanSnackbarData
-import kotlinx.coroutines.flow.map
-import podawan.core.SnackBarPresenter
-import timber.log.Timber
 
-val floatingWindowNavigator = FloatingWindowNavigator()
 @Composable
 fun PodawanApp(
     startingRoute: Route.Filled,
@@ -61,6 +37,7 @@ fun PodawanApp(
     val lifecycleOwner = LocalLifecycleOwner.current
     val snackbarHostState = remember { SnackbarHostState() }
 
+    val floatingWindowNavigator = remember { FloatingWindowNavigator() }
     val navController = rememberNavController(floatingWindowNavigator)
     val coroutineScope = rememberCoroutineScope()
     val lifecycle = LocalLifecycleOwner.current.lifecycle
