@@ -1,9 +1,7 @@
 package com.dangerfield.features.feed.internal
 
-import android.util.Log
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.fillMaxSize
-import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.getValue
 import androidx.compose.ui.Alignment.Companion.Center
 import androidx.compose.ui.Modifier
@@ -16,16 +14,15 @@ import com.dangerfield.features.blockingerror.navigateToGeneralErrorDialog
 import com.dangerfield.features.feed.feedRoute
 import com.dangerfield.libraries.coreflowroutines.ObserveWithLifecycle
 import com.dangerfield.libraries.navigation.HomeTabNavBuilder
-import se.ansman.dagger.auto.AutoBindIntoSet
 import com.dangerfield.libraries.navigation.Router
 import com.dangerfield.ui.components.CircularProgressIndicator
+import se.ansman.dagger.auto.AutoBindIntoSet
 import javax.inject.Inject
 
 @AutoBindIntoSet
 class ModuleNavGraphBuilder @Inject constructor() : HomeTabNavBuilder {
 
     override fun NavGraphBuilder.addDestinations(router: Router) {
-        Log.d("Elijah", "Adding feed destination")
         composable(
             route = feedRoute.navRoute,
             arguments = feedRoute.navArguments

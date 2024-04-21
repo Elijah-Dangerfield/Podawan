@@ -1,11 +1,10 @@
 package com.dangerfield.libraries.navigation
 
-import android.util.Log
+import androidx.compose.runtime.Stable
 import androidx.navigation.NavGraphBuilder
 import javax.inject.Inject
-import javax.inject.Singleton
 
-@Singleton
+@Stable
 class NavGraphRegistry @Inject constructor(
     private val homeTabNavBuilders: Set<@JvmSuppressWildcards HomeTabNavBuilder>,
     private val searchTabNavBuilders: Set<@JvmSuppressWildcards SearchTabNavBuilder>,
@@ -15,7 +14,6 @@ class NavGraphRegistry @Inject constructor(
 ) {
 
     fun addHomeDestinations(navGraphBuilder: NavGraphBuilder) {
-        Log.d("Elijah", "Adding home destinations")
         homeTabNavBuilders.forEach { moduleNavBuilder ->
             with(moduleNavBuilder) {
                 navGraphBuilder.addDestinations(router)

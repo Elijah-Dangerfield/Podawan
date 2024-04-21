@@ -1,7 +1,7 @@
 package com.dangerfield.libraries.navigation
 
 import android.net.Uri
-import androidx.compose.runtime.saveable.Saver
+import android.util.Log
 import androidx.navigation.NavBackStackEntry
 import androidx.navigation.NavDestination
 import androidx.navigation.NavGraph.Companion.findStartDestination
@@ -11,7 +11,10 @@ import com.dangerfield.ui.components.dialog.bottomsheet.BottomSheetState
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.flow.MutableSharedFlow
 import kotlinx.coroutines.flow.MutableStateFlow
+import kotlinx.coroutines.flow.distinctUntilChanged
+import kotlinx.coroutines.flow.distinctUntilChangedBy
 import kotlinx.coroutines.flow.mapNotNull
+import kotlinx.coroutines.flow.onEach
 import kotlinx.coroutines.launch
 import podawan.core.Catching
 import podawan.core.debugSnackOnError
@@ -27,7 +30,7 @@ class NavControllerRouter(
     private val _currentRouteFlow: MutableSharedFlow<Route.Filled> = MutableStateFlow(startingRoute)
     private val routeToFilled = mutableMapOf<String, Route.Filled>()
 
-    override val currentRouteFlow = _currentRouteFlow
+    override val currentRouteFlow = _currentRouteFlow.distinctUntilChanged()
 
     fun addRoutes(list: List<Route.Filled>) {
         list.forEach {
@@ -41,7 +44,8 @@ class NavControllerRouter(
             .mapNotNull {
                 val route = it.destination.route
                 routeToFilled[route]
-            }.collectIn(coroutineScope) {
+            }
+            .collectIn(coroutineScope) {
                 _currentRouteFlow.emit(it)
             }
     }
@@ -128,15 +132,3 @@ class NavControllerRouter(
         return navHostController.getBackStackEntry(route.navRoute)
     }
 }
-
-fun NavControllerRouterSaver(navHostController: NavHostController, coroutineScope: CoroutineScope): Saver<NavControllerRouter, Route.Filled> =
-    Saver(
-        save = { router -> router.currentRouteFlow.replayCache.firstOrNull() },
-        restore = { route ->
-            NavControllerRouter(
-                navHostController = navHostController,
-                coroutineScope = coroutineScope,
-                startingRoute = route
-            )
-        }
-    )

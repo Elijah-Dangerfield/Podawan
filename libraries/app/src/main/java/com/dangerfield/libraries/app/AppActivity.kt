@@ -7,6 +7,7 @@ import androidx.activity.compose.setContent
 import androidx.activity.viewModels
 import androidx.compose.runtime.CompositionLocalProvider
 import androidx.compose.runtime.LaunchedEffect
+import androidx.compose.runtime.derivedStateOf
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.remember
 import androidx.compose.runtime.saveable.rememberSaveable
@@ -107,6 +108,7 @@ open class AppActivity : ComponentActivity() {
                     if (!hasDrawnApp.getAndSet(true)) {
                         Log.d("Elijah", "calling set content")
                         setAppContent()
+                        mainActivityViewModel.takeAction(LoadConsentStatus(this@AppActivity))
                     }
                 }
             }
@@ -118,41 +120,39 @@ open class AppActivity : ComponentActivity() {
 
             val state by mainActivityViewModel.stateFlow.collectAsStateWithLifecycle()
 
-            val startingRouteTemplate = remember(
-                state.isUpdateRequired,
-                state.isInMaintenanceMode,
-                state.hasBlockingError,
-                state.isConsentNeeded
-            ) {
-                when {
-                    state.isUpdateRequired -> forcedUpdateNavigationRoute
-                    state.isInMaintenanceMode -> maintenanceRoute
-                    state.hasBlockingError -> blockingErrorRoute
-                    state.isConsentNeeded -> consentRoute
-                    state.isLoggedIn -> mainGraphRoute
-                    else -> loginRoute
+            val startingRouteTemplate by remember {
+                derivedStateOf {
+                    when {
+                        state.isUpdateRequired -> forcedUpdateNavigationRoute
+                        state.isInMaintenanceMode -> maintenanceRoute
+                        state.hasBlockingError -> blockingErrorRoute
+                        state.isConsentNeeded -> consentRoute
+                        state.isLoggedIn -> mainGraphRoute
+                        else -> loginRoute
+                    }
                 }
+            }
+
+            val isAppUpdateStatus by remember {
+                derivedStateOf { state.inAppUpdateStatus }
             }
 
             val startingRoute = rememberSaveable(startingRouteTemplate) {
                 startingRouteTemplate.noArgRoute(isTopLevel = startingRouteTemplate != mainGraphRoute)
             }
 
-//            LaunchedEffect(Unit) {
-//                mainActivityViewModel.takeAction(LoadConsentStatus(this@AppActivity))
-//            }
-//
-//            LaunchedEffect(state.languageSupportLevelMessage) {
-//                state.languageSupportLevelMessage?.let {
-//                    handleLanguageSupportMessage(it)
-//                }
-//            }
-//
-//            LaunchedEffect(state.inAppUpdateStatus) {
-//                state.inAppUpdateStatus?.let {
-//                    handleInAppUpdateStatus(it)
-//                }
-//            }
+            LaunchedEffect(state.languageSupportLevelMessage) {
+                state.languageSupportLevelMessage?.let {
+                    handleLanguageSupportMessage(it)
+                }
+            }
+
+            LaunchedEffect(state.inAppUpdateStatus) {
+                state.inAppUpdateStatus?.let {
+                    handleInAppUpdateStatus(it)
+                }
+            }
+
             CompositionLocalProvider(
                 LocalColors provides colors,
                 LocalAppConfiguration provides appConfiguration,
@@ -163,8 +163,9 @@ open class AppActivity : ComponentActivity() {
             ) {
                 PodawanApp(
                     startingRoute = startingRoute,
-                   // delegatingRouter = delegatingRouter,
+                    delegatingRouter = delegatingRouter,
                     navGraphRegistry = navGraphRegistry,
+                    updateStatus = isAppUpdateStatus
                 )
             }
         }

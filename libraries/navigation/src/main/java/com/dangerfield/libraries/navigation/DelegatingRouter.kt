@@ -7,8 +7,6 @@ import androidx.navigation.NavDestination
 import com.dangerfield.libraries.coreflowroutines.AppScope
 import com.dangerfield.libraries.coreflowroutines.observeWithLifecycle
 import com.dangerfield.libraries.coreflowroutines.observeWithLifecycleIn
-import com.dangerfield.libraries.navigation.Route
-import com.dangerfield.libraries.navigation.Router
 import com.dangerfield.ui.components.dialog.bottomsheet.BottomSheetState
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.channels.Channel
@@ -28,6 +26,7 @@ class DelegatingRouter @Inject constructor(
     @AppScope private val appScope: CoroutineScope,
 ) : Router {
 
+    @Volatile
     private var delegate: Router? = null
 
     private val rootNavigationRequests = Channel<Router.() -> Unit>(Channel.UNLIMITED)
@@ -42,20 +41,22 @@ class DelegatingRouter @Inject constructor(
         lifecycle: Lifecycle,
         startingRoute: Route.Filled
     ) {
+
         delegate = router
 
         appScope.launch {
             mutableCurrentRouteFlow.emit(startingRoute)
 
-            rootNavigationRequests.receiveAsFlow().observeWithLifecycle(lifecycle) { action ->
-                action.invoke(router)
-            }
+            rootNavigationRequests
+                .receiveAsFlow()
+                .distinctUntilChanged()
+                .observeWithLifecycle(lifecycle) { action ->
+                    action.invoke(router)
+                }
         }
 
         router.currentRouteFlow.observeWithLifecycleIn(lifecycle, appScope) {
-            router.currentRouteFlow.observeWithLifecycle(lifecycle) {
-                mutableCurrentRouteFlow.emit(it)
-            }
+            mutableCurrentRouteFlow.emit(it)
         }
     }
 
