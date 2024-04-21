@@ -16,7 +16,7 @@ class Elevation internal constructor(val dp: Dp) : Comparable<Elevation> {
 
     companion object {
         val None = Elevation(0.dp)
-        val Button = Elevation(6.dp)
+        val Button = Elevation(3.dp)
         val AppBar = Elevation(4.dp)
     }
 }

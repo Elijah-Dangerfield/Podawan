@@ -37,6 +37,11 @@ dependencies {
     implementation(libs.androidx.core.splashscreen)
     implementation(libs.androidx.lifecycle.process)
 
+    implementation(projects.features.feed)
+    implementation(projects.features.auth)
+    implementation(projects.features.search)
+    implementation(projects.features.library)
+
     // in app update
     implementation(libs.android.play.app.update)
     implementation(libs.android.play.app.update.ktx)

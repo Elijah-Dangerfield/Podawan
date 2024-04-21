@@ -2,6 +2,7 @@ package com.dangerfield.libraries.app
 
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.CompositionLocalProvider
+import androidx.compose.runtime.Stable
 import com.dangerfield.libraries.analytics.LocalMetricsTracker
 import com.dangerfield.libraries.analytics.MetricsTracker
 import com.dangerfield.libraries.dictionary.Dictionary
@@ -25,6 +26,7 @@ import javax.inject.Inject
  * NOTE: Locals should be rare. First consider injecting the class into the Features Graph Builder
  * and passing into the composable as a parameter.
  */
+@Stable
 class CompositionLocalsProvider @Inject constructor(
     private val metricsTracker: MetricsTracker,
     private val buildInfo: BuildInfo,

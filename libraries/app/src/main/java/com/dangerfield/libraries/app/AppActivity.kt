@@ -1,30 +1,56 @@
 package com.dangerfield.libraries.app
 
 import android.os.Bundle
+import android.util.Log
 import androidx.activity.ComponentActivity
 import androidx.activity.compose.setContent
 import androidx.activity.viewModels
+import androidx.compose.runtime.CompositionLocalProvider
 import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.getValue
-import androidx.compose.runtime.mutableStateOf
-import androidx.compose.runtime.setValue
+import androidx.compose.runtime.remember
+import androidx.compose.runtime.saveable.rememberSaveable
+import androidx.lifecycle.Lifecycle
 import androidx.lifecycle.compose.collectAsStateWithLifecycle
 import androidx.lifecycle.lifecycleScope
+import androidx.lifecycle.repeatOnLifecycle
+import com.dangerfield.features.auth.loginRoute
+import com.dangerfield.features.blockingerror.blockingErrorRoute
+import com.dangerfield.features.blockingerror.maintenanceRoute
+import com.dangerfield.features.consent.consentRoute
+import com.dangerfield.features.forcedupdate.forcedUpdateNavigationRoute
 import com.dangerfield.features.inAppMessaging.UpdateStatus
-import com.dangerfield.libraries.coreflowroutines.waitFor
-import com.dangerfield.libraries.dictionary.internal.ui.navigateToLanguageSupportDialog
-import com.dangerfield.libraries.navigation.BuildNavHost
-import com.dangerfield.libraries.navigation.Router
+import com.dangerfield.libraries.analytics.LocalMetricsTracker
+import com.dangerfield.libraries.analytics.MetricsTracker
 import com.dangerfield.libraries.app.AppViewModel.Action.LoadConsentStatus
 import com.dangerfield.libraries.app.AppViewModel.Action.MarkLanguageSupportLevelMessageShown
 import com.dangerfield.libraries.app.startup.SplashScreenBuilder
-import com.dangerfield.libraries.ui.color.ColorResource
-import dagger.hilt.android.AndroidEntryPoint
+import com.dangerfield.libraries.dictionary.Dictionary
+import com.dangerfield.libraries.dictionary.LocalDictionary
+import com.dangerfield.libraries.dictionary.internal.ui.navigateToLanguageSupportDialog
+import com.dangerfield.libraries.navigation.DelegatingRouter
+import com.dangerfield.libraries.navigation.NavGraphRegistry
+import com.dangerfield.libraries.navigation.Router
+import com.dangerfield.libraries.navigation.mainGraphRoute
+import com.dangerfield.libraries.network.NetworkMonitor
+import com.dangerfield.libraries.ui.LocalAppConfiguration
+import com.dangerfield.libraries.ui.LocalAppState
+import com.dangerfield.libraries.ui.LocalBuildInfo
+import com.dangerfield.libraries.ui.LocalColors
+import com.dangerfield.libraries.ui.color.Colors
+import kotlinx.coroutines.Dispatchers
+import kotlinx.coroutines.flow.MutableStateFlow
+import kotlinx.coroutines.flow.StateFlow
+import kotlinx.coroutines.flow.first
 import kotlinx.coroutines.launch
+import kotlinx.coroutines.withContext
 import oddoneout.core.AppConfiguration
+import podawan.core.AppState
+import podawan.core.BuildInfo
 import podawan.core.Message
 import podawan.core.SnackBarPresenter
 import podawan.core.doNothing
+import java.util.concurrent.atomic.AtomicBoolean
 import javax.inject.Inject
 
 open class AppActivity : ComponentActivity() {
@@ -35,64 +61,110 @@ open class AppActivity : ComponentActivity() {
     lateinit var splashScreenBuilder: SplashScreenBuilder
 
     @Inject
-    lateinit var buildNavHostMultiGraph: BuildNavHost
+    lateinit var compositionLocalsProvider: CompositionLocalsProvider
 
     @Inject
-    lateinit var compositionLocalsProvider: CompositionLocalsProvider
+    lateinit var metricsTracker: MetricsTracker
+
+    @Inject
+    lateinit var buildInfo: BuildInfo
+
+    @Inject
+    lateinit var dictionary: Dictionary
+
+    @Inject
+    lateinit var colors: Colors
+
+    @Inject
+    lateinit var networkMonitor: NetworkMonitor
+
+    @Inject
+    lateinit var appConfiguration: AppConfiguration
 
     @Inject
     lateinit var router: Router
 
+    @Inject
+    lateinit var delegatingRouter: DelegatingRouter
+
+    @Inject
+    lateinit var navGraphRegistry: NavGraphRegistry
+
+    private var hasDrawnApp = AtomicBoolean(false)
+
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
 
-        var isLoading: Boolean by mutableStateOf(true)
-
         splashScreenBuilder
-            .keepOnScreenWhile { isLoading }
+            .keepOnScreenWhile { !hasDrawnApp.get() }
             .build(this)
 
-        lifecycleScope.launch {
-            // we do not set content loaded, this allows the splash screen to animate
-            mainActivityViewModel.stateFlow.waitFor { !it.isLoadingApp }
-            isLoading = false
-            setAppContent()
-            loadConsentStatus()
-        }
-    }
 
-    private fun loadConsentStatus() {
-        mainActivityViewModel.takeAction(LoadConsentStatus(this))
+        lifecycleScope.launch {
+            lifecycle.repeatOnLifecycle(Lifecycle.State.STARTED) {
+                withContext(Dispatchers.Main.immediate) {
+                    mainActivityViewModel.stateFlow.first { !it.isLoadingApp }
+                    if (!hasDrawnApp.getAndSet(true)) {
+                        Log.d("Elijah", "calling set content")
+                        setAppContent()
+                    }
+                }
+            }
+        }
     }
 
     private fun setAppContent() {
         setContent {
+
             val state by mainActivityViewModel.stateFlow.collectAsStateWithLifecycle()
 
-            LaunchedEffect(state.languageSupportLevelMessage) {
-                state.languageSupportLevelMessage?.let {
-                    handleLanguageSupportMessage(it)
+            val startingRouteTemplate = remember(
+                state.isUpdateRequired,
+                state.isInMaintenanceMode,
+                state.hasBlockingError,
+                state.isConsentNeeded
+            ) {
+                when {
+                    state.isUpdateRequired -> forcedUpdateNavigationRoute
+                    state.isInMaintenanceMode -> maintenanceRoute
+                    state.hasBlockingError -> blockingErrorRoute
+                    state.isConsentNeeded -> consentRoute
+                    state.isLoggedIn -> mainGraphRoute
+                    else -> loginRoute
                 }
             }
 
-            LaunchedEffect(state.inAppUpdateStatus) {
-                state.inAppUpdateStatus?.let {
-                    handleInAppUpdateStatus(it)
-                }
+            val startingRoute = rememberSaveable(startingRouteTemplate) {
+                startingRouteTemplate.noArgRoute(isTopLevel = startingRouteTemplate != mainGraphRoute)
             }
 
-            compositionLocalsProvider {
+//            LaunchedEffect(Unit) {
+//                mainActivityViewModel.takeAction(LoadConsentStatus(this@AppActivity))
+//            }
+//
+//            LaunchedEffect(state.languageSupportLevelMessage) {
+//                state.languageSupportLevelMessage?.let {
+//                    handleLanguageSupportMessage(it)
+//                }
+//            }
+//
+//            LaunchedEffect(state.inAppUpdateStatus) {
+//                state.inAppUpdateStatus?.let {
+//                    handleInAppUpdateStatus(it)
+//                }
+//            }
+            CompositionLocalProvider(
+                LocalColors provides colors,
+                LocalAppConfiguration provides appConfiguration,
+                LocalMetricsTracker provides metricsTracker,
+                LocalDictionary provides dictionary,
+                LocalBuildInfo provides buildInfo,
+                LocalAppState provides fakeAppState,
+            ) {
                 PodawanApp(
-                    isUpdateRequired = state.isUpdateRequired,
-                    hasBlockingError = state.hasBlockingError,
-                    consentStatus = state.consentStatus,
-                    isInMaintenanceMode = state.isInMaintenanceMode,
-                    updateStatus = state.inAppUpdateStatus,
-                    buildNavHost = {
-                        buildNavHostMultiGraph(it)
-                    },
-                    accentColor = ColorResource.MintyFresh300,
-                    isLoggedIn = state.isLoggedIn,
+                    startingRoute = startingRoute,
+                   // delegatingRouter = delegatingRouter,
+                    navGraphRegistry = navGraphRegistry,
                 )
             }
         }
@@ -149,4 +221,12 @@ open class AppActivity : ComponentActivity() {
             else -> doNothing()
         }
     }
+}
+
+val fakeAppState = object: AppState {
+    override val isOffline: StateFlow<Boolean>
+        get() = MutableStateFlow(false)
+    override val isPlayingContent: StateFlow<Boolean>
+        get() = MutableStateFlow(false)
+
 }

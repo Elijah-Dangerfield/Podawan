@@ -16,6 +16,7 @@ import androidx.compose.foundation.layout.width
 import androidx.compose.foundation.lazy.grid.GridCells
 import androidx.compose.foundation.lazy.grid.LazyVerticalGrid
 import androidx.compose.foundation.lazy.grid.items
+import androidx.compose.material3.HorizontalDivider
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.Stable
@@ -39,7 +40,8 @@ sealed class ColorResource(val color: Color, val designSystemName: String) {
     object Black900 : ColorResource(Color(0xFF000000), "black-900")
     object Black900_A_70 :
         ColorResource(Color(0xFF000000).copy(alpha = 0.7f), "black-900-a-70")
-
+    object Black900_A_30 :
+        ColorResource(Color(0xFF000000).copy(alpha = 0.3f), "black-900-a-30")
     object Black800 : ColorResource(Color(0xFF1A1A1A), "black-800")
     object Black700 : ColorResource(Color(0xFF313131), "black-700")
     object Black600 : ColorResource(Color(0xFF767676), "black-600")
@@ -100,6 +102,7 @@ fun animateColorResourceAsState(
 private val colors = listOf(
     ColorResource.Black900,
     ColorResource.Black900_A_70,
+    ColorResource.Black900_A_30,
     ColorResource.Black800,
     ColorResource.Black700,
     ColorResource.Black600,
@@ -152,27 +155,37 @@ internal fun ColorCard(
             .background(colorResource.color, shape = Radii.Card.shape)
             .height(150.dp)
             .width(120.dp)
-            .clip(Radii.Card.shape)
+            .clip(Radii.Card.shape),
+        contentAlignment = Alignment.BottomCenter
     ) {
-        Column(
-            Modifier
-                .fillMaxWidth()
-                .background(Color.White)
-                .align(Alignment.BottomCenter)
-                .padding(Dimension.D500)
-        ) {
 
-            Text(
-                text = title,
-                color = Color.Black
-            )
 
-            VerticalSpacerD100()
+        Column {
+            if (colorResource.color.luminance() > 0.5f) {
+                HorizontalDivider(
+                    color = Color.DarkGray,
+                )
+            }
 
-            Text(
-                text = description,
-                color = Color.Black
-            )
+            Column(
+                Modifier
+                    .fillMaxWidth()
+                    .background(Color.White)
+                    .padding(Dimension.D500)
+            ) {
+
+                Text(
+                    text = title,
+                    color = Color.Black
+                )
+
+                VerticalSpacerD100()
+
+                Text(
+                    text = description,
+                    color = Color.Black
+                )
+            }
         }
 
     }

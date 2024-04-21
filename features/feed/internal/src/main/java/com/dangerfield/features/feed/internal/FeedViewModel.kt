@@ -1,5 +1,6 @@
 package com.dangerfield.features.feed.internal
 
+import android.util.Log
 import androidx.lifecycle.SavedStateHandle
 import com.dangerfield.libraries.coreflowroutines.SEAViewModel
 import com.dangerfield.libraries.podcast.PodcastRepository
@@ -19,6 +20,7 @@ class FeedViewModel @Inject constructor(
 ) {
 
     init {
+        Log.d("Elijah", "Initing feed view model. ${this.hashCode()}")
         takeAction(Action.Load)
     }
 
@@ -56,10 +58,13 @@ class FeedViewModel @Inject constructor(
     }
 
     private suspend fun Action.Load.handleLoad() {
+        Log.d("Elijah", "Loading Feed")
         updateState { it.copy(isLoading = true) }
 
         podcastRepository.getPodcast()
             .onSuccess { podcast ->
+                Log.d("Elijah", "podcast loaded")
+
                 val episodes = podcast.items.map { episode ->
                     DisplayableEpisode(
                         title = episode.title.orEmpty(),
@@ -75,13 +80,17 @@ class FeedViewModel @Inject constructor(
                 updateState {
                     it.copy(
                         podcastShow = podcast,
-                        episodes = episodes
+                        episodes = episodes,
+                        isLoading = false
                     )
                 }
             }.onFailure {
+                Log.d("Elijah", "podcast failed to load")
+
                 sendEvent(Event.LoadFailed)
             }
             .eitherWay {
+                Log.d("Elijah", "Hit either, setting loading to false")
                 updateState { it.copy(isLoading = false) }
             }
     }

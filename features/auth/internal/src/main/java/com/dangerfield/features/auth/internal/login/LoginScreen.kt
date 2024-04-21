@@ -33,6 +33,7 @@ import com.dangerfield.libraries.ui.FieldState
 import com.dangerfield.libraries.ui.LocalAppConfiguration
 import com.dangerfield.libraries.ui.Radii
 import com.dangerfield.libraries.ui.VerticalSpacerD1000
+import com.dangerfield.libraries.ui.VerticalSpacerD500
 import com.dangerfield.libraries.ui.makeClickable
 import com.dangerfield.libraries.ui.theme.PodawanTheme
 import com.dangerfield.libraries.ui.toPainter
@@ -81,7 +82,7 @@ fun LoginScreen(
                         PodawanTheme.colors.border.color,
                         Radii.Card.shape
                     ),
-                painter = appConfiguration.image.toPainter(),
+                painter = appConfiguration.appIcon.toPainter(),
                 contentDescription = "",
                 contentScale = ContentScale.FillWidth,
             )
@@ -171,12 +172,10 @@ fun LoginScreen(
                             )
                         )
                     }
-                    VerticalSpacerD1000()
-
                 }
-            }
 
-            VerticalSpacerD1000()
+                VerticalSpacerD1000()
+            }
         }
     }
 }

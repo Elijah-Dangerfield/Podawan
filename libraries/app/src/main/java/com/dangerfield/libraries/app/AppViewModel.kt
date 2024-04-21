@@ -1,11 +1,17 @@
 package com.dangerfield.libraries.app
 
 import android.app.Activity
+import android.util.Log
 import androidx.lifecycle.SavedStateHandle
 import androidx.lifecycle.viewModelScope
+import com.dangerfield.features.auth.loginRoute
+import com.dangerfield.features.blockingerror.blockingErrorRoute
+import com.dangerfield.features.blockingerror.maintenanceRoute
 import com.dangerfield.features.consent.ConsentStatus
 import com.dangerfield.features.consent.ConsentStatusRepository
+import com.dangerfield.features.consent.consentRoute
 import com.dangerfield.features.forcedupdate.IsAppUpdateRequired
+import com.dangerfield.features.forcedupdate.forcedUpdateNavigationRoute
 import com.dangerfield.features.inAppMessaging.GetInAppUpdateAvailability
 import com.dangerfield.features.inAppMessaging.InAppUpdateAvailability
 import com.dangerfield.features.inAppMessaging.InstallInAppUpdate
@@ -26,6 +32,8 @@ import com.dangerfield.libraries.app.AppViewModel.Action
 import com.dangerfield.libraries.app.AppViewModel.State
 import com.dangerfield.libraries.app.startup.EnsureAppConfigLoaded
 import com.dangerfield.libraries.app.startup.IsInMaintenanceMode
+import com.dangerfield.libraries.navigation.Route
+import com.dangerfield.libraries.navigation.mainGraphRoute
 import dagger.hilt.android.lifecycle.HiltViewModel
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.Deferred
@@ -41,6 +49,7 @@ import podawan.core.Catching
 import podawan.core.doNothing
 import podawan.core.failFast
 import podawan.core.logOnFailure
+import java.util.concurrent.atomic.AtomicBoolean
 import javax.inject.Inject
 import kotlin.time.Duration.Companion.seconds
 
@@ -68,12 +77,14 @@ class AppViewModel @Inject constructor(
         isLoadingApp = true,
         hasBlockingError = false,
         languageSupportLevelMessage = null,
-        consentStatus = null,
         isInMaintenanceMode = false,
         inAppUpdateStatus = null,
-        isLoggedIn = false
+        isLoggedIn = false,
+        isConsentNeeded = false,
     )
 ) {
+
+    private var hasLoadedConsentStatus = AtomicBoolean(false)
 
     // TODO make a notification manager to handle all these dialogs I may or may not show.
     // in app messages can likely have a handler that takes in a class wrapping the route and stuff
@@ -135,10 +146,11 @@ class AppViewModel @Inject constructor(
     }
 
     private fun Action.LoadConsentStatus.listenForConsentStatusUpdates() {
+        if (hasLoadedConsentStatus.getAndSet(true)) return
         viewModelScope.launch {
             consentStatusRepository.getStatusFlow(activity)
                 .collectLatest { status ->
-                    updateState { it.copy(consentStatus = status) }
+                    updateState { it.copy(isConsentNeeded = status in listOf(ConsentStatus.ConsentNeeded, ConsentStatus.ConsentDenied)) }
                 }
         }
     }
@@ -296,11 +308,11 @@ class AppViewModel @Inject constructor(
         val isLoadingApp: Boolean,
         val isUpdateRequired: Boolean,
         val hasBlockingError: Boolean,
-        val consentStatus: ConsentStatus?,
+        val isConsentNeeded: Boolean,
         val isInMaintenanceMode: Boolean,
         val inAppUpdateStatus: UpdateStatus?,
         val isLoggedIn: Boolean,
-        val languageSupportLevelMessage: LanguageSupportLevelMessage?
+        val languageSupportLevelMessage: LanguageSupportLevelMessage?,
     )
 
     data class LanguageSupportLevelMessage(

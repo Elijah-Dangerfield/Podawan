@@ -1,14 +1,17 @@
 package com.dangerfield.features.consent
 
 import android.app.Activity
+import android.os.Parcelable
 import com.google.android.ump.ConsentInformation
 import kotlinx.coroutines.flow.Flow
+import kotlinx.parcelize.Parcelize
 
 interface ConsentStatusRepository {
     fun getStatusFlow(activity: Activity,): Flow<ConsentStatus>
 }
 
-enum class ConsentStatus {
+@Parcelize
+enum class ConsentStatus : Parcelable {
     ConsentGiven,
     ConsentDenied,
     ConsentNeeded,

@@ -1,9 +1,11 @@
 package com.dangerfield.features.inAppMessaging
 
 import android.app.Activity
+import android.os.Parcelable
 import com.google.android.play.core.appupdate.AppUpdateInfo
 import com.google.android.play.core.install.model.AppUpdateType
 import kotlinx.coroutines.flow.Flow
+import kotlinx.parcelize.Parcelize
 
 interface StartInAppUpdate {
     operator fun invoke(

@@ -16,6 +16,7 @@ class DefaultPodcastRepository @Inject constructor(
 ) : PodcastRepository {
 
     override suspend fun getPodcast(): Catching<PodcastShow> = Catching {
+
         val rssChannel: RssChannel =
             rssParser.getRssChannel(appConfiguration.rssFeedLink)
 

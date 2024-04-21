@@ -1,7 +1,9 @@
 package com.dangerfield.features.feed.internal
 
+import android.util.Log
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.fillMaxSize
+import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.getValue
 import androidx.compose.ui.Alignment.Companion.Center
 import androidx.compose.ui.Modifier
@@ -23,10 +25,12 @@ import javax.inject.Inject
 class ModuleNavGraphBuilder @Inject constructor() : HomeTabNavBuilder {
 
     override fun NavGraphBuilder.addDestinations(router: Router) {
+        Log.d("Elijah", "Adding feed destination")
         composable(
             route = feedRoute.navRoute,
             arguments = feedRoute.navArguments
         ) {
+
             val viewModel: FeedViewModel = hiltViewModel()
             val state by viewModel.stateFlow.collectAsStateWithLifecycle()
 

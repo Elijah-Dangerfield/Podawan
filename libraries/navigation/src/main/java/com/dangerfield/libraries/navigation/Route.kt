@@ -1,5 +1,6 @@
 package com.dangerfield.libraries.navigation
 
+import android.os.Parcelable
 import androidx.compose.animation.AnimatedContentTransitionScope
 import androidx.compose.animation.EnterTransition
 import androidx.compose.animation.ExitTransition
@@ -13,6 +14,7 @@ import androidx.navigation.NavBackStackEntry
 import androidx.navigation.NavDeepLink
 import androidx.navigation.NavType
 import androidx.navigation.navArgument
+import kotlinx.parcelize.Parcelize
 import podawan.core.Catching
 import podawan.core.checkInDebug
 import podawan.core.doNothing
@@ -283,6 +285,7 @@ class Route internal constructor() {
     }
 
     @Immutable
+    @Parcelize
     data class Filled internal constructor(
         val route: String,
         val popUpTo: NavPopUp? = null,
@@ -291,15 +294,16 @@ class Route internal constructor() {
         val navAnimType: NavAnimType,
         val isTopLevel: Boolean? = null,
         val restoreState: Boolean? = null
-    )
+    ) : Parcelable
 }
 
+@Parcelize
 sealed class NavAnimType(
    val enterTransition: AnimatedContentTransitionScope<NavBackStackEntry>.() -> EnterTransition,
     val exitTransition: AnimatedContentTransitionScope<NavBackStackEntry>.() -> ExitTransition,
     val popEnterTransition: AnimatedContentTransitionScope<NavBackStackEntry>.() -> EnterTransition,
     val popExitTransition: AnimatedContentTransitionScope<NavBackStackEntry>.() -> ExitTransition
-) {
+) : Parcelable {
     object SlideIn : NavAnimType(
         enterTransition =  { fadeInToStartAnim() },
         exitTransition = { fadeOutToStart() },

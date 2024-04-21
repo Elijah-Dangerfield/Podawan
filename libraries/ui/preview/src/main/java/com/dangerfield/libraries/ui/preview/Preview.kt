@@ -15,6 +15,7 @@ import androidx.compose.ui.unit.dp
 import com.dangerfield.libraries.dictionary.Dictionary
 import com.dangerfield.libraries.dictionary.LocalDictionary
 import com.dangerfield.libraries.ui.LocalAppConfiguration
+import com.dangerfield.libraries.ui.LocalAppState
 import com.dangerfield.libraries.ui.LocalColors
 import com.dangerfield.libraries.ui.color.ColorResource
 import com.dangerfield.libraries.ui.theme.PodawanTheme
@@ -25,7 +26,10 @@ import com.dangerfield.podawan.apps.theBenAndEmilShow.config.BenAndEmilShowColor
 import com.dangerfield.podawan.apps.theBenAndEmilShow.config.TheBenAndEmilShowAppConfiguration
 import com.dangerfield.podawan.apps.tmg.config.TmgAppConfiguration
 import com.dangerfield.podawan.apps.tmg.config.TmgColors
+import kotlinx.coroutines.flow.MutableStateFlow
+import kotlinx.coroutines.flow.StateFlow
 import podawan.core.App
+import podawan.core.AppState
 import podawan.core.Catching
 import podawan.core.applyArgs
 import podawan.ui.R
@@ -38,6 +42,7 @@ import podawan.ui.R
 @Composable
 fun Preview(
     modifier: Modifier = Modifier,
+    appState: AppState = DefaultAppState,
     app: App = App.TheBenAndEmilShow,
     contentPadding: PaddingValues = PaddingValues(0.dp),
     showBackground: Boolean = true,
@@ -80,6 +85,7 @@ fun Preview(
         LocalAppConfiguration provides appConfiguration,
         LocalContext provides context,
         LocalDictionary provides previewDictionary,
+        LocalAppState provides appState
     ) {
         PodawanTheme{
             Box(
@@ -100,4 +106,12 @@ fun loremIpsum(wordCount: Int = 10): String {
 }
 fun loremIpsum(wordCountRange: IntRange = 2..10): String {
     return LoremIpsum(wordCountRange.random()).values.joinToString(" ")
+}
+
+
+val DefaultAppState = object: AppState {
+    override val isOffline: StateFlow<Boolean> = MutableStateFlow(false)
+
+    override val isPlayingContent: StateFlow<Boolean> = MutableStateFlow(false)
+
 }
