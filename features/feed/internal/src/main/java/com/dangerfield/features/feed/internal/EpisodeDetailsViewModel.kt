@@ -59,10 +59,9 @@ class EpisodeDetailsViewModel @Inject constructor(
 
         podcastRepository.getEpisode(id)
             .onSuccess { episode ->
-
                 updateState {
                     it.copy(
-                        episode = episode.toDisplayable(),
+                        episode = episode.toDisplayable(removeHtml = false),
                     )
                 }
             }.onFailure {

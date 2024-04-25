@@ -1,6 +1,5 @@
 package com.dangerfield.libraries.app
 
-import android.util.Log
 import androidx.compose.animation.AnimatedContentTransitionScope
 import androidx.compose.animation.EnterTransition
 import androidx.compose.animation.ExitTransition
@@ -9,7 +8,6 @@ import androidx.compose.animation.fadeOut
 import androidx.navigation.NavBackStackEntry
 import androidx.navigation.NavDestination
 import com.dangerfield.libraries.navigation.NavAnimType
-import com.dangerfield.libraries.navigation.Route
 import com.dangerfield.libraries.navigation.RouteInfo
 import com.dangerfield.libraries.navigation.fadeInToEndAnim
 import com.dangerfield.libraries.navigation.fadeOutToStart
@@ -76,7 +74,6 @@ fun determineNavAnimation(
             // if previous screen had no enter/exit anim, then we should have no enter anim
             NavAnimType.None -> {
                 {
-                    Log.d("Elijah","no anim on enter because previous screen had no anim")
                     noAnimEnter()
                 }
             }
@@ -84,7 +81,6 @@ fun determineNavAnimation(
             // if previous screen faded out, then we should fade in
             NavAnimType.FadeIn -> {
                 {
-                    Log.d("Elijah","fade in on enter because previous screen faded out")
                     fadeIn()
                 }
             }
@@ -92,7 +88,6 @@ fun determineNavAnimation(
             // if previous screen slid out, then we should slide in
             NavAnimType.SlideIn -> {
                 {
-                    Log.d("Elijah","slide in on enter because previous screen slid out")
                     fadeInToEndAnim()
                 }
             }
@@ -100,14 +95,12 @@ fun determineNavAnimation(
             // if previous screen slide over, then itll side back out, dont anim previous screen
             NavAnimType.SlideOver -> {
                 {
-                    Log.d("Elijah","no anim on enter because previous screen slid over")
                     noAnimEnter()
                 }
             }
 
             null -> {
                 {
-                    Log.d("Elijah","no anim on enter because previous screen was null")
                     noAnimEnter()
                 }
             }

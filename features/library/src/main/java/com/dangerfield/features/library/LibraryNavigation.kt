@@ -14,6 +14,6 @@ fun Router.navigateToLibrary() {
 }
 
 val libraryRoute = route("library") {
-    isTopLevel(false)
-    navAnimType(NavAnimType.None)
+    isTopLevelAlways(false)
+    animTypeAlways(NavAnimType.None)
 }

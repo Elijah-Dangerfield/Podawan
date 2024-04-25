@@ -30,8 +30,7 @@ import com.dangerfield.ui.components.button.Button
 import com.dangerfield.ui.components.button.ButtonStyle
 import com.dangerfield.ui.components.checkbox.Checkbox
 import com.dangerfield.ui.components.text.Text
-import com.dangerfield.libraries.ui.makeClickable
-import com.dangerfield.libraries.ui.preview.Preview
+import com.dangerfield.libraries.ui.makeLookClickable
 import com.dangerfield.libraries.ui.theme.PodawanTheme
 import com.dangerfield.oddoneoout.features.consent.internal.R
 
@@ -132,7 +131,7 @@ fun LinksSection(
     val privacyPolicyText = dictionaryString(id = R.string.app_privacyPolicy_text)
 
     val annotatedString = text
-        .makeClickable(
+        .makeLookClickable(
             linkText = termsOfServiceText,
             annotation = termsOfServiceText to "link",
             style = SpanStyle(
@@ -141,7 +140,7 @@ fun LinksSection(
                 textDecoration = TextDecoration.Underline
             )
         )
-        .makeClickable(
+        .makeLookClickable(
             linkText = privacyPolicyText,
             annotation = privacyPolicyText to "link",
             style = SpanStyle(

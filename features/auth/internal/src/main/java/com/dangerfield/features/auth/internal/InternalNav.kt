@@ -16,7 +16,7 @@ val authenticationError = route("auth_error_dialog") {
 }
 
 val signupRoute = route("signup") {
-    isTopLevel(true)
+    isTopLevelAlways(true)
 }
 
 fun Router.navigateToSignup() {

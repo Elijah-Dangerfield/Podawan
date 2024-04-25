@@ -2,6 +2,7 @@
 package com.dangerfield.libraries.navigation
 
 import androidx.navigation.NamedNavArgument
+import podawan.core.replace
 
 // NOTE: ALL EXTENSIONS IN THIS FILE ARE USED INTERNALLY BY THE NAVIGATION LIBRARY
 // AND ARE NOT INTENDED FOR USE OUTSIDE OF THE LIBRARY
@@ -87,15 +88,6 @@ internal fun String.containsOnlyUnfilledArgs() =
 internal fun StringBuilder.filledArgumentExists(argument: NamedNavArgument) =
     // do a regex check for the arg being filled
     !unfilledArgumentExists(argument) && Regex("${argument.name}=(\\w+)").containsMatchIn(this)
-
-
-/**
- * @return true if the provided argument is filled in the route
- */
-internal fun StringBuilder.replace(oldValue: String, newValue: String): StringBuilder {
-    val index = indexOf(oldValue)
-    return replace(index, index + oldValue.length, newValue)
-}
 
 internal fun StringBuilder.fillArguments(vararg args: Pair<NamedNavArgument, Any>): String {
     val builtRoute = args.fold(this) { acc, pair ->

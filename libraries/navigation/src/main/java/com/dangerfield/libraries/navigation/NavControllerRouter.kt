@@ -52,7 +52,6 @@ class NavControllerRouter(
      */
     fun registerStartingRoutes(vararg routePairs: Pair<Route.Template, Route.Filled>) {
         routePairs.forEach {
-            Timber.d("Elijah, Registering ${it.first.navRoute} as ${it.second.route}")
             startingRoutes[it.first.navRoute] = it.second
         }
     }

@@ -33,8 +33,7 @@ import com.dangerfield.libraries.ui.FieldState
 import com.dangerfield.libraries.ui.LocalAppConfiguration
 import com.dangerfield.libraries.ui.Radii
 import com.dangerfield.libraries.ui.VerticalSpacerD1000
-import com.dangerfield.libraries.ui.VerticalSpacerD500
-import com.dangerfield.libraries.ui.makeClickable
+import com.dangerfield.libraries.ui.makeLookClickable
 import com.dangerfield.libraries.ui.theme.PodawanTheme
 import com.dangerfield.libraries.ui.toPainter
 import com.dangerfield.ui.components.CircularProgressIndicator
@@ -162,7 +161,7 @@ fun LoginScreen(
                         onClick = onSignupClicked,
                     ) {
                         Text(
-                            text = "New to ${appConfiguration.appName}? Sign up".makeClickable(linkText = "Sign up"),
+                            text = "New to ${appConfiguration.appName}? Sign up".makeLookClickable(linkText = "Sign up"),
                             maxLines = 2,
                             textAlign = TextAlign.Center,
                             lineBreak = LineBreak(

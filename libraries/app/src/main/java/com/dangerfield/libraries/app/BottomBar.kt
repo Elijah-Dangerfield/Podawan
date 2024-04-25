@@ -1,7 +1,6 @@
 package com.dangerfield.libraries.app
 
 import androidx.compose.foundation.layout.Arrangement
-import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.PaddingValues
 import androidx.compose.foundation.layout.Row
@@ -10,7 +9,6 @@ import androidx.compose.foundation.layout.WindowInsets
 import androidx.compose.foundation.layout.defaultMinSize
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.heightIn
-import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.windowInsetsPadding
 import androidx.compose.foundation.selection.selectableGroup
 import androidx.compose.material3.ExperimentalMaterial3Api
@@ -29,7 +27,6 @@ import com.dangerfield.libraries.navigation.BottomBarMaxHeight
 import com.dangerfield.libraries.navigation.BottomBarMinHeight
 import com.dangerfield.libraries.navigation.NavAnimType
 import com.dangerfield.libraries.navigation.Route
-import com.dangerfield.libraries.navigation.fill
 import com.dangerfield.libraries.navigation.route
 import com.dangerfield.libraries.ui.Elevation
 import com.dangerfield.libraries.ui.LocalAppState
@@ -47,18 +44,18 @@ import com.dangerfield.ui.components.Surface
 import podawan.core.App
 
 val homeGraphRoute = route("homeGraph") {
-    isTopLevel(false)
-    navAnimType(NavAnimType.None)
+    isTopLevelAlways(false)
+    animTypeAlways(NavAnimType.None)
 }
 
 val searchGraphRoute = route("searchGraph") {
-    isTopLevel(false)
-    navAnimType(NavAnimType.None)
+    isTopLevelAlways(false)
+    animTypeAlways(NavAnimType.None)
 }
 
 val libraryGraphRoute = route("libraryGraph") {
-    isTopLevel(false)
-    navAnimType(NavAnimType.None)
+    isTopLevelAlways(false)
+    animTypeAlways(NavAnimType.None)
 }
 
 @Composable

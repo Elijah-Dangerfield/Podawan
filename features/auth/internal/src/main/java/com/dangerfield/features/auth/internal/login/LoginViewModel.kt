@@ -120,7 +120,6 @@ class LoginViewModel @Inject constructor(
                 }
                 .onFailure {
                     updateState { it.copy(isLoading = false) }
-                    Log.d("Elijah", "Got log in error")
                     sendEvent(Event.LoginFailed(it.javaClass.simpleName))
                 }
         }

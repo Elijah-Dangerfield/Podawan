@@ -33,11 +33,11 @@ fun PodcastShow.getDisplayableEpisodes(): List<DisplayableEpisode> {
     }
 }
 
-fun PodcastEpisode.toDisplayable() = DisplayableEpisode(
+fun PodcastEpisode.toDisplayable(removeHtml: Boolean = true) = DisplayableEpisode(
     title = title.orEmpty().removeHtmlTags(),
     releaseDate = pubDate?.toReadableDate().orEmpty(),
     imageUrl = link.takeIf { it?.isNotBlank() == true } ?: fallbackImageUrl.orEmpty(),
-    description = description.orEmpty().removeHtmlTags(),
+    description = description.orEmpty().let { if (removeHtml) it.removeHtmlTags() else it },
     fallbackImageUrl = fallbackImageUrl.orEmpty(),
     isPlaying = false,
     isDownloaded = false,

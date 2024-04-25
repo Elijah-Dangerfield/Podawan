@@ -48,7 +48,7 @@ fun Text(
     val style = typography.toStyle(colorResource, textDecoration, textAlign, hyphens, lineBreak)
 
     BasicText(
-        text = text.parseHtml(),
+        text = text.processHtmlTags(),
         modifier = modifier,
         style = style,
         overflow = overflow,
@@ -142,7 +142,7 @@ fun Text(
 ) {
 
     Text(
-        text = dictionaryString(text).parseHtml(),
+        text = dictionaryString(text).processHtmlTags(),
         modifier = modifier,
         color = color,
         typography = typography,
@@ -214,7 +214,7 @@ internal data class TextConfig(
 }
 
 @Composable
-internal fun TypographyResource.toStyle(
+fun TypographyResource.toStyle(
     color: ColorResource?,
     textDecoration:
     TextDecoration?,

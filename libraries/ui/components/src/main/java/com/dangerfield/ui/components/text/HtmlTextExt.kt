@@ -1,5 +1,6 @@
 package com.dangerfield.ui.components.text
 
+import androidx.compose.runtime.Composable
 import androidx.compose.ui.text.AnnotatedString
 import androidx.compose.ui.text.SpanStyle
 import androidx.compose.ui.text.buildAnnotatedString
@@ -11,22 +12,53 @@ import kotlin.math.min
 /**
  * The tags to interpret. Add tags here and in [tagToStyle].
  */
-private val tags = linkedMapOf(
+private val knownTags = linkedMapOf(
     "<b>" to "</b>",
     "<i>" to "</i>",
     "<u>" to "</u>"
 )
 
 /**
- * The main entry point. Call this on a String and use the result in a Text.
+ * Removes HTML tags and handles the ones that are supported.
  */
-fun String.parseHtml(): AnnotatedString {
+@Composable
+fun String.processHtmlTags(): AnnotatedString {
+    val stringBuilder = removeUnknownTags()
 
-    val newlineReplace = this.replace("<br>", "\n")
+    // Handle <br> tags
+    val cleanedString = stringBuilder.toString().replace("<br>", "\n")
 
+    // Build the AnnotatedString
     return buildAnnotatedString {
-        recurse(newlineReplace, this)
+        recurse(cleanedString, this)
     }
+}
+
+@Composable
+private fun String.removeUnknownTags(): StringBuilder {
+    val removeRanges = mutableListOf<IntRange>()
+    val stringBuilder = StringBuilder()
+    var lastEnd = 0
+
+    // Find and collect all tags to be removed
+    Regex("<[^>]*>").findAll(this).forEach {
+        if (it.value !in knownTags.keys && it.value !in knownTags.values) {
+            removeRanges.add(it.range)
+        }
+    }
+
+    // Build the string without the unwanted tags
+    removeRanges.forEach {
+        stringBuilder.append(this.substring(lastEnd, it.first))
+        lastEnd = it.last + 1
+    }
+    stringBuilder.append(
+        this.substring(
+            lastEnd,
+            this.length
+        )
+    ) // append the rest of the string after the last tag
+    return stringBuilder
 }
 
 /**
@@ -37,30 +69,33 @@ fun String.parseHtml(): AnnotatedString {
  */
 private fun recurse(string: String, to: AnnotatedString.Builder) {
     //Find the opening tag that the given String starts with, if any.
-    val startTag = tags.keys.find { string.startsWith(it) }
+    val startTag = knownTags.keys.find { string.startsWith(it) }
 
     //Find the closing tag that the given String starts with, if any.
-    val endTag = tags.values.find { string.startsWith(it) }
+    val endTag = knownTags.values.find { string.startsWith(it) }
 
     when {
         //If the String starts with a closing tag, then pop the latest-applied
         //SpanStyle and continue recursing.
-        tags.any { string.startsWith(it.value) } -> {
+        knownTags.any { string.startsWith(it.value) } -> {
             to.pop()
             recurse(string.removeRange(0, endTag!!.length), to)
         }
         //If the String starts with an opening tag, apply the appropriate
         //SpanStyle and continue recursing.
-        tags.any { string.startsWith(it.key) } -> {
+        knownTags.any { string.startsWith(it.key) } -> {
             to.pushStyle(tagToStyle(startTag!!))
             recurse(string.removeRange(0, startTag.length), to)
         }
         //If the String doesn't start with an opening or closing tag, but does contain either,
         //find the lowest index (that isn't -1/not found) for either an opening or closing tag.
         //Append the text normally up until that lowest index, and then recurse starting from that index.
-        tags.any { string.contains(it.key) || string.contains(it.value) } -> {
-            val firstStart = tags.keys.map { string.indexOf(it) }.filterNot { it == -1 }.minOrNull() ?: -1
-            val firstEnd = tags.values.map { string.indexOf(it) }.filterNot { it == -1 }.minOrNull() ?: -1
+        knownTags.any { string.contains(it.key) || string.contains(it.value) } -> {
+            val firstStart =
+                knownTags.keys.map { string.indexOf(it) }.filterNot { it == -1 }.minOrNull() ?: -1
+            val firstEnd =
+                knownTags.values.map { string.indexOf(it) }.filterNot { it == -1 }.minOrNull()
+                    ?: -1
             val first = when {
                 firstStart == -1 -> firstEnd
                 firstEnd == -1 -> firstStart
@@ -90,9 +125,11 @@ private fun tagToStyle(tag: String): SpanStyle {
         "<b>" -> {
             SpanStyle(fontWeight = FontWeight.Bold)
         }
+
         "<i>" -> {
             SpanStyle(fontStyle = FontStyle.Italic)
         }
+
         "<u>" -> {
             SpanStyle(textDecoration = TextDecoration.Underline)
         }

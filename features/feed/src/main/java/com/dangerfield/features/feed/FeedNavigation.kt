@@ -17,8 +17,8 @@ fun Router.toEpisodeDetails(id: String) {
 }
 
 val feedRoute = route("feed") {
-    isTopLevel(false)
-    navAnimType(NavAnimType.None)
+    isTopLevelAlways(false)
+    animTypeAlways(NavAnimType.None)
 }
 
 val episodeIdArgument = navArgument("episodeId") {

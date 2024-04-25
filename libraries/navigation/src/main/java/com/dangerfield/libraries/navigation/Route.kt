@@ -4,7 +4,6 @@ import android.os.Parcelable
 import androidx.compose.runtime.Immutable
 import androidx.navigation.NamedNavArgument
 import androidx.navigation.NavArgumentBuilder
-import androidx.navigation.NavBackStackEntry
 import androidx.navigation.NavDeepLink
 import androidx.navigation.NavType
 import androidx.navigation.navArgument
@@ -56,12 +55,12 @@ class Route internal constructor() {
             return this
         }
 
-        fun isTopLevel(value: Boolean = true): Route.Builder {
+        fun isTopLevelAlways(value: Boolean = true): Route.Builder {
             isTopLevel = value
             return this
         }
 
-        fun navAnimType(value: NavAnimType): Route.Builder {
+        fun animTypeAlways(value: NavAnimType): Route.Builder {
             navAnimType = value
             return this
         }
@@ -116,11 +115,6 @@ class Route internal constructor() {
                         routeBuilder.append("?${argument.name}={${argument.name}}")
                     }
                 }
-
-            if (templatedRoute.toString().contains("login")) {
-                Timber.d("building template with route: ${templatedRoute.toString()}")
-                Timber.d("Arugments were: ${args.joinToString(" | ") { it.name}}")
-            }
 
             return Template(
                 navRoute = templatedRoute.toString(),
@@ -306,30 +300,33 @@ class Route internal constructor() {
         val isTopLevel: Boolean,
         val restoreState: Boolean? = null
     ) : Parcelable
+
+
+    companion object {
+        val isLaunchSingleTopArg = navArgument("isLaunchSingleTop") {
+            type = NavType.BoolType
+            defaultValue = true
+        }
+
+        val restoreStateArg = navArgument("restoreState") {
+            type = NavType.BoolType
+            defaultValue = false
+        }
+
+        val isTopLevelArg = navArgument("isTopLevel") {
+            type = NavType.BoolType
+            defaultValue = isTopLevelDefault
+        }
+
+        internal const val isTopLevelDefault = false
+
+        val navAnimTypeArg = navArgument("navAnimType") {
+            type = NavType.EnumType(NavAnimType::class.java)
+        }
+
+        val navAnimTypeDefault = NavAnimType.SlideIn
+    }
 }
-
-val isLaunchSingleTopArg = navArgument("isLaunchSingleTop") {
-    type = NavType.BoolType
-    defaultValue = true
-}
-
-val restoreStateArg = navArgument("restoreState") {
-    type = NavType.BoolType
-    defaultValue = false
-}
-
-val isTopLevelArg = navArgument("isTopLevel") {
-    type = NavType.BoolType
-    defaultValue = isTopLevelDefault
-}
-internal const val isTopLevelDefault = false
-
-val navAnimTypeArg = navArgument("navAnimType") {
-    type = NavType.EnumType(NavAnimType::class.java)
-}
-
-val navAnimTypeDefault = NavAnimType.SlideIn
-
 
 /**
  * Fills a route with the applied block
@@ -356,6 +353,9 @@ fun Route.Template.fill(
     return filler.build()
 }
 
+/**
+ * Declares a route to be used when routing
+ */
 fun route(
     name: String,
     block: Route.Builder.() -> Unit = {}

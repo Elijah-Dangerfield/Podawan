@@ -1,5 +1,6 @@
 package com.dangerfield.features.feed.internal
 
+import android.util.Log
 import androidx.compose.runtime.getValue
 import androidx.hilt.navigation.compose.hiltViewModel
 import androidx.lifecycle.compose.collectAsStateWithLifecycle
@@ -91,7 +92,11 @@ class ModuleNavGraphBuilder @Inject constructor() : HomeTabNavBuilder {
                             viewModel.takeAction(EpisodeDetailsViewModel.Action.DownloadEpisode)
                         },
                         onShareClicked = { doNothing() },
-                        onNavigateBack = { router.goBack() }
+                        onNavigateBack = { router.goBack() },
+                        onClickLink = {
+                            Log.d("Elijah", "onClickLink: $it")
+                            router.openWebLink(it)
+                        }
                     )
                 }
             }

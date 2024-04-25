@@ -129,7 +129,6 @@ class SignupViewModel @Inject constructor(
                     }
                 }
                 .onFailure {
-                    Log.d("Elijah", "Got sign up error ${it.message}")
                     updateState { it.copy(isLoading = false) }
                     sendEvent(Event.SignupFailed(it.javaClass.simpleName))
                 }

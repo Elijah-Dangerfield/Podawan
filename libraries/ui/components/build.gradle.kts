@@ -31,4 +31,6 @@ dependencies {
     implementation(projects.libraries.common)
 
     api(projects.libraries.dictionary)
+
+    implementation(libs.material)
 }

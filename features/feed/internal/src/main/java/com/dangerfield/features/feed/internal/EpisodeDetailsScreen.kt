@@ -8,7 +8,8 @@ import androidx.compose.foundation.layout.Spacer
 import androidx.compose.foundation.layout.aspectRatio
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.padding
-import androidx.compose.foundation.layout.width
+import androidx.compose.foundation.rememberScrollState
+import androidx.compose.foundation.verticalScroll
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
@@ -29,18 +30,17 @@ import com.dangerfield.libraries.podcast.DisplayableEpisode
 import com.dangerfield.libraries.ui.Dimension
 import com.dangerfield.libraries.ui.HorizontalSpacerD200
 import com.dangerfield.libraries.ui.HorizontalSpacerD500
-import com.dangerfield.libraries.ui.preview.Preview
 import com.dangerfield.libraries.ui.Radii
-import com.dangerfield.libraries.ui.VerticalSpacerD1000
-import com.dangerfield.libraries.ui.VerticalSpacerD300
 import com.dangerfield.libraries.ui.VerticalSpacerD500
-import com.dangerfield.ui.components.icon.IconButton
-import com.dangerfield.ui.components.icon.PodawanIcon
-import com.dangerfield.ui.components.text.Text
+import com.dangerfield.libraries.ui.preview.Preview
 import com.dangerfield.libraries.ui.preview.loremIpsum
 import com.dangerfield.libraries.ui.theme.PodawanTheme
 import com.dangerfield.podawan.features.feed.internal.R
 import com.dangerfield.ui.components.Screen
+import com.dangerfield.ui.components.icon.IconButton
+import com.dangerfield.ui.components.icon.PodawanIcon
+import com.dangerfield.ui.components.text.ClickableText
+import com.dangerfield.ui.components.text.Text
 
 @Composable
 fun EpisodeDetailsScreen(
@@ -50,7 +50,8 @@ fun EpisodeDetailsScreen(
     onPlayClicked: () -> Unit = {},
     onDownloadClicked: () -> Unit = {},
     onShareClicked: () -> Unit = {},
-    onNavigateBack: () -> Unit = {}
+    onNavigateBack: () -> Unit = {},
+    onClickLink: (String) -> Unit = {},
 ) {
     Screen(
         modifier,
@@ -67,6 +68,7 @@ fun EpisodeDetailsScreen(
             Modifier
                 .padding(it)
                 .padding(horizontal = Dimension.D500)
+                .verticalScroll(rememberScrollState())
         ) {
 
             var urlToLoad by remember { mutableStateOf(episode.imageUrl) }
@@ -173,17 +175,16 @@ fun EpisodeDetailsScreen(
 
             VerticalSpacerD500()
 
-            Text(
+            ClickableText(
                 text = episode.description,
-                typography = PodawanTheme.typography.Body.B400,
-                colorResource = PodawanTheme.colors.textSecondary
+                onClickUrl = onClickLink,
+                typography = PodawanTheme.typography.Body.B500,
             )
 
             VerticalSpacerD500()
         }
     }
 }
-
 
 @Composable
 @Preview
