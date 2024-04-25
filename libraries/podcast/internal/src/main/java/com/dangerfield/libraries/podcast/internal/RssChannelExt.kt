@@ -52,7 +52,8 @@ fun RssChannel.toPodcastShow(): PodcastShow {
                         season = itunesData.season
                     )
                 },
-                commentsUrl = it.commentsUrl
+                commentsUrl = it.commentsUrl,
+                fallbackImageUrl = this.image?.url
             )
         },
         itunesChannelData = this.itunesChannelData?.let {

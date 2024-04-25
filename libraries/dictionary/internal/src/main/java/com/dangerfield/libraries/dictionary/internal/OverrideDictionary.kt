@@ -3,7 +3,7 @@ package com.dangerfield.libraries.dictionary.internal
 import android.content.Context
 import com.dangerfield.libraries.dictionary.Dictionary
 import dagger.hilt.android.qualifiers.ApplicationContext
-import podawan.core.applyArgs
+import com.dangerfield.libraries.dictionary.applyArgs
 import javax.inject.Inject
 
 /**

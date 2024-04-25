@@ -1,7 +1,10 @@
 package com.dangerfield.features.feed.internal
 
 import androidx.compose.foundation.Image
+import androidx.compose.foundation.LocalIndication
 import androidx.compose.foundation.border
+import androidx.compose.foundation.clickable
+import androidx.compose.foundation.interaction.MutableInteractionSource
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.Spacer
@@ -24,6 +27,7 @@ import androidx.compose.ui.unit.dp
 import coil.compose.rememberAsyncImagePainter
 import coil.request.ImageRequest
 import coil.size.Size
+import com.dangerfield.libraries.podcast.DisplayableEpisode
 import com.dangerfield.libraries.ui.HorizontalSpacerD200
 import com.dangerfield.libraries.ui.HorizontalSpacerD500
 import com.dangerfield.libraries.ui.preview.Preview
@@ -34,6 +38,7 @@ import com.dangerfield.ui.components.icon.IconButton
 import com.dangerfield.ui.components.icon.PodawanIcon
 import com.dangerfield.ui.components.text.Text
 import com.dangerfield.libraries.ui.preview.loremIpsum
+import com.dangerfield.libraries.ui.rememberRipple
 import com.dangerfield.libraries.ui.theme.PodawanTheme
 import com.dangerfield.podawan.features.feed.internal.R
 
@@ -44,7 +49,9 @@ fun EpisodeItem(
     onPlayClicked: () -> Unit = {},
     onDownloadClicked: () -> Unit = {},
     onShareClicked: () -> Unit = {},
-) {
+    onClickEpisode: () -> Unit = {},
+
+    ) {
     var urlToLoad by remember { mutableStateOf(episode.imageUrl) }
 
     val painter = rememberAsyncImagePainter(
@@ -64,11 +71,17 @@ fun EpisodeItem(
         filterQuality = DrawScope.DefaultFilterQuality,
     )
 
-    Column {
+    Column(
+        modifier = Modifier.clickable(
+            indication = rememberRipple(),
+            interactionSource = remember { MutableInteractionSource() },
+            onClick = onClickEpisode
+        )
+    ) {
         Row {
             Image(
                 modifier = Modifier
-                    .width(60.dp)
+                    .width(50.dp)
                     .aspectRatio(1f)
                     .clip(Radii.Card.shape)
                     .border(
@@ -108,7 +121,8 @@ fun EpisodeItem(
         VerticalSpacerD500()
 
         val playingIcon = if (episode.isPlaying) PodawanIcon.Pause("") else PodawanIcon.Play("")
-        val downloadIcon = if (episode.isDownloaded) PodawanIcon.Check("") else PodawanIcon.ArrowCircleDown("")
+        val downloadIcon =
+            if (episode.isDownloaded) PodawanIcon.Check("") else PodawanIcon.ArrowCircleDown("")
         Row(
             modifier = Modifier.fillMaxWidth(),
             verticalAlignment = Alignment.CenterVertically,
@@ -153,7 +167,7 @@ fun EpisodeItem(
 @Composable
 @Preview
 private fun PreviewEpisodeItem() {
-    com.dangerfield.libraries.ui.preview.Preview {
+    Preview {
         EpisodeItem(
             episode = DisplayableEpisode(
                 title = com.dangerfield.libraries.ui.preview.loremIpsum(3..10),
@@ -163,7 +177,8 @@ private fun PreviewEpisodeItem() {
                 fallbackImageUrl = "",
                 isPlaying = false,
                 isDownloaded = false,
-                id = ""
+                id = "",
+                author = "Author Name"
             ),
         )
     }
@@ -182,7 +197,8 @@ private fun PreviewEpisodeItemPlaying() {
                 fallbackImageUrl = "",
                 isPlaying = true,
                 isDownloaded = true,
-                id = ""
+                id = "",
+                author = "Author Name"
             ),
         )
     }

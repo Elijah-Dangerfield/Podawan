@@ -4,7 +4,7 @@ import android.content.Context
 import com.dangerfield.libraries.dictionary.Dictionary
 import podawan.core.BuildInfo
 import podawan.core.Catching
-import podawan.core.applyArgs
+import com.dangerfield.libraries.dictionary.applyArgs
 
 /**
  * Main dictionary to be used for the app that resolves values between the

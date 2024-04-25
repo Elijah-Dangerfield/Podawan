@@ -1,21 +1,20 @@
 package com.dangerfield.features.feed.internal
 
-import androidx.compose.foundation.layout.Box
-import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.runtime.getValue
-import androidx.compose.ui.Alignment.Companion.Center
-import androidx.compose.ui.Modifier
 import androidx.hilt.navigation.compose.hiltViewModel
 import androidx.lifecycle.compose.collectAsStateWithLifecycle
 import androidx.navigation.NavGraphBuilder
 import androidx.navigation.compose.composable
 import com.dangerfield.features.blockingerror.navigateToBlockingError
 import com.dangerfield.features.blockingerror.navigateToGeneralErrorDialog
+import com.dangerfield.features.feed.episodeDetailsRoute
 import com.dangerfield.features.feed.feedRoute
+import com.dangerfield.features.feed.toEpisodeDetails
 import com.dangerfield.libraries.coreflowroutines.ObserveWithLifecycle
 import com.dangerfield.libraries.navigation.HomeTabNavBuilder
 import com.dangerfield.libraries.navigation.Router
-import com.dangerfield.ui.components.CircularProgressIndicator
+import com.dangerfield.ui.components.FullScreenLoader
+import podawan.core.doNothing
 import se.ansman.dagger.auto.AutoBindIntoSet
 import javax.inject.Inject
 
@@ -27,7 +26,6 @@ class ModuleNavGraphBuilder @Inject constructor() : HomeTabNavBuilder {
             route = feedRoute.navRoute,
             arguments = feedRoute.navArguments
         ) {
-
             val viewModel: FeedViewModel = hiltViewModel()
             val state by viewModel.stateFlow.collectAsStateWithLifecycle()
 
@@ -38,12 +36,12 @@ class ModuleNavGraphBuilder @Inject constructor() : HomeTabNavBuilder {
             }
 
             if (state.isLoading) {
-                Box(modifier = Modifier.fillMaxSize(), contentAlignment = Center) {
-                    CircularProgressIndicator()
-                }
+                FullScreenLoader()
             } else {
                 FeedScreen(
-                    title = state.podcastShow?.title.orEmpty(),
+                    showTitle = state.podcastShow?.title.orEmpty(),
+                    showDescription = state.podcastShow?.description.orEmpty(),
+                    heroImageUrl = state.podcastShow?.image?.url,
                     episodes = state.episodes,
                     onEpisodePlayClicked = {
                         viewModel.takeAction(FeedViewModel.Action.PlayEpisode(it))
@@ -54,10 +52,48 @@ class ModuleNavGraphBuilder @Inject constructor() : HomeTabNavBuilder {
                     onEpisodeDownloadClicked = {
                         viewModel.takeAction(FeedViewModel.Action.DownloadEpisode(it))
                     },
-                    onClickTitle =  {
+                    onClickTitle = {
                         router.navigateToBlockingError()
+                    },
+                    onClickEpisode = {
+                        router.toEpisodeDetails(it.id)
                     }
                 )
+            }
+        }
+
+        composable(
+            route = episodeDetailsRoute.navRoute,
+            arguments = episodeDetailsRoute.navArguments
+        ) {
+            val viewModel: EpisodeDetailsViewModel = hiltViewModel()
+            val state by viewModel.stateFlow.collectAsStateWithLifecycle()
+
+            ObserveWithLifecycle(flow = viewModel.eventFlow) {
+                when (it) {
+                    EpisodeDetailsViewModel.Event.LoadFailed -> router.navigateToGeneralErrorDialog()
+                }
+            }
+
+            state.episode.let { episode ->
+                if (episode == null) {
+                    FullScreenLoader()
+                } else {
+                    EpisodeDetailsScreen(
+                        episode = episode,
+                        onPauseClicked = {
+                            viewModel.takeAction(EpisodeDetailsViewModel.Action.PauseEpisode)
+                        },
+                        onPlayClicked = {
+                            viewModel.takeAction(EpisodeDetailsViewModel.Action.PlayEpisode)
+                        },
+                        onDownloadClicked = {
+                            viewModel.takeAction(EpisodeDetailsViewModel.Action.DownloadEpisode)
+                        },
+                        onShareClicked = { doNothing() },
+                        onNavigateBack = { router.goBack() }
+                    )
+                }
             }
         }
     }

@@ -3,14 +3,14 @@ package com.dangerfield.libraries.dictionary.internal.ui
 import androidx.navigation.NavType
 import androidx.navigation.navArgument
 import com.dangerfield.libraries.navigation.Router
-import com.dangerfield.libraries.navigation.fillRoute
+import com.dangerfield.libraries.navigation.fill
 import com.dangerfield.libraries.navigation.route
 
 fun Router.navigateToLanguageSupportDialog(supportLevelName: String, languageDisplayName: String) {
     navigate(
-        fillRoute(languageSupportRoute) {
-            fillArg(supportLevelNameNavArgument, supportLevelName)
-            fillArg(languageNavArgument, languageDisplayName)
+        languageSupportRoute.fill {
+            arg(supportLevelNameNavArgument, supportLevelName)
+            arg(languageNavArgument, languageDisplayName)
         }
     )
 }

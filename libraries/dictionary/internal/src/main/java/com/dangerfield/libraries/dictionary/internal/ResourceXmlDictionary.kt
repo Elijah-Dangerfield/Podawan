@@ -4,7 +4,7 @@ import android.content.Context
 import com.dangerfield.libraries.dictionary.Dictionary
 import dagger.hilt.android.qualifiers.ApplicationContext
 import podawan.core.Catching
-import podawan.core.applyArgs
+import com.dangerfield.libraries.dictionary.applyArgs
 import javax.inject.Inject
 import javax.inject.Singleton
 

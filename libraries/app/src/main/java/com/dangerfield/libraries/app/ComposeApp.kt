@@ -12,11 +12,15 @@ import androidx.compose.material3.SnackbarResult
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.getValue
+import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
 import androidx.compose.runtime.rememberCoroutineScope
+import androidx.compose.runtime.saveable.rememberSaveable
+import androidx.compose.runtime.setValue
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.platform.LocalLifecycleOwner
 import androidx.lifecycle.compose.collectAsStateWithLifecycle
+import androidx.navigation.NavDestination
 import androidx.navigation.NavGraph.Companion.findStartDestination
 import androidx.navigation.compose.NavHost
 import androidx.navigation.compose.navigation
@@ -26,17 +30,18 @@ import com.dangerfield.features.inAppMessaging.UpdateStatus
 import com.dangerfield.features.inAppMessaging.internal.update.DownloadProgressBar
 import com.dangerfield.features.library.libraryRoute
 import com.dangerfield.features.search.searchRoute
-import com.dangerfield.libraries.coreflowroutines.collectWithPreviousAsStateWithLifecycle
+import com.dangerfield.libraries.coreflowroutines.collectWithPrevious
 import com.dangerfield.libraries.coreflowroutines.observeWithLifecycle
 import com.dangerfield.libraries.navigation.DelegatingRouter
 import com.dangerfield.libraries.navigation.NavAnimType
 import com.dangerfield.libraries.navigation.NavControllerRouter
 import com.dangerfield.libraries.navigation.NavGraphRegistry
 import com.dangerfield.libraries.navigation.Route
-import com.dangerfield.libraries.navigation.fillRoute
+import com.dangerfield.libraries.navigation.RouteInfo
+import com.dangerfield.libraries.navigation.asRouteInfo
+import com.dangerfield.libraries.navigation.fill
 import com.dangerfield.libraries.navigation.floatingwindow.FloatingWindowHost
 import com.dangerfield.libraries.navigation.floatingwindow.FloatingWindowNavigator
-import com.dangerfield.libraries.navigation.internal.determineNavAnimation
 import com.dangerfield.libraries.navigation.mainGraphRoute
 import com.dangerfield.libraries.network.internal.OfflineBar
 import com.dangerfield.libraries.ui.LocalAppState
@@ -47,13 +52,13 @@ import com.dangerfield.ui.components.Snackbar
 import com.dangerfield.ui.components.podawanSnackbarData
 import kotlinx.coroutines.flow.distinctUntilChanged
 import kotlinx.coroutines.flow.map
-import kotlinx.coroutines.flow.onEach
 import podawan.core.SnackBarPresenter
+import podawan.core.allOrNone
 import timber.log.Timber
 
 @Composable
 fun PodawanApp(
-    startingRoute: Route.Filled,
+    startingRouteTemplate: Route.Template,
     delegatingRouter: DelegatingRouter,
     updateStatus: UpdateStatus?,
     navGraphRegistry: NavGraphRegistry
@@ -67,47 +72,75 @@ fun PodawanApp(
     val coroutineScope = rememberCoroutineScope()
     val lifecycle = LocalLifecycleOwner.current.lifecycle
 
+    val filledStartingRoute = rememberSaveable(startingRouteTemplate) {
+        startingRouteTemplate.fill {
+            isTopLevel = startingRouteTemplate != mainGraphRoute
+            navAnimType = NavAnimType.None
+        }
+    }
+
     val actualRouter = remember {
         NavControllerRouter(
             navHostController = navController,
             coroutineScope = coroutineScope,
-            startingRoute = startingRoute
         )
     }
 
-    val (prevRoute, currentRoute) = delegatingRouter
-        .currentRouteFlow
-        .onEach { Timber.d("Current Route from flow: ${it.route}") }
-        .collectWithPreviousAsStateWithLifecycle(startingRoute)
-        .value
+    var currentRouteInfo: RouteInfo by remember { mutableStateOf(filledStartingRoute.asRouteInfo()) }
+    var prevRouteInfo: RouteInfo? by remember { mutableStateOf(null) }
 
-    val (previousDestination, currentDestination) = navController
-        .currentBackStackEntryFlow
-        .map { it.destination }
-        .distinctUntilChanged()
-        .collectWithPreviousAsStateWithLifecycle(initialValue = null)
-        .value
+    LaunchedEffect(Unit) {
+        delegatingRouter
+            .currentRouteInfo
+            .collectWithPrevious { prev, curr ->
+                currentRouteInfo = curr
+                prevRouteInfo = prev
+            }
+    }
 
-    val shouldHideBottomBar = currentRoute.isTopLevel == true
+    var previousDestination: NavDestination? by remember { mutableStateOf(null) }
+    var currentDestination: NavDestination? by remember { mutableStateOf(null) }
+
+    LaunchedEffect(Unit) {
+        navController
+            .currentBackStackEntryFlow
+            .map { it.destination }
+            .distinctUntilChanged()
+            .collectWithPrevious { prev, curr ->
+                currentDestination = curr
+                previousDestination = prev
+            }
+    }
+
+    val isSwitchingBottomTabs = allOrNone(
+        currentDestination?.bottomTabRoute(),
+        previousDestination?.bottomTabRoute()
+    ) { currentTab, previousTab ->
+        currentTab != previousTab
+    } ?: false
+
+    LaunchedEffect(currentRouteInfo, prevRouteInfo, currentDestination, previousDestination) {
+        Timber.d(
+            """
+            ------------------------------------------------------
+            currentRouteInfo: $currentRouteInfo
+            prevRouteInfo: $prevRouteInfo
+            
+            isSwitchingBottomTabs: $isSwitchingBottomTabs
+            ------------------------------------------------------
+        """.trimIndent()
+        )
+
+    }
+
     val currentSelectedTabRoute = currentDestination?.bottomTabRoute() ?: homeGraphRoute
+
     val navAnim = determineNavAnimation(
-        to = currentRoute,
-        from = prevRoute,
+        to = currentRouteInfo,
+        from = prevRouteInfo,
         currentDestination = currentDestination,
         previousDestination = previousDestination
     )
-
-    LaunchedEffect(currentRoute, currentDestination) {
-        Timber.d(
-            """
-                ------------------------------------------------------------------
-                currentRoute: ${currentRoute.route}
-                isTopLevel: ${currentRoute.isTopLevel}
-                currentDestination: ${currentDestination?.route}
-                ------------------------------------------------------------------
-            """.trimIndent()
-        )
-    }
 
     LaunchedEffect(Unit) {
         SnackBarPresenter
@@ -129,6 +162,34 @@ fun PodawanApp(
                 }
             }
     }
+
+    LaunchedEffect(
+        actualRouter,
+        lifecycle,
+        startingRouteTemplate,
+    ) {
+        delegatingRouter.setRouter(
+            router = actualRouter,
+            lifecycle = lifecycle,
+        )
+
+        // Starting destinations arent shown in response to a call with a filled route,
+        // so we preemptively register the filled routes here so that when they are
+        // added to the backstack we can expose the correct RouteInfo
+        actualRouter.registerStartingRoutes(
+            startingRouteTemplate to filledStartingRoute,
+
+            homeGraphRoute to homeGraphRoute.fill(),
+            feedRoute to feedRoute.fill(),
+
+            searchGraphRoute to searchGraphRoute.fill(),
+            searchRoute to searchRoute.fill(),
+
+            libraryRoute to libraryRoute.fill(),
+            libraryGraphRoute to libraryGraphRoute.fill(),
+        )
+    }
+
 
     PodawanTheme {
         Screen(
@@ -153,21 +214,24 @@ fun PodawanApp(
             },
             bottomBar = {
                 AnimatedVisibility(
-                    visible = !shouldHideBottomBar,
+                    visible = !currentRouteInfo.isTopLevel,
                     enter = expandVertically(),
                     exit = shrinkVertically(),
                 ) {
                     AppBottomBar(
                         currentTabRoute = currentSelectedTabRoute,
                         onItemClick = { item ->
-                            delegatingRouter.navigate(
-                                fillRoute(item) {
-                                    popUpTo(
-                                        id = navController.graph.findStartDestination().id,
-                                        saveState = true
-                                    )
+                            actualRouter.navigate(
+                                item.fill {
+                                    navAnimType = NavAnimType.None
+
                                     launchSingleTop = true
                                     restoreState = true
+
+                                    popUpTo(
+                                        actualRouter.navHostController.graph.findStartDestination().id,
+                                        saveState = true
+                                    )
                                 }
                             )
                         }
@@ -179,30 +243,6 @@ fun PodawanApp(
                 modifier = Modifier.padding(it)
             ) {
 
-                LaunchedEffect(
-                    actualRouter,
-                    lifecycle,
-                    startingRoute,
-                ) {
-                    delegatingRouter.setRouter(
-                        router = actualRouter,
-                        lifecycle = lifecycle,
-                        startingRoute = startingRoute
-                    )
-
-                    // the base screens of a tab are never navigated to, so they are never added to the
-                    // list inside the router that allows us to track the current route
-                    // which we use for determining the nav animation. So we need to manually add them
-                    actualRouter.addRoutes(
-                        listOf(
-                            startingRoute,
-                            feedRoute.noArgRoute(navAnimType = NavAnimType.None),
-                            searchRoute.noArgRoute(navAnimType = NavAnimType.None),
-                            libraryRoute.noArgRoute(navAnimType = NavAnimType.None)
-                        )
-                    )
-                }
-
                 OfflineBar(isOffline)
 
                 DownloadProgressBar(updateStatus)
@@ -210,22 +250,23 @@ fun PodawanApp(
                 NavHost(
                     //modifier = Modifier.padding(it),
                     navController = navController,
-                    startDestination = startingRoute.route,
+                    startDestination = startingRouteTemplate.navRoute,
                     enterTransition = navAnim.enter,
                     exitTransition = navAnim.exit,
                     popEnterTransition = navAnim.popEnter,
                     popExitTransition = navAnim.popExit
                 ) {
 
-
                     navGraphRegistry.addGlobalDestinations(this)
 
                     navigation(
                         route = mainGraphRoute.navRoute,
+                        arguments = mainGraphRoute.navArguments,
                         startDestination = homeGraphRoute.navRoute,
                     ) {
                         navigation(
                             route = homeGraphRoute.navRoute,
+                            arguments = homeGraphRoute.navArguments,
                             startDestination = feedRoute.navRoute,
                         ) {
                             navGraphRegistry.addHomeDestinations(this)
@@ -233,6 +274,7 @@ fun PodawanApp(
 
                         navigation(
                             route = searchGraphRoute.navRoute,
+                            arguments = searchGraphRoute.navArguments,
                             startDestination = searchRoute.navRoute
                         ) {
                             navGraphRegistry.addSearchDestinations(this)
@@ -240,6 +282,7 @@ fun PodawanApp(
 
                         navigation(
                             route = libraryGraphRoute.navRoute,
+                            arguments = libraryGraphRoute.navArguments,
                             startDestination = libraryRoute.navRoute
                         ) {
                             navGraphRegistry.addLibraryDestinations(this)

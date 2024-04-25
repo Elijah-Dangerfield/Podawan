@@ -51,7 +51,7 @@ class SplashScreenBuilder @Inject constructor(
 
                 Catching {
 
-                    val animator = splashScreenViewProvider.startIconRotation()
+                    val animator = splashScreenViewProvider.startIconPulse()
 
                     (activity as? LifecycleOwner)?.lifecycleScope?.launch {
                         var isSplashScreenUp = keepOnScreenCondition()
@@ -94,4 +94,31 @@ class SplashScreenBuilder @Inject constructor(
         Timber.e("SplashScreenBuilder: Failed to start icon rotation. Exception caught: $t")
         null
     }
+
+    @Suppress("MagicNumber", "TooGenericExceptionCaught")
+    private fun SplashScreenViewProvider.startIconPulse(): ValueAnimator? = try {
+        val animator = ValueAnimator.ofFloat(0.8f, 1.2f) // Scale values from 0.8x to 1.2x
+        animator.addUpdateListener { animation ->
+            try {
+                if (iconView != null) {
+                    val scale = animation.animatedValue as Float
+                    iconView.scaleX = scale
+                    iconView.scaleY = scale
+                }
+            } catch (t: Throwable) {
+                Timber.e("SplashScreenBuilder: icon view was null. Exception caught: $t")
+            }
+        }
+        animator.duration = 1500 // duration to complete one pulse cycle
+        animator.repeatCount = ValueAnimator.INFINITE
+        animator.repeatMode = ValueAnimator.REVERSE // Reverses the animation at the end of each cycle
+        animator.start()
+        animator
+    } catch (t: Throwable) {
+        Timber.e("SplashScreenBuilder: Failed to start icon pulse. Exception caught: $t")
+        null
+    }
+
 }
+
+

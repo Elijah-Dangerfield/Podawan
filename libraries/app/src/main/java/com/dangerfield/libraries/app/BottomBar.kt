@@ -1,6 +1,7 @@
 package com.dangerfield.libraries.app
 
 import androidx.compose.foundation.layout.Arrangement
+import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.PaddingValues
 import androidx.compose.foundation.layout.Row
@@ -9,6 +10,7 @@ import androidx.compose.foundation.layout.WindowInsets
 import androidx.compose.foundation.layout.defaultMinSize
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.heightIn
+import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.windowInsetsPadding
 import androidx.compose.foundation.selection.selectableGroup
 import androidx.compose.material3.ExperimentalMaterial3Api
@@ -19,29 +21,45 @@ import androidx.compose.runtime.Composable
 import androidx.compose.runtime.getValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.graphics.luminance
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import androidx.lifecycle.compose.collectAsStateWithLifecycle
 import com.dangerfield.libraries.navigation.BottomBarMaxHeight
 import com.dangerfield.libraries.navigation.BottomBarMinHeight
+import com.dangerfield.libraries.navigation.NavAnimType
 import com.dangerfield.libraries.navigation.Route
+import com.dangerfield.libraries.navigation.fill
 import com.dangerfield.libraries.navigation.route
 import com.dangerfield.libraries.ui.Elevation
 import com.dangerfield.libraries.ui.LocalAppState
+import com.dangerfield.libraries.ui.elevation
 import com.dangerfield.libraries.ui.preview.Preview
 import com.dangerfield.ui.components.icon.Icon
 import com.dangerfield.ui.components.icon.PodawanIcon
 import com.dangerfield.ui.components.text.Text
 import com.dangerfield.libraries.ui.theme.PodawanTheme
+import com.dangerfield.libraries.ui.thenIf
 import com.dangerfield.ui.components.Badge
 import com.dangerfield.ui.components.BadgedBox
 import com.dangerfield.ui.components.HorizontalDivider
 import com.dangerfield.ui.components.Surface
 import podawan.core.App
 
-val homeGraphRoute = route("homeGraph")
-val searchGraphRoute = route("searchGraph")
-val libraryGraphRoute = route("libraryGraph")
+val homeGraphRoute = route("homeGraph") {
+    isTopLevel(false)
+    navAnimType(NavAnimType.None)
+}
+
+val searchGraphRoute = route("searchGraph") {
+    isTopLevel(false)
+    navAnimType(NavAnimType.None)
+}
+
+val libraryGraphRoute = route("libraryGraph") {
+    isTopLevel(false)
+    navAnimType(NavAnimType.None)
+}
 
 @Composable
 fun AppBottomBar(
@@ -58,11 +76,16 @@ fun AppBottomBar(
     )
 
     Column {
-        if (!isPlayingContent) {
+
+        val isDark = PodawanTheme.colors.background.color.luminance() < 0.5f
+
+        if (!isPlayingContent && isDark) {
             HorizontalDivider()
         }
 
-        NavigationBar(modifier) {
+        NavigationBar(
+            modifier.thenIf(!isPlayingContent &&!isDark) { elevation(Elevation.BottomBar) }
+        ) {
             tabs.forEachIndexed { index, item ->
                 NavigationBarItem(
                     colors = itemColors(),
@@ -191,7 +214,6 @@ data class BottomBarItem(
 @Preview
 @Composable
 private fun BottomBarPreview() {
-
     Preview {
         AppBottomBar(
             currentTabRoute = homeGraphRoute,
@@ -203,7 +225,9 @@ private fun BottomBarPreview() {
 @Preview
 @Composable
 private fun BottomBarPreviewStuffYouShouldKnow() {
-    Preview(app = App.StuffYouShouldKnow) {
+    Preview(
+        app = App.StuffYouShouldKnow
+    ) {
         AppBottomBar(
             currentTabRoute = homeGraphRoute,
             onItemClick = {}

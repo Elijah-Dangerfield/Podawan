@@ -1,5 +1,6 @@
-package com.dangerfield.libraries.navigation.internal
+package com.dangerfield.libraries.app
 
+import android.util.Log
 import androidx.compose.animation.AnimatedContentTransitionScope
 import androidx.compose.animation.EnterTransition
 import androidx.compose.animation.ExitTransition
@@ -7,9 +8,9 @@ import androidx.compose.animation.fadeIn
 import androidx.compose.animation.fadeOut
 import androidx.navigation.NavBackStackEntry
 import androidx.navigation.NavDestination
-import com.dangerfield.libraries.app.bottomTabRoute
 import com.dangerfield.libraries.navigation.NavAnimType
 import com.dangerfield.libraries.navigation.Route
+import com.dangerfield.libraries.navigation.RouteInfo
 import com.dangerfield.libraries.navigation.fadeInToEndAnim
 import com.dangerfield.libraries.navigation.fadeOutToStart
 import com.dangerfield.libraries.navigation.noAnimEnter
@@ -23,8 +24,8 @@ import podawan.core.allOrNone
  */
 
 fun determineNavAnimation(
-    to: Route.Filled,
-    from: Route.Filled?,
+    to: RouteInfo,
+    from: RouteInfo?,
     currentDestination: NavDestination?,
     previousDestination: NavDestination?
 ): NavAnimation {
@@ -74,26 +75,41 @@ fun determineNavAnimation(
         when (from?.navAnimType) {
             // if previous screen had no enter/exit anim, then we should have no enter anim
             NavAnimType.None -> {
-                { noAnimEnter() }
+                {
+                    Log.d("Elijah","no anim on enter because previous screen had no anim")
+                    noAnimEnter()
+                }
             }
 
             // if previous screen faded out, then we should fade in
             NavAnimType.FadeIn -> {
-                { fadeIn() }
+                {
+                    Log.d("Elijah","fade in on enter because previous screen faded out")
+                    fadeIn()
+                }
             }
 
             // if previous screen slid out, then we should slide in
             NavAnimType.SlideIn -> {
-                { fadeInToEndAnim() }
+                {
+                    Log.d("Elijah","slide in on enter because previous screen slid out")
+                    fadeInToEndAnim()
+                }
             }
 
             // if previous screen slide over, then itll side back out, dont anim previous screen
             NavAnimType.SlideOver -> {
-                { noAnimEnter() }
+                {
+                    Log.d("Elijah","no anim on enter because previous screen slid over")
+                    noAnimEnter()
+                }
             }
 
             null -> {
-                { noAnimEnter() }
+                {
+                    Log.d("Elijah","no anim on enter because previous screen was null")
+                    noAnimEnter()
+                }
             }
         }
 

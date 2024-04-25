@@ -1,42 +1,30 @@
 package com.dangerfield.features.feed
 
+import androidx.navigation.NavType
+import androidx.navigation.navArgument
 import com.dangerfield.libraries.navigation.NavAnimType
 import com.dangerfield.libraries.navigation.Router
-import com.dangerfield.libraries.navigation.fillRoute
+import com.dangerfield.libraries.navigation.fill
 import com.dangerfield.libraries.navigation.route
 
-fun Router.navigateToFeedA() {
-    navigate(
-        feedA.noArgRoute()
-    )
-}
 
-fun Router.navigateToFeedB() {
-    navigate(feedB.noArgRoute())
-}
-
-fun Router.navigateToFeedC() {
+fun Router.toEpisodeDetails(id: String) {
     navigate(
-        fillRoute(feedC) {
-            isTopLevel = true
-            navAnimType = NavAnimType.SlideOver
+        episodeDetailsRoute.fill {
+            arg(episodeIdArgument, id)
         }
     )
 }
 
 val feedRoute = route("feed") {
-    // argument(someArgument)
+    isTopLevel(false)
+    navAnimType(NavAnimType.None)
 }
 
-val feedA = route("feedA") {
-    // argument(someArgument)
+val episodeIdArgument = navArgument("episodeId") {
+    type = NavType.StringType
 }
 
-val feedB = route("feedB") {
-    // argument(someArgument)
-}
-
-val feedC = route("feedC", isTopLevel = true) {
-    // argument(someArgument)
-    isTopLevel(true)
+val episodeDetailsRoute = route("episodeDetails") {
+     argument(episodeIdArgument)
 }

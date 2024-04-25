@@ -1,26 +1,30 @@
 package com.dangerfield.features.feed.internal
 
 import androidx.lifecycle.SavedStateHandle
+import com.dangerfield.features.feed.episodeIdArgument
 import com.dangerfield.libraries.coreflowroutines.SEAViewModel
+import com.dangerfield.libraries.navigation.navArgument
 import com.dangerfield.libraries.podcast.DisplayableEpisode
 import com.dangerfield.libraries.podcast.PodcastRepository
-import com.dangerfield.libraries.podcast.PodcastShow
-import com.dangerfield.libraries.podcast.getDisplayableEpisodes
+import com.dangerfield.libraries.podcast.toDisplayable
 import dagger.hilt.android.lifecycle.HiltViewModel
 import podawan.core.doNothing
-import podawan.core.eitherWay
 import javax.inject.Inject
 
 @HiltViewModel
-class FeedViewModel @Inject constructor(
+class EpisodeDetailsViewModel @Inject constructor(
     private val podcastRepository: PodcastRepository,
     savedStateHandle: SavedStateHandle
-) : SEAViewModel<FeedViewModel.State, FeedViewModel.Event, FeedViewModel.Action>(
+) : SEAViewModel<EpisodeDetailsViewModel.State, EpisodeDetailsViewModel.Event, EpisodeDetailsViewModel.Action>(
     savedStateHandle,
     State()
 ) {
 
-    init { takeAction(Action.Load) }
+    val id = savedStateHandle.navArgument<String>(episodeIdArgument)
+
+    init {
+        takeAction(Action.Load)
+    }
 
     override suspend fun handleAction(action: Action) {
         when (action) {
@@ -34,13 +38,7 @@ class FeedViewModel @Inject constructor(
     private suspend fun Action.PlayEpisode.handlePlay() {
         updateState {
             it.copy(
-                episodes = it.episodes.map { ep ->
-                    if (episode == ep) {
-                        ep.copy(isPlaying = true)
-                    } else {
-                        ep.copy(isPlaying = false)
-                    }
-                }
+                episode = it.episode?.copy(isPlaying = true),
             )
         }
     }
@@ -48,39 +46,32 @@ class FeedViewModel @Inject constructor(
     private suspend fun Action.PauseEpisode.handlePause() {
         updateState {
             it.copy(
-                episodes = it.episodes.map { ep ->
-                    ep.copy(isPlaying = false)
-                }
+                episode = it.episode?.copy(isPlaying = false),
             )
         }
     }
 
     private suspend fun Action.Load.handleLoad() {
-        updateState { it.copy(isLoading = true) }
+        if (id == null) {
+            sendEvent(Event.LoadFailed)
+            return
+        }
 
-        podcastRepository.getPodcast()
-            .onSuccess { podcast ->
-                val episodes = podcast.getDisplayableEpisodes()
+        podcastRepository.getEpisode(id)
+            .onSuccess { episode ->
 
                 updateState {
                     it.copy(
-                        podcastShow = podcast,
-                        episodes = episodes,
-                        isLoading = false
+                        episode = episode.toDisplayable(),
                     )
                 }
             }.onFailure {
                 sendEvent(Event.LoadFailed)
             }
-            .eitherWay {
-                updateState { it.copy(isLoading = false) }
-            }
     }
 
     data class State(
-        val isLoading: Boolean = false,
-        val podcastShow: PodcastShow? = null,
-        val episodes: List<DisplayableEpisode> = emptyList()
+        val episode: DisplayableEpisode? = null,
     )
 
     sealed class Event {
@@ -89,8 +80,8 @@ class FeedViewModel @Inject constructor(
 
     sealed class Action {
         object Load : Action()
-        class PlayEpisode(val episode: DisplayableEpisode) : Action()
-        class PauseEpisode(val episode: DisplayableEpisode) : Action()
-        class DownloadEpisode(val episode: DisplayableEpisode) : Action()
+        object PlayEpisode : Action()
+        object PauseEpisode : Action()
+        object DownloadEpisode : Action()
     }
 }

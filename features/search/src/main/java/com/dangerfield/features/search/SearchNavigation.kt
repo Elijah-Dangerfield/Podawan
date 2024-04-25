@@ -2,35 +2,37 @@ package com.dangerfield.features.search
 
 import com.dangerfield.libraries.navigation.NavAnimType
 import com.dangerfield.libraries.navigation.Router
-import com.dangerfield.libraries.navigation.fillRoute
+import com.dangerfield.libraries.navigation.fill
 import com.dangerfield.libraries.navigation.route
 
 fun Router.navigateToSearch() {
     navigate(
-        fillRoute(searchRoute) {
+        searchRoute.fill {
             //fill(someArgument, someValue)
         }
     )
 }
 
 fun Router.navigateToSearchA() {
-    navigate(searchA.noArgRoute())
+    navigate(searchA.fill())
 }
 
 fun Router.navigateToSearchB() {
-    navigate(searchB.noArgRoute())
+    navigate(searchB.fill())
 }
 
 fun Router.navigateToSearchC() {
-    navigate(searchC.noArgRoute())
+    navigate(searchC.fill())
 }
 
 val searchRoute = route("search") {
-    // argument(someArgument)
+    isTopLevel(false)
+    navAnimType(NavAnimType.None)
 }
 
 val searchA = route("searchA") {
     // argument(someArgument)
+    isTopLevel(true)
 }
 
 val searchB = route("searchB") {

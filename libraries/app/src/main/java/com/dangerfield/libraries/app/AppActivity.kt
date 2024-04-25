@@ -1,7 +1,6 @@
 package com.dangerfield.libraries.app
 
 import android.os.Bundle
-import android.util.Log
 import androidx.activity.ComponentActivity
 import androidx.activity.compose.setContent
 import androidx.activity.viewModels
@@ -10,7 +9,6 @@ import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.derivedStateOf
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.remember
-import androidx.compose.runtime.saveable.rememberSaveable
 import androidx.lifecycle.Lifecycle
 import androidx.lifecycle.compose.collectAsStateWithLifecycle
 import androidx.lifecycle.lifecycleScope
@@ -40,13 +38,10 @@ import com.dangerfield.libraries.ui.LocalBuildInfo
 import com.dangerfield.libraries.ui.LocalColors
 import com.dangerfield.libraries.ui.color.Colors
 import kotlinx.coroutines.Dispatchers
-import kotlinx.coroutines.flow.MutableStateFlow
-import kotlinx.coroutines.flow.StateFlow
 import kotlinx.coroutines.flow.first
 import kotlinx.coroutines.launch
 import kotlinx.coroutines.withContext
 import oddoneout.core.AppConfiguration
-import podawan.core.AppState
 import podawan.core.BuildInfo
 import podawan.core.Message
 import podawan.core.SnackBarPresenter
@@ -106,7 +101,6 @@ open class AppActivity : ComponentActivity() {
                 withContext(Dispatchers.Main.immediate) {
                     mainActivityViewModel.stateFlow.first { !it.isLoadingApp }
                     if (!hasDrawnApp.getAndSet(true)) {
-                        Log.d("Elijah", "calling set content")
                         setAppContent()
                         mainActivityViewModel.takeAction(LoadConsentStatus(this@AppActivity))
                     }
@@ -133,12 +127,10 @@ open class AppActivity : ComponentActivity() {
                 }
             }
 
+            val appState = rememberAppState(networkMonitor = networkMonitor)
+
             val isAppUpdateStatus by remember {
                 derivedStateOf { state.inAppUpdateStatus }
-            }
-
-            val startingRoute = rememberSaveable(startingRouteTemplate) {
-                startingRouteTemplate.noArgRoute(isTopLevel = startingRouteTemplate != mainGraphRoute)
             }
 
             LaunchedEffect(state.languageSupportLevelMessage) {
@@ -159,10 +151,10 @@ open class AppActivity : ComponentActivity() {
                 LocalMetricsTracker provides metricsTracker,
                 LocalDictionary provides dictionary,
                 LocalBuildInfo provides buildInfo,
-                LocalAppState provides fakeAppState,
+                LocalAppState provides appState,
             ) {
                 PodawanApp(
-                    startingRoute = startingRoute,
+                    startingRouteTemplate = startingRouteTemplate,
                     delegatingRouter = delegatingRouter,
                     navGraphRegistry = navGraphRegistry,
                     updateStatus = isAppUpdateStatus
@@ -222,12 +214,4 @@ open class AppActivity : ComponentActivity() {
             else -> doNothing()
         }
     }
-}
-
-val fakeAppState = object: AppState {
-    override val isOffline: StateFlow<Boolean>
-        get() = MutableStateFlow(false)
-    override val isPlayingContent: StateFlow<Boolean>
-        get() = MutableStateFlow(false)
-
 }

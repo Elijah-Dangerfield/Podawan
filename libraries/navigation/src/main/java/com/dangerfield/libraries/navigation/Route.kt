@@ -1,12 +1,6 @@
 package com.dangerfield.libraries.navigation
 
 import android.os.Parcelable
-import androidx.compose.animation.AnimatedContentTransitionScope
-import androidx.compose.animation.EnterTransition
-import androidx.compose.animation.ExitTransition
-import androidx.compose.animation.core.tween
-import androidx.compose.animation.fadeIn
-import androidx.compose.animation.fadeOut
 import androidx.compose.runtime.Immutable
 import androidx.navigation.NamedNavArgument
 import androidx.navigation.NavArgumentBuilder
@@ -20,6 +14,7 @@ import podawan.core.checkInDebug
 import podawan.core.doNothing
 import podawan.core.logOnFailure
 import podawan.core.throwIfDebug
+import timber.log.Timber
 
 /**
  * Route is a class that represents a destination in a navigation graph.
@@ -36,24 +31,38 @@ class Route internal constructor() {
     class Builder internal constructor() {
 
         private var baseRoute: String = ""
-        private val arguments = mutableListOf<NamedNavArgument>()
-        private var deepLinks = listOf<NavDeepLink>()
+
+        // These are baked into the route so that the NavHost can use them to determine animations
+        // and bottom bar visibility.
+        private val arguments = mutableListOf<NamedNavArgument>(
+            isTopLevelArg,
+            isLaunchSingleTopArg,
+            restoreStateArg,
+            navAnimTypeArg
+        )
+        private var deepLinks = mutableListOf<NavDeepLink>()
         private var isTopLevel: Boolean? = null
+        private var navAnimType: NavAnimType? = null
 
         fun route(
             route: String,
-            deepLinks: List<NavDeepLink> = emptyList(),
-            isTopLevel: Boolean? = null
         ): Builder {
             this.baseRoute = route
-            this.deepLinks = deepLinks
-            // only assign if passed in, otherwise leave as is
-            isTopLevel?.let { this.isTopLevel = it }
+            return this
+        }
+
+        fun deepLink(link: NavDeepLink): Builder {
+            deepLinks.add(link)
             return this
         }
 
         fun isTopLevel(value: Boolean = true): Route.Builder {
             isTopLevel = value
+            return this
+        }
+
+        fun navAnimType(value: NavAnimType): Route.Builder {
+            navAnimType = value
             return this
         }
 
@@ -95,10 +104,10 @@ class Route internal constructor() {
             checkForDuplicateArguments()
             checkForUndefinedRoute()
 
-            val safeArgs = arguments.distinctBy { it.name }
+            val args = arguments.distinctBy { it.name }
 
             val templatedRoute =
-                arguments.fold(StringBuilder(baseRoute)) { routeBuilder, argument ->
+                args.fold(StringBuilder(baseRoute)) { routeBuilder, argument ->
                     if (routeBuilder.contains("?")) {
                         // not the first argument, use &
                         routeBuilder.append("&${argument.name}={${argument.name}}")
@@ -106,12 +115,17 @@ class Route internal constructor() {
                         // first argument, use ?
                         routeBuilder.append("?${argument.name}={${argument.name}}")
                     }
-
                 }
+
+            if (templatedRoute.toString().contains("login")) {
+                Timber.d("building template with route: ${templatedRoute.toString()}")
+                Timber.d("Arugments were: ${args.joinToString(" | ") { it.name}}")
+            }
 
             return Template(
                 navRoute = templatedRoute.toString(),
-                navArguments = safeArgs,
+                navArguments = args.toList(),
+                navAnimType = navAnimType,
                 deepLinks = deepLinks,
                 isTopLevel = isTopLevel,
             )
@@ -145,40 +159,22 @@ class Route internal constructor() {
         val navArguments: List<NamedNavArgument>,
         val deepLinks: List<NavDeepLink>,
         val isTopLevel: Boolean?,
+        val navAnimType: NavAnimType? = null
     ) {
-
-        fun noArgRoute(
-            singleTop: Boolean = true,
-            isTopLevel: Boolean? = null,
-            navAnimType: NavAnimType = NavAnimType.SlideIn
-        ): Filled {
-            val filler = Filler(
-                navRoute,
-                navArguments,
-                deepLinks,
-                isTopLevel = isTopLevel ?: this.isTopLevel,
-                navAnimType = navAnimType,
-            )
-
-            filler.launchSingleTop(singleTop)
-            return filler.build()
-        }
 
         class Filler internal constructor(
             val navRoute: String,
-            val navArguments: List<NamedNavArgument>,
-            val deepLinks: List<NavDeepLink>,
-            var isTopLevel: Boolean? = null,
-            var navAnimType: NavAnimType = NavAnimType.SlideIn
+            val navArguments: List<NamedNavArgument> = emptyList(),
+            var isTopLevel: Boolean = isTopLevelDefault,
+            var navAnimType: NavAnimType = navAnimTypeDefault,
+            private var popUpTo: NavPopUp? = null,
+            var launchSingleTop: Boolean? = null,
+            var restoreState: Boolean? = null
         ) {
 
             private val filledRouteBuilder = StringBuilder(navRoute)
-            private var popUpTo: NavPopUp? = null
-            var launchSingleTop: Boolean? = null
-            var restoreState: Boolean? = null
-            private var navAnimBuilder: NavAnimBuilder = NavAnimBuilder()
 
-            fun fillArg(argument: NamedNavArgument, value: Any?): Filler {
+            fun arg(argument: NamedNavArgument, value: Any?): Filler {
 
                 checkInDebug(navArguments.contains(argument)) {
                     "Tried to fill argument ${argument.name} with value $value, but route $navRoute does not contain this argument."
@@ -194,19 +190,31 @@ class Route internal constructor() {
 
                 Catching {
                     when {
-                        !navArguments.contains(argument) -> doNothing()
-                        value == null -> filledRouteBuilder.removeArgument(argument)
-                        else -> filledRouteBuilder.fillArgument(argument, value)
+                        !navArguments.contains(argument) -> {
+                            Timber.d("argument ${argument.name} NOT FOUND in Route ${navRoute}")
+                            doNothing()
+                        }
+                        value == null -> {
+                            Timber.d("argument ${argument.name} is null. Removing from route.")
+                            filledRouteBuilder.removeUnfilledArg(argument)
+                            Timber.d("Resulting route: $filledRouteBuilder")
+                        }
+                        filledRouteBuilder.filledArgumentExists(argument) -> {
+                            throwIfDebug {
+                                "Argument ${argument.name} already filled in route $navRoute"
+                            }
+                            doNothing()
+                        }
+                        else -> {
+                            Timber.d("Filling Argument ${argument.name } with value $value in route $navRoute")
+                            filledRouteBuilder.fillArgument(argument, value)
+                            Timber.d("Resulting route: $filledRouteBuilder")
+                        }
                     }
                 }
                     .logOnFailure("Error filling route $navRoute with argument ${argument.name}")
                     .throwIfDebug()
 
-                return this
-            }
-
-            fun anim(block: NavAnimBuilder.() -> Unit): Filler {
-                navAnimBuilder.apply(block)
                 return this
             }
 
@@ -220,13 +228,8 @@ class Route internal constructor() {
                 return this
             }
 
-            fun popUpTo(route: Route.Template, inclusive: Boolean = false, saveState: Boolean = false): Filler {
-                popUpTo = NavPopUp(route.navRoute, popUpToInclusive= inclusive, saveState = saveState)
-                return this
-            }
-
-            fun popUpTo(route: Route.Filled, inclusive: Boolean = false, saveState: Boolean = false): Filler {
-                popUpTo = NavPopUp(route.route, popUpToInclusive = inclusive, saveState = saveState)
+            fun popUpTo(route: String?, inclusive: Boolean = false, saveState: Boolean = false): Filler {
+                popUpTo = NavPopUp(route, popUpToInclusive = inclusive, saveState = saveState)
                 return this
             }
 
@@ -240,35 +243,45 @@ class Route internal constructor() {
                 return this
             }
 
-            fun topLevel(value: Boolean = true): Filler {
+            fun isTopLevel(value: Boolean = true): Filler {
                 isTopLevel = value
                 return this
             }
 
-            fun animType(value: NavAnimType): Filler {
+            fun navAnimType(value: NavAnimType): Filler {
                 navAnimType = value
                 return this
             }
 
-            fun fillArg(vararg args: Pair<NamedNavArgument, Any?>): Filler {
+            fun args(vararg args: Pair<NamedNavArgument, Any?>): Filler {
                 args.forEach { (argument, value) ->
-                    fillArg(argument, value)
+                    arg(argument, value)
                 }
                 return this
             }
 
             fun build(): Filled {
+                // if these values are null, then the args will be removed from the route
+                // which will cause either the default or null to be used when extracting
+                arg(isTopLevelArg, isTopLevel)
+                arg(isLaunchSingleTopArg, launchSingleTop)
+                arg(restoreStateArg, restoreState)
+                arg(navAnimTypeArg, navAnimType)
+
                 navArguments.forEach {
-                    val isNotFilled = filledRouteBuilder.isArgumentNotFilled(it)
+                    val isNotFilled = filledRouteBuilder.unfilledArgumentExists(it)
+
                     if (isNotFilled) {
                         throwIfDebug { "Route $navRoute was not filled with argument ${it.name}" }
-                    }
 
-                    Catching {
-                        filledRouteBuilder.removeArgument(it)
+                        Catching {
+                            // if the argument was not filled, remove it from the route, nav library
+                            // will handle using defaults or null
+                            filledRouteBuilder.removeUnfilledArg(it)
+                        }
+                            .logOnFailure()
+                            .throwIfDebug()
                     }
-                        .logOnFailure()
-                        .throwIfDebug()
                 }
 
                 return Filled(
@@ -276,9 +289,8 @@ class Route internal constructor() {
                     popUpTo = popUpTo,
                     isTopLevel = isTopLevel,
                     isLaunchSingleTop = launchSingleTop,
-                    navAnimBuilder = navAnimBuilder,
                     navAnimType = navAnimType,
-                    restoreState = restoreState
+                    restoreState = restoreState,
                 )
             }
         }
@@ -290,76 +302,66 @@ class Route internal constructor() {
         val route: String,
         val popUpTo: NavPopUp? = null,
         val isLaunchSingleTop: Boolean? = null,
-        val navAnimBuilder: NavAnimBuilder,
         val navAnimType: NavAnimType,
-        val isTopLevel: Boolean? = null,
+        val isTopLevel: Boolean,
         val restoreState: Boolean? = null
     ) : Parcelable
 }
 
-@Parcelize
-sealed class NavAnimType(
-   val enterTransition: AnimatedContentTransitionScope<NavBackStackEntry>.() -> EnterTransition,
-    val exitTransition: AnimatedContentTransitionScope<NavBackStackEntry>.() -> ExitTransition,
-    val popEnterTransition: AnimatedContentTransitionScope<NavBackStackEntry>.() -> EnterTransition,
-    val popExitTransition: AnimatedContentTransitionScope<NavBackStackEntry>.() -> ExitTransition
-) : Parcelable {
-    object SlideIn : NavAnimType(
-        enterTransition =  { fadeInToStartAnim() },
-        exitTransition = { fadeOutToStart() },
-        popEnterTransition = { fadeInToEndAnim() },
-        popExitTransition = { fadeOutToEndAnim() }
-    )
-
-    object SlideOver : NavAnimType(
-        enterTransition =  { slideUpToEnterBottomSheet() },
-        exitTransition = { slideDownToExitBottomSheet() },
-        popEnterTransition = { noAnimEnter() },
-        popExitTransition = { slideDownToExitBottomSheet() }
-    )
-
-    object None : NavAnimType(
-        enterTransition =  { fadeIn(animationSpec = tween(0)) },
-        exitTransition = { fadeOut(animationSpec = tween(0)) },
-        popEnterTransition = { fadeIn(animationSpec = tween(0)) },
-        popExitTransition = { fadeOut(animationSpec = tween(0)) }
-    )
-
-    object FadeIn : NavAnimType(
-        enterTransition =  { fadeIn(animationSpec = tween(600)) },
-        exitTransition = { fadeOut(animationSpec = tween(600)) },
-        popEnterTransition = { fadeIn(animationSpec = tween(600)) },
-        popExitTransition = { fadeOut(animationSpec = tween(600)) }
-    )
+val isLaunchSingleTopArg = navArgument("isLaunchSingleTop") {
+    type = NavType.BoolType
+    defaultValue = true
 }
 
-fun fillRoute(
-    template: Route.Template,
-    block: Route.Template.Filler.() -> Unit
+val restoreStateArg = navArgument("restoreState") {
+    type = NavType.BoolType
+    defaultValue = false
+}
+
+val isTopLevelArg = navArgument("isTopLevel") {
+    type = NavType.BoolType
+    defaultValue = isTopLevelDefault
+}
+internal const val isTopLevelDefault = false
+
+val navAnimTypeArg = navArgument("navAnimType") {
+    type = NavType.EnumType(NavAnimType::class.java)
+}
+
+val navAnimTypeDefault = NavAnimType.SlideIn
+
+
+/**
+ * Fills a route with the applied block
+ * favors template declared values if they exist
+ */
+fun Route.Template.fill(
+    block: Route.Template.Filler.() -> Unit = {}
 ): Route.Filled {
     val filler = Route.Template.Filler(
-        template.navRoute,
-        template.navArguments,
-        template.deepLinks,
+        navRoute = navRoute,
+        navArguments = navArguments,
     )
-    filler.block()
-    return filler.build()
-}
 
-fun route(block: Route.Builder.() -> Unit): Route.Template {
-    val builder = Route.Builder()
-    builder.block()
-    return builder.build()
+    filler.block()
+
+    // if the route was declared as top level, all navigation to it must be top level,
+    // so ignore filled values in favor of declared values
+    isTopLevel?.let { filler.isTopLevel = it }
+
+    // if the route was declared with a nav anim type, all navigation to it must use that anim,
+    // so ignore filled values in favor of declared values
+    navAnimType?.let { filler.navAnimType = it }
+
+    return filler.build()
 }
 
 fun route(
     name: String,
-    isTopLevel: Boolean? = null,
     block: Route.Builder.() -> Unit = {}
 ): Route.Template {
     val builder = Route.Builder()
-    builder.block()
     builder.route(name)
-    isTopLevel?.let { builder.isTopLevel(it) }
+    builder.block()
     return builder.build()
 }

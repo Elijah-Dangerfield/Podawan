@@ -24,6 +24,7 @@ data class PodcastEpisode(
     val title: String?,
     val author: String?,
     val link: String?,
+    val fallbackImageUrl: String?,
     val pubDate: String?,
     val description: String?,
     val content: String?,

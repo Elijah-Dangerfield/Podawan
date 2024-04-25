@@ -54,7 +54,7 @@ internal fun StringBuilder.fillArgument(argument: NamedNavArgument, value: Any):
  *
  * This is used when null args are provided to the route builder
  */
-internal fun StringBuilder.removeArgument(argument: NamedNavArgument): StringBuilder {
+internal fun StringBuilder.removeUnfilledArg(argument: NamedNavArgument): StringBuilder {
 
     return when {
         !hasArgument(argument) -> this
@@ -73,10 +73,21 @@ internal fun StringBuilder.removeArgument(argument: NamedNavArgument): StringBui
 }
 
 /**
- * @return true if the provided argument is not filled in the route
+ * @return true if the provided argument exists and is not filled in the route
  */
-internal fun StringBuilder.isArgumentNotFilled(argument: NamedNavArgument) =
+internal fun StringBuilder.unfilledArgumentExists(argument: NamedNavArgument) =
     contains("${argument.name}={${argument.name}}")
+
+internal fun String.containsOnlyUnfilledArgs() =
+    Regex("([a-zA-Z0-9]+)=\\{\\1\\}").containsMatchIn(this) && !Regex("([a-zA-Z0-9]+)=(\\w+)").containsMatchIn(this)
+
+/**
+ * @return true if the provided argument exists and is filled in the route
+ */
+internal fun StringBuilder.filledArgumentExists(argument: NamedNavArgument) =
+    // do a regex check for the arg being filled
+    !unfilledArgumentExists(argument) && Regex("${argument.name}=(\\w+)").containsMatchIn(this)
+
 
 /**
  * @return true if the provided argument is filled in the route

@@ -15,7 +15,10 @@ import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.flow.FlowCollector
 import kotlinx.coroutines.flow.buffer
 import kotlinx.coroutines.flow.channelFlow
+import kotlinx.coroutines.flow.collect
 import kotlinx.coroutines.flow.first
+import kotlinx.coroutines.flow.launchIn
+import kotlinx.coroutines.flow.onEach
 import kotlinx.coroutines.launch
 import kotlinx.coroutines.withContext
 import kotlin.coroutines.CoroutineContext
@@ -33,28 +36,40 @@ suspend fun <T : Any> Flow<T>.collect(collector: suspend (previous: T?, current:
     }
 }
 
-fun <T> Flow<T>.collectInWithPrevious(
-    scope: CoroutineScope,
-    collector: suspend (previous: T?, current: T) -> Unit
-) {
-    scope.launch {
-        var previous: T? = null
-        collect {
-            collector(previous, it)
-            previous = it
-        }
-    }
+suspend fun <T> Flow<T>.collectWithPrevious(action: suspend (previous: T?, current: T) -> Unit) {
+    var previousValue: T? = null
+    return this.onEach { currentValue ->
+        action(previousValue, currentValue)
+        previousValue = currentValue
+    }.collect()
 }
 
-suspend fun <T> Flow<T>.collectWithPrevious(
-    collector: suspend (previous: T?, current: T) -> Unit
-) {
-    var previous: T? = null
-    collect {
-        collector(previous, it)
-        previous = it
-    }
-}
+
+//@Composable
+//fun <T> Flow<T>.collectWithPreviousAsStateWithLifecycle(
+//    initialValue: T,
+//    lifecycleOwner: LifecycleOwner = LocalLifecycleOwner.current,
+//    minActiveState: Lifecycle.State = Lifecycle.State.STARTED,
+//    context: CoroutineContext = EmptyCoroutineContext
+//): State<Pair<T?, T>> {
+//    val initial: Pair<T?, T> = (null to initialValue)
+//    return produceState(initial, this, lifecycleOwner.lifecycle, minActiveState, context) {
+//
+//        lifecycleOwner.lifecycle.repeatOnLifecycle(minActiveState) {
+//            if (context == EmptyCoroutineContext) {
+//
+//                this@collectWithPreviousAsStateWithLifecycle.collectWithPrevious { previous, current ->
+//                    this@produceState.value = previous to current
+//                }
+//            } else withContext(context) {
+//                this@collectWithPreviousAsStateWithLifecycle.collectWithPrevious { previous, current ->
+//                    this@produceState.value = previous to current
+//                }
+//            }
+//        }
+//    }
+//}
+
 
 @Composable
 fun <T> Flow<T>.collectWithPreviousAsStateWithLifecycle(
@@ -65,14 +80,8 @@ fun <T> Flow<T>.collectWithPreviousAsStateWithLifecycle(
 ): State<Pair<T?, T>> {
     val initial: Pair<T?, T> = (null to initialValue)
     return produceState(initial, this, lifecycleOwner.lifecycle, minActiveState, context) {
-
         lifecycleOwner.lifecycle.repeatOnLifecycle(minActiveState) {
-            if (context == EmptyCoroutineContext) {
-
-                this@collectWithPreviousAsStateWithLifecycle.collectWithPrevious { previous, current ->
-                    this@produceState.value = previous to current
-                }
-            } else withContext(context) {
+            withContext(context) {
                 this@collectWithPreviousAsStateWithLifecycle.collectWithPrevious { previous, current ->
                     this@produceState.value = previous to current
                 }

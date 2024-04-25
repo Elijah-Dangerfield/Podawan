@@ -13,11 +13,11 @@ import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.unit.dp
 import com.dangerfield.libraries.dictionary.Dictionary
 import com.dangerfield.libraries.dictionary.LocalDictionary
+import com.dangerfield.libraries.dictionary.applyArgs
 import com.dangerfield.libraries.ui.color.ColorResource
 import com.dangerfield.libraries.ui.color.Colors
 import com.dangerfield.libraries.ui.theme.PodawanTheme
 import podawan.core.Catching
-import podawan.core.applyArgs
 import podawan.ui.R
 
 

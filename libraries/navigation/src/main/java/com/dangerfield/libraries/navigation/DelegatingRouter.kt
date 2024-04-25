@@ -31,22 +31,19 @@ class DelegatingRouter @Inject constructor(
 
     private val rootNavigationRequests = Channel<Router.() -> Unit>(Channel.UNLIMITED)
 
-    private val mutableCurrentRouteFlow = MutableSharedFlow<Route.Filled>()
+    private val mutableCurrentRouteFlow = MutableSharedFlow<RouteInfo>()
 
-    override val currentRouteFlow: Flow<Route.Filled>
+    override val currentRouteInfo: Flow<RouteInfo>
         get() = mutableCurrentRouteFlow.distinctUntilChanged()
 
     fun setRouter(
         router: Router,
         lifecycle: Lifecycle,
-        startingRoute: Route.Filled
     ) {
 
         delegate = router
 
         appScope.launch {
-            mutableCurrentRouteFlow.emit(startingRoute)
-
             rootNavigationRequests
                 .receiveAsFlow()
                 .distinctUntilChanged()
@@ -55,13 +52,12 @@ class DelegatingRouter @Inject constructor(
                 }
         }
 
-        router.currentRouteFlow.observeWithLifecycleIn(lifecycle, appScope) {
+        router.currentRouteInfo.observeWithLifecycleIn(lifecycle, appScope) {
             mutableCurrentRouteFlow.emit(it)
         }
     }
 
     override fun navigate(filledRoute: Route.Filled) {
-        // use continuations or something to wait until the delegate has been set
         rootNavigationRequests.trySend { navigate(filledRoute) }
     }
 

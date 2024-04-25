@@ -12,7 +12,7 @@ interface Router {
     /**
      * The current route name of the app. This is the name of the route that the app is currently on.
      */
-    val currentRouteFlow: Flow<Route.Filled>
+    val currentRouteInfo: Flow<RouteInfo>
 
     fun navigate(filledRoute: Route.Filled)
     fun goBack()

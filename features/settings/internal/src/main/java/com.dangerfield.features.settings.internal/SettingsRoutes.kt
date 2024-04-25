@@ -1,18 +1,19 @@
 package com.dangerfield.features.settings.internal
 
 import com.dangerfield.libraries.navigation.Router
+import com.dangerfield.libraries.navigation.fill
 import com.dangerfield.libraries.navigation.route
 
 fun Router.navigateToAbout() {
-    navigate(aboutRoute.noArgRoute())
+    navigate(aboutRoute.fill())
 }
 
 fun Router.navigateToContactUs() {
-    navigate(contactUsRoute.noArgRoute())
+    navigate(contactUsRoute.fill())
 }
 
 fun Router.navigateToReferral() {
-    navigate(referralCode.noArgRoute())
+    navigate(referralCode.fill())
 }
 
 val aboutRoute = route("about")

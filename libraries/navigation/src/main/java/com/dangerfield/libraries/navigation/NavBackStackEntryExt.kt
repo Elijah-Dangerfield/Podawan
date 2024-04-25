@@ -14,7 +14,6 @@ import podawan.core.logOnFailure
  *
  * @param navArgument the argument to get
  *
- *
  */
 inline fun <reified T : Any> NavBackStackEntry.navArgument(navArgument: NamedNavArgument): T? =
     Catching {

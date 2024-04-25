@@ -31,7 +31,7 @@ import kotlinx.coroutines.flow.StateFlow
 import podawan.core.App
 import podawan.core.AppState
 import podawan.core.Catching
-import podawan.core.applyArgs
+import com.dangerfield.libraries.dictionary.applyArgs
 import podawan.ui.R
 
 /**
