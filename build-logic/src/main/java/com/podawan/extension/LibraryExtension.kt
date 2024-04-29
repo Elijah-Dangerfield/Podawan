@@ -43,7 +43,7 @@ abstract class LibraryExtension {
     fun room() {
         kapt()
         project.dependencies {
-            "api"(project.libs.room)
+            "implementation"(project.libs.room)
             "kapt"(project.libs.room.compiler)
         }
     }

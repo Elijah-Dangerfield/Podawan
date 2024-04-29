@@ -8,7 +8,7 @@ import com.dangerfield.libraries.dictionary.LanguageSupportLevel
 import com.dangerfield.libraries.dictionary.supportLevelNameMap
 import com.dangerfield.libraries.navigation.GlobalNavBuilder
 import com.dangerfield.libraries.navigation.Router
-import com.dangerfield.libraries.navigation.floatingwindow.dialog
+import com.dangerfield.libraries.navigation.dialog
 import com.dangerfield.libraries.navigation.navArgument
 import se.ansman.dagger.auto.AutoBindIntoSet
 import javax.inject.Inject

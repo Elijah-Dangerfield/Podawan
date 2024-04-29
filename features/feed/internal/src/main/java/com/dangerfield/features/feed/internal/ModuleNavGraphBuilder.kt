@@ -1,6 +1,5 @@
 package com.dangerfield.features.feed.internal
 
-import android.util.Log
 import androidx.compose.runtime.getValue
 import androidx.hilt.navigation.compose.hiltViewModel
 import androidx.lifecycle.compose.collectAsStateWithLifecycle
@@ -11,11 +10,13 @@ import com.dangerfield.features.blockingerror.navigateToGeneralErrorDialog
 import com.dangerfield.features.feed.episodeDetailsRoute
 import com.dangerfield.features.feed.feedRoute
 import com.dangerfield.features.feed.toEpisodeDetails
+import com.dangerfield.features.playback.PlaybackViewModel
 import com.dangerfield.libraries.coreflowroutines.ObserveWithLifecycle
 import com.dangerfield.libraries.navigation.HomeTabNavBuilder
 import com.dangerfield.libraries.navigation.Router
 import com.dangerfield.ui.components.FullScreenLoader
 import podawan.core.doNothing
+import podawan.core.showDebugSnack
 import se.ansman.dagger.auto.AutoBindIntoSet
 import javax.inject.Inject
 
@@ -28,11 +29,14 @@ class ModuleNavGraphBuilder @Inject constructor() : HomeTabNavBuilder {
             arguments = feedRoute.navArguments
         ) {
             val viewModel: FeedViewModel = hiltViewModel()
+            val playbackViewModel: PlaybackViewModel = hiltViewModel()
+
             val state by viewModel.stateFlow.collectAsStateWithLifecycle()
 
             ObserveWithLifecycle(flow = viewModel.eventFlow) {
                 when (it) {
                     FeedViewModel.Event.LoadFailed -> router.navigateToGeneralErrorDialog()
+                    FeedViewModel.Event.PlaybackFailed -> showDebugSnack { "Playback failed" }
                 }
             }
 
@@ -46,9 +50,11 @@ class ModuleNavGraphBuilder @Inject constructor() : HomeTabNavBuilder {
                     episodes = state.episodes,
                     onEpisodePlayClicked = {
                         viewModel.takeAction(FeedViewModel.Action.PlayEpisode(it))
+                        playbackViewModel.loadAndPlay(it.id)
                     },
                     onEpisodePauseClicked = {
                         viewModel.takeAction(FeedViewModel.Action.PauseEpisode(it))
+                        playbackViewModel.takeAction(PlaybackViewModel.Action.Pause)
                     },
                     onEpisodeDownloadClicked = {
                         viewModel.takeAction(FeedViewModel.Action.DownloadEpisode(it))
@@ -93,10 +99,7 @@ class ModuleNavGraphBuilder @Inject constructor() : HomeTabNavBuilder {
                         },
                         onShareClicked = { doNothing() },
                         onNavigateBack = { router.goBack() },
-                        onClickLink = {
-                            Log.d("Elijah", "onClickLink: $it")
-                            router.openWebLink(it)
-                        }
+                        onClickLink = { router.openWebLink(it) }
                     )
                 }
             }

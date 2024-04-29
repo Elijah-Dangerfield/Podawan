@@ -6,7 +6,6 @@ import androidx.navigation.NavBackStackEntry
 import androidx.navigation.NavDestination
 import androidx.navigation.NavOptions
 import androidx.navigation.Navigator
-import androidx.navigation.compose.DialogNavigator
 
 /**
  * Navigator used to allow the nav graph to show floating windows in response to a navigation.

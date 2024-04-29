@@ -11,8 +11,9 @@ import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.rememberScrollState
 import androidx.compose.foundation.verticalScroll
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.derivedStateOf
 import androidx.compose.runtime.getValue
-import androidx.compose.runtime.mutableStateOf
+import androidx.compose.runtime.mutableIntStateOf
 import androidx.compose.runtime.remember
 import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
@@ -21,10 +22,12 @@ import androidx.compose.ui.draw.clip
 import androidx.compose.ui.graphics.drawscope.DrawScope
 import androidx.compose.ui.layout.ContentScale
 import androidx.compose.ui.platform.LocalContext
+import androidx.compose.ui.platform.LocalDensity
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import coil.compose.rememberAsyncImagePainter
 import coil.request.ImageRequest
+import coil.size.Dimension.Pixels
 import coil.size.Size
 import com.dangerfield.libraries.podcast.DisplayableEpisode
 import com.dangerfield.libraries.ui.Dimension
@@ -32,6 +35,7 @@ import com.dangerfield.libraries.ui.HorizontalSpacerD200
 import com.dangerfield.libraries.ui.HorizontalSpacerD500
 import com.dangerfield.libraries.ui.Radii
 import com.dangerfield.libraries.ui.VerticalSpacerD500
+import com.dangerfield.libraries.ui.fadingEdge
 import com.dangerfield.libraries.ui.preview.Preview
 import com.dangerfield.libraries.ui.preview.loremIpsum
 import com.dangerfield.libraries.ui.theme.PodawanTheme
@@ -41,6 +45,7 @@ import com.dangerfield.ui.components.icon.IconButton
 import com.dangerfield.ui.components.icon.PodawanIcon
 import com.dangerfield.ui.components.text.ClickableText
 import com.dangerfield.ui.components.text.Text
+import podawan.core.App
 
 @Composable
 fun EpisodeDetailsScreen(
@@ -53,14 +58,17 @@ fun EpisodeDetailsScreen(
     onNavigateBack: () -> Unit = {},
     onClickLink: (String) -> Unit = {},
 ) {
+    val scrollState = rememberScrollState()
     Screen(
         modifier,
         topBar = {
-            IconButton(
-                modifier = Modifier.padding(Dimension.D500),
-                icon = PodawanIcon.ArrowBack(""),
-                onClick = onNavigateBack
-            )
+            Row {
+                IconButton(
+                    modifier = Modifier.padding(Dimension.D500),
+                    icon = PodawanIcon.ArrowBack(""),
+                    onClick = onNavigateBack
+                )
+            }
         },
     ) {
         Column(
@@ -68,24 +76,35 @@ fun EpisodeDetailsScreen(
             Modifier
                 .padding(it)
                 .padding(horizontal = Dimension.D500)
-                .verticalScroll(rememberScrollState())
+                .verticalScroll(scrollState)
+                .fadingEdge(scrollState)
         ) {
 
-            var urlToLoad by remember { mutableStateOf(episode.imageUrl) }
+            var urlIndexToLoad by remember { mutableIntStateOf(0) }
+            val urlToLoad by remember {
+                derivedStateOf { episode.imageUrls.getOrNull(urlIndexToLoad) }
+            }
+
+            val imageHeight = 50.dp
+            val imageHeightPx = with(LocalDensity.current) { imageHeight.toPx() }
 
             val painter = rememberAsyncImagePainter(
                 model = ImageRequest.Builder(LocalContext.current)
                     .diskCacheKey(urlToLoad)
                     .memoryCacheKey(urlToLoad)
                     .data(urlToLoad)
-                    .size(Size.ORIGINAL)
+                    .size(Size(Pixels(imageHeightPx.toInt()), Pixels(imageHeightPx.toInt())))
                     .build(),
                 placeholder = debugPlaceholder(debugPreview = R.drawable.ic_android),
                 error = debugPlaceholder(debugPreview = R.drawable.ic_android),
                 fallback = debugPlaceholder(debugPreview = R.drawable.ic_android),
                 onLoading = null,
                 onSuccess = { },
-                onError = { urlToLoad = episode.fallbackImageUrl },
+                onError = {
+                    if (urlIndexToLoad < episode.imageUrls.lastIndex) {
+                        urlIndexToLoad += 1
+                    }
+                },
                 contentScale = ContentScale.FillWidth,
                 filterQuality = DrawScope.DefaultFilterQuality,
             )
@@ -114,7 +133,6 @@ fun EpisodeDetailsScreen(
                         typography = PodawanTheme.typography.Heading.H700,
                     )
 
-
                     episode.author?.let { author ->
                         VerticalSpacerD500()
 
@@ -124,19 +142,22 @@ fun EpisodeDetailsScreen(
                         )
                     }
 
-                    VerticalSpacerD500()
+                    episode.releaseDate?.let {
+                        VerticalSpacerD500()
 
-                    Text(
-                        text = episode.releaseDate,
-                        typography = PodawanTheme.typography.Label.L400,
-                    )
+                        Text(
+                            text = it,
+                            typography = PodawanTheme.typography.Label.L400,
+                        )
+                    }
                 }
             }
 
             VerticalSpacerD500()
 
             val playingIcon = if (episode.isPlaying) PodawanIcon.Pause("") else PodawanIcon.Play("")
-            val downloadIcon = if (episode.isDownloaded) PodawanIcon.Check("") else PodawanIcon.ArrowCircleDown("")
+            val downloadIcon =
+                if (episode.isDownloaded) PodawanIcon.Check("") else PodawanIcon.ArrowCircleDown("")
             Row(
                 modifier = Modifier.fillMaxWidth(),
                 verticalAlignment = Alignment.CenterVertically,
@@ -194,9 +215,8 @@ private fun PreviewEpisodeDetailsScreen() {
             episode = DisplayableEpisode(
                 title = loremIpsum(3..10),
                 releaseDate = "Dec 12, 2021",
-                imageUrl = "",
+                imageUrls = listOf(),
                 description = loremIpsum(50..100),
-                fallbackImageUrl = "",
                 isPlaying = false,
                 isDownloaded = false,
                 id = "",
@@ -205,4 +225,24 @@ private fun PreviewEpisodeDetailsScreen() {
         )
     }
 }
+
+@Composable
+@Preview
+private fun PreviewEpisodeDetailsScreenStuffYouShouldKnow() {
+    Preview(app = App.StuffYouShouldKnow) {
+        EpisodeDetailsScreen(
+            episode = DisplayableEpisode(
+                title = loremIpsum(3..10),
+                releaseDate = "Dec 12, 2021",
+                imageUrls = listOf(),
+                description = loremIpsum(50..100),
+                isPlaying = false,
+                isDownloaded = false,
+                id = "",
+                author = "Author Name"
+            ),
+        )
+    }
+}
+
 

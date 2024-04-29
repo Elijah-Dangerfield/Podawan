@@ -5,8 +5,11 @@ import android.content.res.Configuration
 import androidx.lifecycle.DefaultLifecycleObserver
 import androidx.lifecycle.LifecycleOwner
 import androidx.lifecycle.ProcessLifecycleOwner
+import coil.ImageLoader
+import coil.ImageLoaderFactory
 import com.dangerfield.libraries.coresession.internal.SessionRepository
 import com.dangerfield.libraries.logging.RemoteLogger
+import com.dangerfield.libraries.podcast.internal.ImageFetcher
 import com.google.firebase.analytics.FirebaseAnalytics
 import com.google.firebase.firestore.FirebaseFirestore
 import com.google.firebase.firestore.firestoreSettings
@@ -16,7 +19,10 @@ import javax.inject.Inject
 import javax.inject.Provider
 
 
-open class PodawanApplication : Application() {
+open class PodawanApplication : Application(), ImageLoaderFactory {
+
+    @Inject
+    lateinit var imageFetcher: Provider<ImageFetcher>
 
     @Inject
     lateinit var applicationStateRepository: ApplicationStateRepository
@@ -73,5 +79,9 @@ open class PodawanApplication : Application() {
         firestore.firestoreSettings = firestoreSettings {
             isPersistenceEnabled = false
         }
+    }
+
+    override fun newImageLoader(): ImageLoader {
+        return imageFetcher.get().imageLoader
     }
 }

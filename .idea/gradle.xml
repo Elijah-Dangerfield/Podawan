@@ -72,6 +72,7 @@
             <option value="$PROJECT_DIR$/libraries/playback/internal" />
             <option value="$PROJECT_DIR$/libraries/podcast" />
             <option value="$PROJECT_DIR$/libraries/podcast/internal" />
+            <option value="$PROJECT_DIR$/libraries/podcast/storage" />
             <option value="$PROJECT_DIR$/libraries/resources" />
             <option value="$PROJECT_DIR$/libraries/resources/internal" />
             <option value="$PROJECT_DIR$/libraries/session" />

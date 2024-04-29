@@ -1,7 +1,6 @@
 package com.dangerfield.features.settings.internal.referral
 
 import com.dangerfield.libraries.config.AppConfigMap
-import com.dangerfield.libraries.config.ConfiguredValue
 import com.dangerfield.libraries.config.Experiment
 import se.ansman.dagger.auto.AutoBindIntoSet
 import javax.inject.Inject

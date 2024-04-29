@@ -1,6 +1,5 @@
 package com.dangerfield.features.blockingerror.internal
 
-import android.app.Activity
 import android.content.Context
 import androidx.navigation.NavGraphBuilder
 import androidx.navigation.compose.composable

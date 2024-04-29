@@ -1,4 +1,4 @@
-package com.dangerfield.libraries.navigation.floatingwindow
+package com.dangerfield.libraries.navigation
 
 import androidx.compose.runtime.Composable
 import androidx.navigation.NamedNavArgument
@@ -6,6 +6,7 @@ import androidx.navigation.NavBackStackEntry
 import androidx.navigation.NavDeepLink
 import androidx.navigation.NavGraphBuilder
 import androidx.navigation.get
+import com.dangerfield.libraries.navigation.floatingwindow.FloatingWindowNavigator
 
 /**
  * Allows for a bottom sheet to be shown as a destination in the navigation graph

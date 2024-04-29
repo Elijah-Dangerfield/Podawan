@@ -12,16 +12,15 @@ import javax.inject.Singleton
 @Module
 @InstallIn(SingletonComponent::class)
 object AppDatabaseModule {
-//    @Provides
-//    @Singleton
-//    fun provideDatabase(
-//        @ApplicationContext context: Context,
-//        converters: Converters
-//    ): AppDatabase {
-//        return Room
-//            .databaseBuilder(context, AppDatabase::class.java, "podawan-db
-//            .addTypeConverter(converters)
-//            .build()
-//    }
-
+    @Provides
+    @Singleton
+    fun provideDatabase(
+        @ApplicationContext context: Context,
+        converters: Converters
+    ): AppDatabase {
+        return Room
+            .databaseBuilder(context, AppDatabase::class.java, "podawan-db")
+            .addTypeConverter(converters)
+            .build()
+    }
 }

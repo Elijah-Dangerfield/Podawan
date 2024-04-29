@@ -14,7 +14,6 @@ import com.dangerfield.libraries.ui.LocalContentColor
 import com.dangerfield.libraries.ui.LocalTypography
 import com.dangerfield.libraries.ui.color.Colors
 import com.dangerfield.libraries.ui.typography.DefaultTypography
-import podawan.core.App
 
 object PodawanTheme {
     val colors: Colors

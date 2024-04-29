@@ -34,7 +34,7 @@ import com.dangerfield.libraries.coreflowroutines.collectWithPrevious
 import com.dangerfield.libraries.coreflowroutines.observeWithLifecycle
 import com.dangerfield.libraries.navigation.DelegatingRouter
 import com.dangerfield.libraries.navigation.NavAnimType
-import com.dangerfield.libraries.navigation.NavControllerRouter
+import com.dangerfield.libraries.navigation.internal.NavControllerRouter
 import com.dangerfield.libraries.navigation.NavGraphRegistry
 import com.dangerfield.libraries.navigation.Route
 import com.dangerfield.libraries.navigation.RouteInfo

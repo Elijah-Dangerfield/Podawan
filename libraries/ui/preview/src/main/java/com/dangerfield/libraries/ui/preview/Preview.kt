@@ -17,7 +17,6 @@ import com.dangerfield.libraries.dictionary.LocalDictionary
 import com.dangerfield.libraries.ui.LocalAppConfiguration
 import com.dangerfield.libraries.ui.LocalAppState
 import com.dangerfield.libraries.ui.LocalColors
-import com.dangerfield.libraries.ui.color.ColorResource
 import com.dangerfield.libraries.ui.theme.PodawanTheme
 import com.dangerfield.libraries.ui.thenIf
 import com.dangerfield.podawan.apps.stuffYouShouldKnow.config.StuffYouShouldKnowAppConfiguration

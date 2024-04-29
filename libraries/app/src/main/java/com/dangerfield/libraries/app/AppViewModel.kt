@@ -1,17 +1,11 @@
 package com.dangerfield.libraries.app
 
 import android.app.Activity
-import android.util.Log
 import androidx.lifecycle.SavedStateHandle
 import androidx.lifecycle.viewModelScope
-import com.dangerfield.features.auth.loginRoute
-import com.dangerfield.features.blockingerror.blockingErrorRoute
-import com.dangerfield.features.blockingerror.maintenanceRoute
 import com.dangerfield.features.consent.ConsentStatus
 import com.dangerfield.features.consent.ConsentStatusRepository
-import com.dangerfield.features.consent.consentRoute
 import com.dangerfield.features.forcedupdate.IsAppUpdateRequired
-import com.dangerfield.features.forcedupdate.forcedUpdateNavigationRoute
 import com.dangerfield.features.inAppMessaging.GetInAppUpdateAvailability
 import com.dangerfield.features.inAppMessaging.InAppUpdateAvailability
 import com.dangerfield.features.inAppMessaging.InstallInAppUpdate
@@ -32,8 +26,6 @@ import com.dangerfield.libraries.app.AppViewModel.Action
 import com.dangerfield.libraries.app.AppViewModel.State
 import com.dangerfield.libraries.app.startup.EnsureAppConfigLoaded
 import com.dangerfield.libraries.app.startup.IsInMaintenanceMode
-import com.dangerfield.libraries.navigation.Route
-import com.dangerfield.libraries.navigation.mainGraphRoute
 import dagger.hilt.android.lifecycle.HiltViewModel
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.Deferred

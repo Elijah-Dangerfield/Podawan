@@ -12,7 +12,6 @@ import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.tooling.preview.Preview
 import com.dangerfield.libraries.dictionary.dictionaryString
 import com.dangerfield.libraries.ui.Dimension
-import com.dangerfield.libraries.ui.preview.Preview
 import com.dangerfield.ui.components.Screen
 import com.dangerfield.ui.components.text.Text
 import com.dangerfield.libraries.ui.theme.PodawanTheme

@@ -149,21 +149,30 @@ fun createDirectory(baseDir: String, moduleName: String, parentModule: String?):
 }
 
 fun updateAppGradleFile(moduleType: String, moduleName: String, isInternal: Boolean) {
-    val appBuildGradleFile = File("libraries/app/build.gradle.kts")
+    val appDirectories = File("apps").listFiles()?.filter { it.isDirectory } ?: run {
+        printRed("Error: Could not add dependency to app build.gradle. No apps directory found. Please add dependneice son the new module manually.")
+        return
+    }
+
+    val appBuildGradleFiles = appDirectories.mapNotNull {
+        val buildFile = File("${it.path}/build.gradle.kts")
+        if (buildFile.exists()) buildFile else null
+    }
 
     val internalAddition = if (isInternal) ".internal" else ""
     val moduleParentName = if (moduleType == "library") "libraries" else "features"
     val moduleNameCleaned = moduleName.replace(":", ".")
     val lineToAdd = "\timplementation(projects.$moduleParentName.$moduleNameCleaned$internalAddition)"
 
-    val lines = appBuildGradleFile.readLines().toMutableList()
+    appBuildGradleFiles.forEach { appBuildGradleFile ->
+        val lines = appBuildGradleFile.readLines().toMutableList()
 
-    val indexToAdd = lines.indexOfFirst { it.contains("STOP PROJECT MODULES") }
+        val indexToAdd = lines.indexOfFirst { it.contains("STOP PROJECT MODULES") }
 
-    lines.add(indexToAdd, lineToAdd)
+        lines.add(indexToAdd, lineToAdd)
 
-    appBuildGradleFile.writeText(lines.joinToString("\n"))
-
+        appBuildGradleFile.writeText(lines.joinToString("\n"))
+    }
 }
 
 @Suppress("LongMethod")

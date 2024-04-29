@@ -1,7 +1,6 @@
 package com.dangerfield.libraries.session
 
 import com.squareup.moshi.JsonClass
-import kotlinx.serialization.Serializable
 
 /**
  * Object Representing the current application session and the users state within it.

@@ -6,7 +6,6 @@ import com.dangerfield.libraries.navigation.Route.Companion.isTopLevelArg
 import com.dangerfield.libraries.navigation.Route.Companion.isTopLevelDefault
 import com.dangerfield.libraries.navigation.Route.Companion.navAnimTypeArg
 import com.dangerfield.libraries.navigation.Route.Companion.navAnimTypeDefault
-import timber.log.Timber
 
 fun NavBackStackEntry.asRouteInfo(): RouteInfo {
 
@@ -22,11 +21,11 @@ fun NavBackStackEntry.asRouteInfo(): RouteInfo {
         )
     }
 
-    val navAnimType = this.arguments?.navArgument(navAnimTypeArg) ?: run {
+    val navAnimType = navArgument(navAnimTypeArg) ?: run {
         navAnimTypeArg.argument.defaultValue as? NavAnimType ?: navAnimTypeDefault
     }
 
-    val isTopLevel = this.arguments?.navArgument(isTopLevelArg) ?: run {
+    val isTopLevel = navArgument(isTopLevelArg) ?: run {
         isTopLevelArg.argument.defaultValue as? Boolean ?: isTopLevelDefault
     }
 

@@ -1,5 +1,6 @@
 package com.dangerfield.libraries.app
 
+import com.dangerfield.libraries.navigation.NavGraphRegistry
 import android.os.Bundle
 import androidx.activity.ComponentActivity
 import androidx.activity.compose.setContent
@@ -19,16 +20,19 @@ import com.dangerfield.features.blockingerror.maintenanceRoute
 import com.dangerfield.features.consent.consentRoute
 import com.dangerfield.features.forcedupdate.forcedUpdateNavigationRoute
 import com.dangerfield.features.inAppMessaging.UpdateStatus
+import com.dangerfield.features.playback.MediaPlayerService
+import com.dangerfield.features.playback.PlaybackState
+import com.dangerfield.features.playback.PlaybackViewModel
 import com.dangerfield.libraries.analytics.LocalMetricsTracker
 import com.dangerfield.libraries.analytics.MetricsTracker
 import com.dangerfield.libraries.app.AppViewModel.Action.LoadConsentStatus
 import com.dangerfield.libraries.app.AppViewModel.Action.MarkLanguageSupportLevelMessageShown
 import com.dangerfield.libraries.app.startup.SplashScreenBuilder
+import com.dangerfield.libraries.coreflowroutines.observeWithLifecycle
 import com.dangerfield.libraries.dictionary.Dictionary
 import com.dangerfield.libraries.dictionary.LocalDictionary
 import com.dangerfield.libraries.dictionary.internal.ui.navigateToLanguageSupportDialog
 import com.dangerfield.libraries.navigation.DelegatingRouter
-import com.dangerfield.libraries.navigation.NavGraphRegistry
 import com.dangerfield.libraries.navigation.Router
 import com.dangerfield.libraries.navigation.mainGraphRoute
 import com.dangerfield.libraries.network.NetworkMonitor
@@ -52,12 +56,10 @@ import javax.inject.Inject
 open class AppActivity : ComponentActivity() {
 
     private val mainActivityViewModel: AppViewModel by viewModels()
+    private val playbackViewModel: PlaybackViewModel by viewModels()
 
     @Inject
     lateinit var splashScreenBuilder: SplashScreenBuilder
-
-    @Inject
-    lateinit var compositionLocalsProvider: CompositionLocalsProvider
 
     @Inject
     lateinit var metricsTracker: MetricsTracker
@@ -104,6 +106,15 @@ open class AppActivity : ComponentActivity() {
                         setAppContent()
                         mainActivityViewModel.takeAction(LoadConsentStatus(this@AppActivity))
                     }
+                }
+            }
+        }
+
+        lifecycleScope.launch {
+            lifecycle.repeatOnLifecycle(Lifecycle.State.STARTED) {
+                withContext(Dispatchers.Main.immediate) {
+                    playbackViewModel.stateFlow.first { it.playbackState is PlaybackState.Ready }
+                    MediaPlayerService.start(applicationContext)
                 }
             }
         }

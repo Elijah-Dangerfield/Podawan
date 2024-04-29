@@ -7,8 +7,6 @@ import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.layout.layout
 import androidx.compose.ui.unit.Dp
 import androidx.compose.ui.unit.offset
-import kotlin.contracts.ExperimentalContracts
-import kotlin.contracts.contract
 
 inline fun Modifier.thenIf(predicate: Boolean, factory: Modifier.() -> Modifier): Modifier {
     return if (predicate) then(factory(Modifier)) else this
@@ -18,7 +16,10 @@ inline fun Modifier.then(factory: Modifier.() -> Modifier): Modifier {
     return then(factory(Modifier))
 }
 
-inline fun <T : Any> Modifier.thenIfNotNull(value: T?, factory: Modifier.(T) -> Modifier): Modifier {
+inline fun <T : Any> Modifier.thenIfNotNull(
+    value: T?,
+    factory: Modifier.(T) -> Modifier
+): Modifier {
     return if (value != null) then(factory(Modifier, value)) else this
 }
 
@@ -52,7 +53,10 @@ fun Modifier.circleBackground(color: Color, padding: Dp): Modifier {
         // Assign the dimension and the center position
         layout(newDiameter, newDiameter) {
             // Place the composable at the calculated position
-            placeable.placeRelative((newDiameter - currentWidth) / 2, (newDiameter - currentHeight) / 2)
+            placeable.placeRelative(
+                (newDiameter - currentWidth) / 2,
+                (newDiameter - currentHeight) / 2
+            )
         }
     }
 

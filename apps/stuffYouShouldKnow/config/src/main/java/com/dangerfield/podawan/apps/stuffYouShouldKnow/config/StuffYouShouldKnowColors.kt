@@ -14,8 +14,8 @@ object StuffYouShouldKnowColors : com.dangerfield.libraries.ui.color.Colors {
     override val surfacePrimary = ColorResource.CherryPop700
     override val surfaceDisabled = ColorResource.Black400
     override val onSurfacePrimary = ColorResource.White900
-    override val surfaceSecondary = ColorResource.Black700
-    override val onSurfaceSecondary = ColorResource.Black500
+    override val surfaceSecondary = ColorResource.Black300
+    override val onSurfaceSecondary = ColorResource.Black700
     override val onSurfaceDisabled = ColorResource.Black600
     override val background = ColorResource.White900
     override val onBackground = ColorResource.Black900

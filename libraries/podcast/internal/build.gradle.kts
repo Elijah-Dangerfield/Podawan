@@ -4,13 +4,17 @@ plugins {
 
 podawan {
     daggerHilt()
+    room()
+    flowroutines()
 }
 
 android {
     namespace = "com.dangerfield.podawan.libraries.podcast.internal"
 }
 dependencies {
+    implementation(libs.rss.parser)
+    implementation(libs.coil)
     implementation(projects.libraries.podcast)
     implementation(projects.libraries.common)
-    implementation(libs.rss.parser)
+    implementation(projects.libraries.podcast.storage)
 }

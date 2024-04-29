@@ -2,6 +2,7 @@ package com.dangerfield.libraries.podcast
 
 
 data class PodcastShow(
+    val rssFeedLink: String,
     val title: String?,
     val link: String?,
     val description: String?,
@@ -20,11 +21,10 @@ data class HeroImage(
 )
 
 data class PodcastEpisode(
-    val guid: String?,
+    val guid: String,
     val title: String?,
     val author: String?,
     val link: String?,
-    val fallbackImageUrl: String?,
     val pubDate: String?,
     val description: String?,
     val content: String?,
@@ -36,6 +36,7 @@ data class PodcastEpisode(
     val categories: List<String>,
     val itunesItemData: EpisodeItunesData?,
     val commentsUrl: String?,
+    val showHeroImage: HeroImage?
 )
 
 data class EpisodeItunesData(

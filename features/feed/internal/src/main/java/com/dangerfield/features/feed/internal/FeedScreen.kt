@@ -5,11 +5,9 @@ import androidx.compose.foundation.Image
 import androidx.compose.foundation.border
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Row
-import androidx.compose.foundation.layout.Spacer
 import androidx.compose.foundation.layout.aspectRatio
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
-import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.foundation.lazy.items
@@ -27,7 +25,6 @@ import androidx.compose.ui.unit.dp
 import coil.compose.rememberAsyncImagePainter
 import coil.request.ImageRequest
 import coil.size.Size
-import com.dangerfield.libraries.navigation.ContentSafeAreaBottomPadding
 import com.dangerfield.libraries.podcast.DisplayableEpisode
 import com.dangerfield.libraries.ui.Dimension
 import com.dangerfield.libraries.ui.HorizontalSpacerD500
@@ -37,9 +34,11 @@ import com.dangerfield.libraries.ui.VerticalSpacerD1000
 import com.dangerfield.libraries.ui.VerticalSpacerD1200
 import com.dangerfield.libraries.ui.VerticalSpacerD200
 import com.dangerfield.libraries.ui.bounceClick
+import com.dangerfield.libraries.ui.fadingEdge
 import com.dangerfield.libraries.ui.preview.Preview
 import com.dangerfield.libraries.ui.preview.loremIpsum
 import com.dangerfield.libraries.ui.theme.PodawanTheme
+import com.dangerfield.libraries.ui.verticalScrollWithBar
 import com.dangerfield.podawan.features.feed.internal.R
 import com.dangerfield.ui.components.HorizontalDivider
 import com.dangerfield.ui.components.Screen
@@ -67,6 +66,8 @@ fun FeedScreen(
             Modifier
                 .fillMaxSize()
                 .padding(it)
+                .fadingEdge(scrollState)
+                .verticalScrollWithBar(scrollState)
                 .padding(horizontal = Dimension.D500)
         ) {
 
@@ -146,14 +147,11 @@ fun FeedScreen(
                             onClickEpisode = { onClickEpisode(episode) }
                         )
 
-                        HorizontalDivider(color = PodawanTheme.colors.borderDisabled.color)
-
-                        VerticalSpacerD1000()
+                        if (episodes.last() != episode) {
+                            HorizontalDivider(color = PodawanTheme.colors.borderDisabled.color)
+                            VerticalSpacerD1000()
+                        }
                     }
-                }
-
-                item {
-                    Spacer(modifier = Modifier.height(ContentSafeAreaBottomPadding))
                 }
             }
         }
@@ -176,9 +174,8 @@ private fun PreviewScreen() {
         DisplayableEpisode(
             title = loremIpsum(2),
             releaseDate = "December 12, 2021",
-            imageUrl = loremIpsum(2),
+            imageUrls = emptyList(),
             description = loremIpsum(10..20),
-            fallbackImageUrl = "",
             isPlaying = true,
             isDownloaded = false,
             id = "",
@@ -211,9 +208,8 @@ private fun PreviewScreenSYSK() {
         DisplayableEpisode(
             title = loremIpsum(2),
             releaseDate = "December 12, 2021",
-            imageUrl = loremIpsum(2),
+            imageUrls = emptyList(),
             description = loremIpsum(10..20),
-            fallbackImageUrl = "",
             isPlaying = true,
             isDownloaded = false,
             id = "",

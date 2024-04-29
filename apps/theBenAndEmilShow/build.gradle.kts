@@ -165,9 +165,10 @@ dependencies {
 	implementation(projects.features.library.internal)
 	implementation(projects.libraries.podcast)
 	implementation(projects.libraries.podcast.internal)
-	implementation(projects.libraries.playback)
-	implementation(projects.libraries.playback.internal)
+    implementation(projects.features.playback)
+    implementation(projects.features.playback.internal)
 	implementation(projects.libraries.app)
+    implementation(projects.libraries.podcast.storage)
     // STOP PROJECT MODULES (keep this line at the end of the project modules, used by ./create_module)
 
     testImplementation(libs.androidx.test.junit)

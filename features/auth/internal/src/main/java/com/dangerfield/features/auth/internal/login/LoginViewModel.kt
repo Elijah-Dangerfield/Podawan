@@ -1,6 +1,5 @@
 package com.dangerfield.features.auth.internal.login
 
-import android.util.Log
 import androidx.lifecycle.SavedStateHandle
 import androidx.lifecycle.viewModelScope
 import com.dangerfield.features.auth.internal.IsValidEmail
@@ -65,12 +64,14 @@ class LoginViewModel @Inject constructor(
         if (password.isValidPassword()) {
             updateState { it.copy(passwordFieldState = Valid(password)) }
         } else {
+            // negative validaitons are debounced
             updateState { it.copy(passwordFieldState = Idle(password)) }
         }
 
         updateStateDebounced(duration = 1.seconds) {
             if (password.isValidPassword()) {
-                it.copy(passwordFieldState = Valid(password))
+                // no update needed, positive validations arent debounced
+                it
             } else {
                 it.copy(
                     passwordFieldState = Invalid(

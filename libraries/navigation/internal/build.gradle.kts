@@ -9,7 +9,7 @@ podawan {
 }
 
 android {
-    namespace = "com.dangerfield.oddoneoout.libraries.navigation.internal"
+    namespace = "com.dangerfield.libraries.navigation.internal"
 }
 dependencies {
     implementation(projects.libraries.navigation)

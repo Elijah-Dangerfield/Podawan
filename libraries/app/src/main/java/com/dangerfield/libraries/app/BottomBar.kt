@@ -39,7 +39,6 @@ import com.dangerfield.libraries.ui.theme.PodawanTheme
 import com.dangerfield.libraries.ui.thenIf
 import com.dangerfield.ui.components.Badge
 import com.dangerfield.ui.components.BadgedBox
-import com.dangerfield.ui.components.HorizontalDivider
 import com.dangerfield.ui.components.Surface
 import podawan.core.App
 
@@ -75,10 +74,6 @@ fun AppBottomBar(
     Column {
 
         val isDark = PodawanTheme.colors.background.color.luminance() < 0.5f
-
-        if (!isPlayingContent && isDark) {
-            HorizontalDivider()
-        }
 
         NavigationBar(
             modifier.thenIf(!isPlayingContent &&!isDark) { elevation(Elevation.BottomBar) }

@@ -11,7 +11,6 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.tooling.preview.Preview
 import com.dangerfield.libraries.ui.Dimension
-import com.dangerfield.libraries.ui.preview.Preview
 import com.dangerfield.libraries.ui.VerticalSpacerD1000
 import com.dangerfield.ui.components.CircularProgressIndicator
 import com.dangerfield.ui.components.Screen

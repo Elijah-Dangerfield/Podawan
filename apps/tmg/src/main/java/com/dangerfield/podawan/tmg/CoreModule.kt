@@ -4,7 +4,6 @@ import android.content.Context
 import com.dangerfield.libraries.ui.color.Colors
 import com.dangerfield.podawan.apps.tmg.config.TmgAppConfiguration
 import com.dangerfield.podawan.apps.tmg.config.TmgColors
-import com.dangerfield.podawan.tmg.BuildConfig
 import com.dangerfield.podawan.tmg.BuildConfig.VERSION_CODE
 import com.dangerfield.podawan.tmg.BuildConfig.VERSION_NAME
 import dagger.Module

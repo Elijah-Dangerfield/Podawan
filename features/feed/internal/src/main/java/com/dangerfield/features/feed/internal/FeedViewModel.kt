@@ -1,6 +1,7 @@
 package com.dangerfield.features.feed.internal
 
 import androidx.lifecycle.SavedStateHandle
+import com.dangerfield.features.playback.PlaybackViewModel
 import com.dangerfield.libraries.coreflowroutines.SEAViewModel
 import com.dangerfield.libraries.podcast.DisplayableEpisode
 import com.dangerfield.libraries.podcast.PodcastRepository
@@ -20,7 +21,9 @@ class FeedViewModel @Inject constructor(
     State()
 ) {
 
-    init { takeAction(Action.Load) }
+    init {
+        takeAction(Action.Load)
+    }
 
     override suspend fun handleAction(action: Action) {
         when (action) {
@@ -85,6 +88,7 @@ class FeedViewModel @Inject constructor(
 
     sealed class Event {
         object LoadFailed : Event()
+        object PlaybackFailed : Event()
     }
 
     sealed class Action {

@@ -29,4 +29,7 @@ dependencies {
 
     implementation(projects.libraries.session.storage)
     implementation(projects.libraries.session)
+
+    implementation(projects.libraries.podcast.storage)
+
 }

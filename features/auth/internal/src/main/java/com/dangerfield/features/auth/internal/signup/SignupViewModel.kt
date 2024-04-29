@@ -1,6 +1,5 @@
 package com.dangerfield.features.auth.internal.signup
 
-import android.util.Log
 import androidx.lifecycle.SavedStateHandle
 import androidx.lifecycle.viewModelScope
 import com.dangerfield.features.auth.internal.IsValidEmail

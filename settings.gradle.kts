@@ -11,9 +11,6 @@ enableFeaturePreview("TYPESAFE_PROJECT_ACCESSORS")
 
 rootProject.name = "Podawan"
 
-
-
-
 include("apps:stuffYouShouldKnow")
 include("apps:stuffYouShouldKnow:config")
 include("apps:theBenAndEmilShow")
@@ -21,6 +18,8 @@ include("apps:theBenAndEmilShow:config")
 include("apps:tmg")
 include("apps:tmg:config")
 include("features:auth")
+include("features:playback")
+include("features:playback:internal")
 include("features:auth:internal")
 include("features:blockingError")
 include("features:blockingError:internal")
@@ -58,8 +57,6 @@ include("libraries:navigation")
 include("libraries:navigation:internal")
 include("libraries:network")
 include("libraries:network:internal")
-include("libraries:playback")
-include("libraries:playback:internal")
 include("libraries:podcast")
 include("libraries:podcast:internal")
 include("libraries:resources")
@@ -74,3 +71,4 @@ include("libraries:test:internal")
 include("libraries:ui")
 include("libraries:ui:components")
 include("libraries:ui:preview")
+include("libraries:podcast:storage")

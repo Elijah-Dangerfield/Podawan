@@ -3,8 +3,7 @@ package com.dangerfield.libraries.podcast.internal
 import com.dangerfield.libraries.podcast.PodcastEpisode
 import com.dangerfield.libraries.podcast.PodcastRepository
 import com.dangerfield.libraries.podcast.PodcastShow
-import com.prof18.rssparser.RssParser
-import com.prof18.rssparser.model.RssChannel
+import com.dangerfield.libraries.podcast.asLocalDateTime
 import oddoneout.core.AppConfiguration
 import podawan.core.Catching
 import se.ansman.dagger.auto.AutoBind
@@ -14,29 +13,27 @@ import javax.inject.Singleton
 @AutoBind
 @Singleton
 class DefaultPodcastRepository @Inject constructor(
-    private val rssParser: RssParser,
-    private val appConfiguration: AppConfiguration
+    private val podcastCacheDatasource: PodcastCacheDatasource,
+    private val podcastNetworkDataSource: PodcastNetworkDataSource,
+    appConfiguration: AppConfiguration,
 ) : PodcastRepository {
 
-    private val cachedPodcast = mutableMapOf<String, PodcastShow>()
+    private val rssLink = appConfiguration.rssFeedLink
 
-    override suspend fun getPodcast(): Catching<PodcastShow> = Catching {
-        if (!cachedPodcast.containsKey(appConfiguration.rssFeedLink)) {
-            val rssChannel: RssChannel = rssParser.getRssChannel(appConfiguration.rssFeedLink)
-            cachedPodcast[appConfiguration.rssFeedLink] = rssChannel.toPodcastShow()
-        }
-
-        cachedPodcast[appConfiguration.rssFeedLink]!!
+    override suspend fun getPodcast(): Catching<PodcastShow> {
+        return podcastCacheDatasource.getPodcastWithRssFeedLink(rssLink)
+            .recoverCatching {
+                podcastNetworkDataSource.getPodcastWithRssFeedLink(rssLink)
+                    .onSuccess { Catching { podcastCacheDatasource.savePodcast(it) } }
+                    .getOrThrow()
+            }
+            .map { show ->
+                show.copy(items = show.items.sortedByDescending { it.pubDate?.asLocalDateTime() })
+            }
     }
 
     override suspend fun getEpisode(id: String): Catching<PodcastEpisode> = Catching {
-        if (!cachedPodcast.containsKey(appConfiguration.rssFeedLink)) {
-            val rssChannel: RssChannel = rssParser.getRssChannel(appConfiguration.rssFeedLink)
-            cachedPodcast[appConfiguration.rssFeedLink] = rssChannel.toPodcastShow()
-        }
-
-        val show = cachedPodcast[appConfiguration.rssFeedLink]!!
-
+        val show = getPodcast().getOrThrow()
         show.items.first { it.guid == id }
     }
 }

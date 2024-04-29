@@ -1,6 +1,5 @@
 package com.dangerfield.features.settings.internal.contactus
 
-import android.util.Log
 import androidx.lifecycle.SavedStateHandle
 import com.dangerfield.features.settings.internal.contactus.ContactUsViewModel.Action
 import com.dangerfield.features.settings.internal.contactus.ContactUsViewModel.State
