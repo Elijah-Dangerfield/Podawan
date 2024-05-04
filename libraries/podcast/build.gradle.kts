@@ -4,6 +4,7 @@ plugins {
 
 podawan {
     flowroutines()
+    compose()
 }
 
 android {
@@ -12,4 +13,7 @@ android {
 
 dependencies {
     implementation(projects.libraries.common)
+    implementation(projects.libraries.ui)
+    implementation(projects.libraries.ui.components)
+    implementation(projects.libraries.ui.preview)
 }

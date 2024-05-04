@@ -14,13 +14,14 @@ import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import com.dangerfield.libraries.ui.Dimension
 import com.dangerfield.libraries.ui.color.ProvideContentColor
-import com.dangerfield.ui.components.text.Text
 import com.dangerfield.libraries.ui.theme.PodawanTheme
+import com.dangerfield.ui.components.text.Text
 
 @Composable
 fun BottomSheet(
     onDismissRequest: () -> Unit,
     modifier: Modifier = Modifier,
+    showDragHandle: Boolean = true,
     state: BottomSheetState = rememberBottomSheetState(),
     contentAlignment: Alignment.Horizontal = Alignment.CenterHorizontally,
     content: @Composable ColumnScope.() -> Unit,
@@ -36,10 +37,12 @@ fun BottomSheet(
         scrimColor = PodawanTheme.colors.backgroundOverlay.color,
         tonalElevation = 0.dp,
         dragHandle = {
-            DragHandle(
-                modifier = Modifier.fillMaxWidth(0.2f),
-                color = contentColor.color
-            )
+            if (showDragHandle) {
+                DragHandle(
+                    modifier = Modifier.fillMaxWidth(0.2f),
+                    color = contentColor.color
+                )
+            }
         },
     ) {
         ProvideContentColor(contentColor) {

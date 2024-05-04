@@ -2,7 +2,9 @@ package com.dangerfield.ui.components.dialog.bottomsheet
 
 import androidx.compose.material3.SheetValue as MaterialSheetValue
 
-enum class BottomSheetValue(internal val materialValue: MaterialSheetValue) {
+enum class BottomSheetValue(
+    internal val materialValue: MaterialSheetValue,
+) {
     Hidden(MaterialSheetValue.Hidden),
     Expanded(MaterialSheetValue.Expanded),
     PartiallyExpanded(MaterialSheetValue.PartiallyExpanded)

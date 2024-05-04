@@ -1,4 +1,4 @@
-package com.dangerfield.features.inAppMessaging.internal.update
+package com.dangerfield.ui.components
 
 import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.Box
@@ -17,7 +17,7 @@ import com.dangerfield.libraries.ui.theme.PodawanTheme
 fun ProgressRow(
     progress: Float,
     modifier: Modifier = Modifier,
-    content: @Composable () -> Unit
+    content: @Composable () -> Unit = {}
 ) {
     Box(
         modifier = modifier
@@ -30,7 +30,7 @@ fun ProgressRow(
             modifier = Modifier
                 .fillMaxHeight()
                 .fillMaxWidth(progress)
-                .background(PodawanTheme.colors.accent.color)
+                .background(PodawanTheme.colors.surfacePrimary.color)
         ) {}
 
         Box(
@@ -38,7 +38,7 @@ fun ProgressRow(
         ) {
             ProvideTextConfig(
                 typography = PodawanTheme.typography.Body.B600,
-                color = PodawanTheme.colors.onAccent
+                color = PodawanTheme.colors.onSurfacePrimary
             ) {
                 content()
             }

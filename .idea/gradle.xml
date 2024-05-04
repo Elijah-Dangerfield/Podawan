@@ -16,7 +16,7 @@
           </compositeBuild>
         </compositeConfiguration>
         <option name="externalProjectPath" value="$PROJECT_DIR$" />
-        <option name="gradleJvm" value="#GRADLE_LOCAL_JAVA_HOME" />
+        <option name="gradleJvm" value="zulu-17" />
         <option name="modules">
           <set>
             <option value="$PROJECT_DIR$" />
@@ -43,6 +43,8 @@
             <option value="$PROJECT_DIR$/features/inAppMessaging/internal" />
             <option value="$PROJECT_DIR$/features/library" />
             <option value="$PROJECT_DIR$/features/library/internal" />
+            <option value="$PROJECT_DIR$/features/playback" />
+            <option value="$PROJECT_DIR$/features/playback/internal" />
             <option value="$PROJECT_DIR$/features/qa" />
             <option value="$PROJECT_DIR$/features/qa/internal" />
             <option value="$PROJECT_DIR$/features/search" />
@@ -68,8 +70,6 @@
             <option value="$PROJECT_DIR$/libraries/navigation/internal" />
             <option value="$PROJECT_DIR$/libraries/network" />
             <option value="$PROJECT_DIR$/libraries/network/internal" />
-            <option value="$PROJECT_DIR$/libraries/playback" />
-            <option value="$PROJECT_DIR$/libraries/playback/internal" />
             <option value="$PROJECT_DIR$/libraries/podcast" />
             <option value="$PROJECT_DIR$/libraries/podcast/internal" />
             <option value="$PROJECT_DIR$/libraries/podcast/storage" />

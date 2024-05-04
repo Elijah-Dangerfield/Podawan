@@ -34,6 +34,7 @@ class AndroidFeatureConventionPlugin : Plugin<Project> {
             pluginManager.apply {
                 apply("ooo.android.library")
                 apply("kotlin-parcelize")
+
             }
 
             // Libraries Shared Between All Features

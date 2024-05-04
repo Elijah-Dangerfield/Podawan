@@ -32,7 +32,7 @@ data class FileInfo(val id: String, val pathsToStore: List<String>)
 val releaseGoogleServicesFileInfo =
     FileInfo(
         // https://drive.google.com/file/d/1UwdN7W1Fmy4Hp1Q2w0BSiGEHJu74cWnQ/view?usp=drive_link
-        id = "1UwdN7W1Fmy4Hp1Q2w0BSiGEHJu74cWnQ",
+        id = "1sdIrT2nVgUPR_gMayY1cubIWKuVyFepa",
         pathsToStore = listOf(
             "src/release/google-services.json",
             "src/qa/google-services.json",

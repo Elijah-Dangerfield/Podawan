@@ -5,7 +5,7 @@ import androidx.compose.runtime.staticCompositionLocalOf
 import com.dangerfield.libraries.ui.color.ColorResource
 import com.dangerfield.libraries.ui.color.Colors
 import com.dangerfield.libraries.ui.typography.DefaultTypography
-import oddoneout.core.AppConfiguration
+import podawan.core.AppConfiguration
 import podawan.core.AppState
 import podawan.core.BuildInfo
 

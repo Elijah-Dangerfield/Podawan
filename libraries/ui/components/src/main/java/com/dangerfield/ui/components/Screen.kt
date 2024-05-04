@@ -8,9 +8,14 @@ import androidx.compose.material3.Scaffold
 import androidx.compose.material3.ScaffoldDefaults
 import androidx.compose.material3.contentColorFor
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.CompositionLocalProvider
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
+import com.dangerfield.libraries.ui.LocalContentColor
+import com.dangerfield.libraries.ui.color.ColorResource
+import com.dangerfield.libraries.ui.color.ProvideContentColor
 import com.dangerfield.libraries.ui.theme.PodawanTheme
+import com.dangerfield.ui.components.text.LocalTextConfig
 
 @Composable
 fun Screen(
@@ -23,19 +28,28 @@ fun Screen(
     contentWindowInsets: WindowInsets = ScaffoldDefaults.contentWindowInsets,
     content: @Composable (PaddingValues) -> Unit,
 ) {
-    Scaffold(
-        modifier = modifier,
-        topBar = topBar,
-        bottomBar = bottomBar,
-        snackbarHost = snackbarHost,
-        containerColor = containerColor,
-        contentColor = contentColor,
-        contentWindowInsets = contentWindowInsets
-    ) { paddingValues ->
-        Box(
-            Modifier.fillMaxSize(),
-            propagateMinConstraints = true) {
-            content(paddingValues)
+
+    val contentColorResource = ColorResource.FromColor(contentColor, "")
+
+    CompositionLocalProvider(
+        LocalContentColor provides contentColorResource,
+        androidx.compose.material3.LocalContentColor provides contentColorResource.color,
+        LocalTextConfig provides LocalTextConfig.current.copy(color = contentColorResource)
+    ) {
+        Scaffold(
+            modifier = modifier,
+            topBar = topBar,
+            bottomBar = bottomBar,
+            snackbarHost = snackbarHost,
+            containerColor = containerColor,
+            contentColor = contentColor,
+            contentWindowInsets = contentWindowInsets
+        ) { paddingValues ->
+            Box(
+                Modifier.fillMaxSize(),
+                propagateMinConstraints = true) {
+                content(paddingValues)
+            }
         }
     }
 }

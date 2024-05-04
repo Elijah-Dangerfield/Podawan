@@ -1,4 +1,4 @@
-package com.dangerfield.features.playback.notification
+package com.dangerfield.features.playback.internal.notification
 
 import android.app.PendingIntent
 import android.content.Context

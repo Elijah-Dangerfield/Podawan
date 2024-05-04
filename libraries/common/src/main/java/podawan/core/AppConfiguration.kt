@@ -1,4 +1,4 @@
-package oddoneout.core
+package podawan.core
 
 import android.graphics.drawable.Drawable
 

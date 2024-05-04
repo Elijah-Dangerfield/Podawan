@@ -13,8 +13,11 @@ android {
 
 dependencies {
     implementation(projects.libraries.common)
+    implementation(projects.libraries.navigation)
     implementation(projects.libraries.ui)
     implementation(projects.libraries.podcast)
+
+
     implementation(libs.media3.common)
     implementation(libs.media3.session)
     implementation(libs.media3.exoplayer)

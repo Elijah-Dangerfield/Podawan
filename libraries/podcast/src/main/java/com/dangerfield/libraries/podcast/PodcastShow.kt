@@ -6,11 +6,11 @@ data class PodcastShow(
     val title: String?,
     val link: String?,
     val description: String?,
-    val image: HeroImage?,
+    val heroImage: HeroImage?,
     val lastBuildDate: String?,
     val updatePeriod: String?,
-    val items: List<PodcastEpisode>,
-    val itunesChannelData: ItunesChannelData?
+    val episodes: List<Episode>,
+    val itunesShowData: ItunesShowData?
 )
 
 data class HeroImage(
@@ -20,7 +20,7 @@ data class HeroImage(
     val description: String?
 )
 
-data class PodcastEpisode(
+data class Episode(
     val guid: String,
     val title: String?,
     val author: String?,
@@ -34,12 +34,12 @@ data class PodcastEpisode(
     val sourceName: String?,
     val sourceUrl: String?,
     val categories: List<String>,
-    val itunesItemData: EpisodeItunesData?,
+    val itunesItemData: ItunesEpisodeData?,
     val commentsUrl: String?,
     val showHeroImage: HeroImage?
 )
 
-data class EpisodeItunesData(
+data class ItunesEpisodeData(
     val author: String?,
     val duration: String?,
     val episode: String?,
@@ -52,7 +52,7 @@ data class EpisodeItunesData(
     val season: String?,
 )
 
-data class ItunesChannelData(
+data class ItunesShowData(
     val author: String?,
     val categories: List<String> = emptyList(),
     val duration: String?,

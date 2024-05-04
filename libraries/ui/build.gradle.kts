@@ -27,6 +27,7 @@ dependencies {
     implementation(projects.libraries.common)
 
     api(projects.libraries.dictionary)
+    api(libs.kmpalette.core)
 }
 
 android {

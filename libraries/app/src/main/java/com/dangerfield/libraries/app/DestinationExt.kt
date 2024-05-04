@@ -2,6 +2,9 @@ package com.dangerfield.libraries.app
 
 import androidx.navigation.NavDestination
 import androidx.navigation.NavDestination.Companion.hierarchy
+import com.dangerfield.libraries.app.ui.homeGraphRoute
+import com.dangerfield.libraries.app.ui.libraryGraphRoute
+import com.dangerfield.libraries.app.ui.searchGraphRoute
 import com.dangerfield.libraries.navigation.Route
 
 fun NavDestination.bottomTabRoute(): Route.Template? {

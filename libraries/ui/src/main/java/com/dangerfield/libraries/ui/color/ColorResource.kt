@@ -63,12 +63,14 @@ sealed class ColorResource(val color: Color, val designSystemName: String) {
     object MintyFresh300 : ColorResource(Color(0xFF2FD566), "minty-fresh-300")
     object TangerineTwist600 : ColorResource(Color(0xFFFF5800), "tangerine-twist-600")
     object CherryPop700 : ColorResource(Color(0xFFE3212F), "cherry-pop-700")
-    internal class FromColor(color: Color, name: String) : ColorResource(color, name)
+    class FromColor(color: Color, name: String) : ColorResource(color, name)
 
     val onColorResource: ColorResource
         get() {
             return if (color.luminance() > 0.4) Black900 else White900
         }
+
+    fun withAlpha(alpha: Float) = FromColor(this.color.copy(alpha = alpha), this.designSystemName + "_a_${alpha}")
 }
 
 @Composable

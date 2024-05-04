@@ -1,4 +1,4 @@
-package com.dangerfield.features.playback
+package com.dangerfield.features.playback.internal
 
 import android.content.Context
 import android.content.Intent
@@ -8,10 +8,19 @@ import androidx.media3.common.Player
 import androidx.media3.common.util.UnstableApi
 import androidx.media3.session.MediaSession
 import androidx.media3.session.MediaSessionService
-import com.dangerfield.features.playback.notification.MediaNotificationManager
+import com.dangerfield.features.playback.internal.notification.MediaNotificationManager
 import dagger.hilt.android.AndroidEntryPoint
+import kotlinx.coroutines.CoroutineScope
+import kotlinx.coroutines.Dispatchers
+import kotlinx.coroutines.SupervisorJob
 import javax.inject.Inject
 
+/**
+ * This is the highest level component in playback. It manages the existence and behavior
+ * of the media session which holds the actual player.
+ *
+ * This deals with the creation and management of that session.
+ */
 @AndroidEntryPoint
 class MediaPlayerService : MediaSessionService() {
 
@@ -20,6 +29,8 @@ class MediaPlayerService : MediaSessionService() {
 
     @Inject
     lateinit var notificationManager: MediaNotificationManager
+
+    private val serviceScope: CoroutineScope = CoroutineScope(SupervisorJob() + Dispatchers.Main)
 
     @RequiresApi(Build.VERSION_CODES.O)
     @UnstableApi
@@ -62,13 +73,13 @@ class MediaPlayerService : MediaSessionService() {
 
         fun start(context: Context) {
             if (!isServiceRunning) {
+                isServiceRunning = true
                 val intent = Intent(context, MediaPlayerService::class.java)
                 if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.O) {
                     context.startForegroundService(intent)
                 } else {
                     context.startService(intent)
                 }
-                isServiceRunning = true
             }
         }
 

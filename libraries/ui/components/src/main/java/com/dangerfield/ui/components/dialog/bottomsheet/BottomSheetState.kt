@@ -36,6 +36,9 @@ class BottomSheetState(
     val isVisible: Boolean
         get() = materialSheetStateDelegate.isVisible
 
+    val offset: Float
+        get() = materialSheetStateDelegate.requireOffset()
+
     suspend fun show() = materialSheetStateDelegate.show()
     suspend fun hide() = materialSheetStateDelegate.hide()
 

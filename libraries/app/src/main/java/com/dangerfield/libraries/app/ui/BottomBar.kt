@@ -1,4 +1,4 @@
-package com.dangerfield.libraries.app
+package com.dangerfield.libraries.app.ui
 
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Column

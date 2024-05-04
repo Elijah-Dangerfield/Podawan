@@ -44,6 +44,7 @@ dependencies {
     api(projects.features.search)
     api(projects.features.library)
     api(projects.features.playback)
+    api(projects.features.playback.internal)
 
     // in app update
     api(libs.android.play.app.update)
@@ -53,4 +54,5 @@ dependencies {
     api(projects.libraries.config)
     api(projects.libraries.dictionary.internal)
     api(projects.libraries.podcast.internal)
+    api(projects.libraries.podcast)
 }

@@ -1,35 +1,27 @@
 package com.dangerfield.features.feed.internal
 
-import androidx.compose.foundation.Image
 import androidx.compose.foundation.border
 import androidx.compose.foundation.clickable
 import androidx.compose.foundation.interaction.MutableInteractionSource
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.Spacer
-import androidx.compose.foundation.layout.aspectRatio
 import androidx.compose.foundation.layout.fillMaxWidth
+import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.layout.width
 import androidx.compose.runtime.Composable
-import androidx.compose.runtime.derivedStateOf
-import androidx.compose.runtime.getValue
-import androidx.compose.runtime.mutableIntStateOf
 import androidx.compose.runtime.remember
-import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
-import androidx.compose.ui.graphics.drawscope.DrawScope
-import androidx.compose.ui.layout.ContentScale
-import androidx.compose.ui.platform.LocalContext
-import androidx.compose.ui.platform.LocalDensity
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
-import coil.compose.rememberAsyncImagePainter
-import coil.request.ImageRequest
-import coil.size.Dimension
-import coil.size.Size
 import com.dangerfield.libraries.podcast.DisplayableEpisode
+import com.dangerfield.libraries.podcast.EpisodePlayback
+import com.dangerfield.libraries.podcast.EpisodeImage
+import com.dangerfield.libraries.ui.Dimension.D1500
+import com.dangerfield.libraries.ui.Dimension.D50
+import com.dangerfield.libraries.ui.Dimension.D800
 import com.dangerfield.libraries.ui.HorizontalSpacerD200
 import com.dangerfield.libraries.ui.HorizontalSpacerD500
 import com.dangerfield.libraries.ui.Radii
@@ -37,10 +29,11 @@ import com.dangerfield.libraries.ui.VerticalSpacerD500
 import com.dangerfield.libraries.ui.preview.Preview
 import com.dangerfield.libraries.ui.rememberRipple
 import com.dangerfield.libraries.ui.theme.PodawanTheme
-import com.dangerfield.podawan.features.feed.internal.R
+import com.dangerfield.ui.components.CircularProgressIndicator
 import com.dangerfield.ui.components.icon.IconButton
 import com.dangerfield.ui.components.icon.PodawanIcon
 import com.dangerfield.ui.components.text.Text
+import kotlinx.collections.immutable.persistentListOf
 
 @Composable
 fun EpisodeItem(
@@ -53,34 +46,6 @@ fun EpisodeItem(
 
     ) {
 
-    var urlIndexToLoad by remember { mutableIntStateOf(0) }
-    val urlToLoad by remember {
-        derivedStateOf { episode.imageUrls.getOrNull(urlIndexToLoad) }
-    }
-
-    val imageHeight = 50.dp
-    val imageHeightPx = with(LocalDensity.current) { imageHeight.toPx() }
-    val painter = rememberAsyncImagePainter(
-        model = ImageRequest.Builder(LocalContext.current)
-            .diskCacheKey(urlToLoad)
-            .memoryCacheKey(urlToLoad)
-            .data(urlToLoad)
-            .size(Size(Dimension.Pixels(imageHeightPx.toInt()), Dimension.Pixels(imageHeightPx.toInt())))
-            .build(),
-        placeholder = debugPlaceholder(debugPreview = R.drawable.ic_android),
-        error = debugPlaceholder(debugPreview = R.drawable.ic_android),
-        fallback = debugPlaceholder(debugPreview = R.drawable.ic_android),
-        onLoading = null,
-        onSuccess = { },
-        onError = {
-            if (urlIndexToLoad < episode.imageUrls.lastIndex) {
-                urlIndexToLoad += 1
-            }
-        },
-        contentScale = ContentScale.FillWidth,
-        filterQuality = DrawScope.DefaultFilterQuality,
-    )
-
     Column(
         modifier = Modifier.clickable(
             indication = rememberRipple(),
@@ -89,19 +54,16 @@ fun EpisodeItem(
         )
     ) {
         Row {
-            Image(
+            EpisodeImage(
                 modifier = Modifier
-                    .width(imageHeight)
-                    .aspectRatio(1f)
+                    .width(D1500)
                     .clip(Radii.Card.shape)
                     .border(
                         2.dp,
                         PodawanTheme.colors.border.color,
                         Radii.Card.shape
                     ),
-                painter = painter,
-                contentDescription = "",
-                contentScale = ContentScale.FillWidth,
+                imageUrls = episode.imageUrls,
             )
 
             HorizontalSpacerD500()
@@ -156,19 +118,28 @@ fun EpisodeItem(
 
             Spacer(modifier = Modifier.weight(1f))
 
-            IconButton(
-                icon = playingIcon,
-                onClick = {
-                    if (episode.isPlaying) {
-                        onPauseClicked()
-                    } else {
-                        onPlayClicked()
-                    }
-                },
-                backgroundColor = PodawanTheme.colors.onBackground,
-                iconColor = PodawanTheme.colors.background,
-                size = IconButton.Size.Small,
-            )
+
+            if (episode.isLoading) {
+                CircularProgressIndicator(
+                    modifier = Modifier.size(D800),
+                    strokeWidth = D50,
+                    color = PodawanTheme.colors.onBackground.color,
+                )
+            } else {
+                IconButton(
+                    icon = playingIcon,
+                    onClick = {
+                        if (episode.isPlaying) {
+                            onPauseClicked()
+                        } else {
+                            onPlayClicked()
+                        }
+                    },
+                    backgroundColor = PodawanTheme.colors.onBackground,
+                    iconColor = PodawanTheme.colors.background,
+                    size = IconButton.Size.Small,
+                )
+            }
         }
 
         VerticalSpacerD500()
@@ -184,9 +155,10 @@ private fun PreviewEpisodeItem() {
             episode = DisplayableEpisode(
                 title = com.dangerfield.libraries.ui.preview.loremIpsum(3..10),
                 releaseDate = "Dec 12, 2021",
-                imageUrls = emptyList(),
+                imageUrls = persistentListOf(),
                 description = com.dangerfield.libraries.ui.preview.loremIpsum(20..30),
                 isPlaying = false,
+                isLoading = false,
                 isDownloaded = false,
                 id = "",
                 author = "Author Name"
@@ -203,9 +175,10 @@ private fun PreviewEpisodeItemPlaying() {
             episode = DisplayableEpisode(
                 title = com.dangerfield.libraries.ui.preview.loremIpsum(3..10),
                 releaseDate = "Dec 12, 2021",
-                imageUrls = emptyList(),
+                imageUrls = persistentListOf(),
                 description = com.dangerfield.libraries.ui.preview.loremIpsum(20..30),
-                isPlaying = true,
+                isPlaying = false,
+                isLoading = false,
                 isDownloaded = true,
                 id = "",
                 author = "Author Name"

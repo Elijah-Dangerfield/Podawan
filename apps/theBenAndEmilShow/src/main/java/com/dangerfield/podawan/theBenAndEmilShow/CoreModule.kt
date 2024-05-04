@@ -11,7 +11,7 @@ import dagger.Provides
 import dagger.hilt.InstallIn
 import dagger.hilt.android.qualifiers.ApplicationContext
 import dagger.hilt.components.SingletonComponent
-import oddoneout.core.AppConfiguration
+import podawan.core.AppConfiguration
 import podawan.core.App
 import podawan.core.BuildInfo
 import podawan.core.BuildType

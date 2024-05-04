@@ -1,10 +1,10 @@
 package com.dangerfield.libraries.podcast.internal
 
-import com.dangerfield.libraries.podcast.EpisodeItunesData
+import com.dangerfield.libraries.podcast.ItunesEpisodeData
 import com.dangerfield.libraries.podcast.HeroImage
-import com.dangerfield.libraries.podcast.ItunesChannelData
+import com.dangerfield.libraries.podcast.ItunesShowData
 import com.dangerfield.libraries.podcast.ItunesOwner
-import com.dangerfield.libraries.podcast.PodcastEpisode
+import com.dangerfield.libraries.podcast.Episode
 import com.dangerfield.libraries.podcast.PodcastShow
 import com.dangerfield.libraries.podcast.storage.EpisodeItunesDataEntity
 import com.dangerfield.libraries.podcast.storage.HeroImageEntity
@@ -15,7 +15,7 @@ import com.prof18.rssparser.model.RssItem
 import podawan.core.ifNotEmpty
 
 fun EpisodeItunesDataEntity.toDomain() =
-    EpisodeItunesData(
+    ItunesEpisodeData(
         author = author?.ifNotEmpty(),
         subtitle = subtitle?.ifNotEmpty(),
         summary = summary?.ifNotEmpty(),
@@ -29,9 +29,9 @@ fun EpisodeItunesDataEntity.toDomain() =
     )
 
 fun PodcastEpisodeEntity.toDomain(
-    itunesItemData: EpisodeItunesData?,
+    itunesItemData: ItunesEpisodeData?,
     showHeroImage: HeroImage?
-) = PodcastEpisode(
+) = Episode(
     title = title?.ifNotEmpty(),
     description = description?.ifNotEmpty(),
     link = link?.ifNotEmpty(),
@@ -59,7 +59,7 @@ fun HeroImageEntity.toDomain() =
     )
 
 fun ItunesChannelDataEntity.toDomain() =
-    ItunesChannelData(
+    ItunesShowData(
         author = author?.ifNotEmpty(),
         categories = categories,
         explicit = explicit?.ifNotEmpty(),
@@ -76,7 +76,7 @@ fun ItunesChannelDataEntity.toDomain() =
         newsFeedUrl = newsFeedUrl?.ifNotEmpty(),
     )
 
-fun EpisodeItunesData.toEntity() = EpisodeItunesDataEntity(
+fun ItunesEpisodeData.toEntity() = EpisodeItunesDataEntity(
     author = author?.ifNotEmpty(),
     subtitle = subtitle?.ifNotEmpty(),
     summary = summary?.ifNotEmpty(),
@@ -89,7 +89,7 @@ fun EpisodeItunesData.toEntity() = EpisodeItunesDataEntity(
     keywords = keywords,
 )
 
-fun PodcastEpisode.toEntity(
+fun Episode.toEntity(
     rssFeedLink: String,
     itunesItemDataId: Long?,
     showHeroImageId: Long?
@@ -120,7 +120,7 @@ fun HeroImage.toEntity() = HeroImageEntity(
     description = description
 )
 
-fun ItunesChannelData.toEntity() = ItunesChannelDataEntity(
+fun ItunesShowData.toEntity() = ItunesChannelDataEntity(
     author = author?.ifNotEmpty(),
     categories = categories,
     explicit = explicit?.ifNotEmpty(),
@@ -148,14 +148,14 @@ fun RssChannel.toDomain(rssFeedLink: String): PodcastShow {
         title = this.title?.ifNotEmpty(),
         link = this.link?.ifNotEmpty(),
         description = this.description?.ifNotEmpty(),
-        image = heroImage,
+        heroImage = heroImage,
         lastBuildDate = this.lastBuildDate?.ifNotEmpty(),
         updatePeriod = this.updatePeriod?.ifNotEmpty(),
-        items = this.items.mapIndexed { index, it ->
+        episodes = this.items.mapIndexed { index, it ->
 
             val identifier = getIdentifier(it, items.size, index)
 
-            PodcastEpisode(
+            Episode(
                 guid = identifier,
                 title = it.title?.ifNotEmpty(),
                 author = it.author?.ifNotEmpty(),
@@ -170,7 +170,7 @@ fun RssChannel.toDomain(rssFeedLink: String): PodcastShow {
                 sourceUrl = it.sourceUrl?.ifNotEmpty(),
                 categories = it.categories,
                 itunesItemData = it.itunesItemData?.let { itunesData ->
-                    EpisodeItunesData(
+                    ItunesEpisodeData(
                         author = itunesData.author?.ifNotEmpty(),
                         duration = itunesData.duration?.ifNotEmpty(),
                         episode = itunesData.episode?.ifNotEmpty(),
@@ -187,8 +187,8 @@ fun RssChannel.toDomain(rssFeedLink: String): PodcastShow {
                 showHeroImage = heroImage
             )
         },
-        itunesChannelData = this.itunesChannelData?.let {
-            ItunesChannelData(
+        itunesShowData = this.itunesChannelData?.let {
+            ItunesShowData(
                 author = it.author?.ifNotEmpty(),
                 categories = it.categories,
                 duration = it.duration?.ifNotEmpty(),

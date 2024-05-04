@@ -1,35 +1,22 @@
 package com.dangerfield.features.feed.internal
 
-import androidx.compose.foundation.Image
 import androidx.compose.foundation.border
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.Spacer
-import androidx.compose.foundation.layout.aspectRatio
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.padding
+import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.rememberScrollState
 import androidx.compose.foundation.verticalScroll
 import androidx.compose.runtime.Composable
-import androidx.compose.runtime.derivedStateOf
-import androidx.compose.runtime.getValue
-import androidx.compose.runtime.mutableIntStateOf
-import androidx.compose.runtime.remember
-import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
-import androidx.compose.ui.graphics.drawscope.DrawScope
-import androidx.compose.ui.layout.ContentScale
-import androidx.compose.ui.platform.LocalContext
-import androidx.compose.ui.platform.LocalDensity
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
-import coil.compose.rememberAsyncImagePainter
-import coil.request.ImageRequest
-import coil.size.Dimension.Pixels
-import coil.size.Size
 import com.dangerfield.libraries.podcast.DisplayableEpisode
+import com.dangerfield.libraries.podcast.EpisodeImage
 import com.dangerfield.libraries.ui.Dimension
 import com.dangerfield.libraries.ui.HorizontalSpacerD200
 import com.dangerfield.libraries.ui.HorizontalSpacerD500
@@ -39,12 +26,13 @@ import com.dangerfield.libraries.ui.fadingEdge
 import com.dangerfield.libraries.ui.preview.Preview
 import com.dangerfield.libraries.ui.preview.loremIpsum
 import com.dangerfield.libraries.ui.theme.PodawanTheme
-import com.dangerfield.podawan.features.feed.internal.R
+import com.dangerfield.ui.components.CircularProgressIndicator
 import com.dangerfield.ui.components.Screen
 import com.dangerfield.ui.components.icon.IconButton
 import com.dangerfield.ui.components.icon.PodawanIcon
 import com.dangerfield.ui.components.text.ClickableText
 import com.dangerfield.ui.components.text.Text
+import kotlinx.collections.immutable.persistentListOf
 import podawan.core.App
 
 @Composable
@@ -80,49 +68,17 @@ fun EpisodeDetailsScreen(
                 .fadingEdge(scrollState)
         ) {
 
-            var urlIndexToLoad by remember { mutableIntStateOf(0) }
-            val urlToLoad by remember {
-                derivedStateOf { episode.imageUrls.getOrNull(urlIndexToLoad) }
-            }
-
-            val imageHeight = 50.dp
-            val imageHeightPx = with(LocalDensity.current) { imageHeight.toPx() }
-
-            val painter = rememberAsyncImagePainter(
-                model = ImageRequest.Builder(LocalContext.current)
-                    .diskCacheKey(urlToLoad)
-                    .memoryCacheKey(urlToLoad)
-                    .data(urlToLoad)
-                    .size(Size(Pixels(imageHeightPx.toInt()), Pixels(imageHeightPx.toInt())))
-                    .build(),
-                placeholder = debugPlaceholder(debugPreview = R.drawable.ic_android),
-                error = debugPlaceholder(debugPreview = R.drawable.ic_android),
-                fallback = debugPlaceholder(debugPreview = R.drawable.ic_android),
-                onLoading = null,
-                onSuccess = { },
-                onError = {
-                    if (urlIndexToLoad < episode.imageUrls.lastIndex) {
-                        urlIndexToLoad += 1
-                    }
-                },
-                contentScale = ContentScale.FillWidth,
-                filterQuality = DrawScope.DefaultFilterQuality,
-            )
-
             Row {
-                Image(
+                EpisodeImage(
                     modifier = Modifier
                         .fillMaxWidth(0.25f)
-                        .aspectRatio(1f)
                         .clip(Radii.Card.shape)
                         .border(
                             2.dp,
                             PodawanTheme.colors.border.color,
                             Radii.Card.shape
                         ),
-                    painter = painter,
-                    contentDescription = "",
-                    contentScale = ContentScale.FillWidth,
+                    imageUrls = episode.imageUrls,
                 )
 
                 HorizontalSpacerD500()
@@ -179,19 +135,27 @@ fun EpisodeDetailsScreen(
 
                 Spacer(modifier = Modifier.weight(1f))
 
-                IconButton(
-                    icon = playingIcon,
-                    onClick = {
-                        if (episode.isPlaying) {
-                            onPauseClicked()
-                        } else {
-                            onPlayClicked()
-                        }
-                    },
-                    backgroundColor = PodawanTheme.colors.onBackground,
-                    iconColor = PodawanTheme.colors.background,
-                    size = IconButton.Size.Medium,
-                )
+                if (episode.isLoading) {
+                    CircularProgressIndicator(
+                        modifier = Modifier.size(Dimension.D1000),
+                        strokeWidth = Dimension.D50,
+                        color = PodawanTheme.colors.onBackground.color,
+                    )
+                } else {
+                    IconButton(
+                        icon = playingIcon,
+                        onClick = {
+                            if (episode.isPlaying) {
+                                onPauseClicked()
+                            } else {
+                                onPlayClicked()
+                            }
+                        },
+                        backgroundColor = PodawanTheme.colors.onBackground,
+                        iconColor = PodawanTheme.colors.background,
+                        size = IconButton.Size.Medium,
+                    )
+                }
             }
 
             VerticalSpacerD500()
@@ -215,10 +179,11 @@ private fun PreviewEpisodeDetailsScreen() {
             episode = DisplayableEpisode(
                 title = loremIpsum(3..10),
                 releaseDate = "Dec 12, 2021",
-                imageUrls = listOf(),
+                imageUrls = persistentListOf(),
                 description = loremIpsum(50..100),
-                isPlaying = false,
                 isDownloaded = false,
+                isPlaying = false,
+                isLoading = false,
                 id = "",
                 author = "Author Name"
             ),
@@ -234,9 +199,10 @@ private fun PreviewEpisodeDetailsScreenStuffYouShouldKnow() {
             episode = DisplayableEpisode(
                 title = loremIpsum(3..10),
                 releaseDate = "Dec 12, 2021",
-                imageUrls = listOf(),
+                imageUrls = persistentListOf(),
                 description = loremIpsum(50..100),
-                isPlaying = false,
+                isPlaying = true,
+                isLoading = false,
                 isDownloaded = false,
                 id = "",
                 author = "Author Name"

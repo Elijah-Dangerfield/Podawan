@@ -1,26 +1,30 @@
 package com.dangerfield.features.feed.internal
 
 import androidx.lifecycle.SavedStateHandle
+import androidx.lifecycle.viewModelScope
 import com.dangerfield.features.feed.episodeIdArgument
+import com.dangerfield.features.playback.PlayerStateRepository
 import com.dangerfield.libraries.coreflowroutines.SEAViewModel
+import com.dangerfield.libraries.coreflowroutines.collectIn
 import com.dangerfield.libraries.navigation.navArgument
 import com.dangerfield.libraries.podcast.DisplayableEpisode
-import com.dangerfield.libraries.podcast.PodcastRepository
-import com.dangerfield.libraries.podcast.getDisplayableEpisode
+import com.dangerfield.libraries.podcast.EpisodePlayback
+import com.dangerfield.libraries.podcast.GetDisplayableEpisode
 import dagger.hilt.android.lifecycle.HiltViewModel
 import podawan.core.doNothing
 import javax.inject.Inject
 
 @HiltViewModel
 class EpisodeDetailsViewModel @Inject constructor(
-    private val podcastRepository: PodcastRepository,
+    private val playerStateRepository: PlayerStateRepository,
+    private val getDisplayableEpisode: GetDisplayableEpisode,
     savedStateHandle: SavedStateHandle
 ) : SEAViewModel<EpisodeDetailsViewModel.State, EpisodeDetailsViewModel.Event, EpisodeDetailsViewModel.Action>(
     savedStateHandle,
     State()
 ) {
 
-    val id = savedStateHandle.navArgument<String>(episodeIdArgument)
+    private val id = savedStateHandle.navArgument<String>(episodeIdArgument)
 
     init {
         takeAction(Action.Load)
@@ -36,19 +40,28 @@ class EpisodeDetailsViewModel @Inject constructor(
     }
 
     private suspend fun Action.PlayEpisode.handlePlay() {
+        val episodeId = id ?: return
         updateState {
             it.copy(
-                episode = it.episode?.copy(isPlaying = true),
+                episode = it.episode?.copy(
+                    isPlaying = true
+                )
             )
         }
+
+        playerStateRepository.playEpisode(episodeId)
     }
 
     private suspend fun Action.PauseEpisode.handlePause() {
         updateState {
             it.copy(
-                episode = it.episode?.copy(isPlaying = false),
+                episode = it.episode?.copy(
+                    isPlaying = false
+                )
             )
         }
+
+        playerStateRepository.pauseEpisode()
     }
 
     private suspend fun Action.Load.handleLoad() {
@@ -57,17 +70,13 @@ class EpisodeDetailsViewModel @Inject constructor(
             return
         }
 
-        podcastRepository.getPodcast()
-            .onSuccess { podcast ->
-                val episode = podcast.getDisplayableEpisode(id, removeHtml = false) ?: run {
-                    sendEvent(Event.LoadFailed)
-                    return@onSuccess
+        getDisplayableEpisode(id).collectIn(viewModelScope) { result ->
+            result
+                .onSuccess { episode ->
+                    updateState { it.copy(episode = episode) }
                 }
-
-                updateState { it.copy(episode = episode) }
-            }.onFailure {
-                sendEvent(Event.LoadFailed)
-            }
+                .onFailure { sendEvent(Event.LoadFailed) }
+        }
     }
 
     data class State(

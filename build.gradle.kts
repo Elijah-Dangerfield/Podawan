@@ -3,6 +3,9 @@ buildscript {
     repositories {
         google()
         mavenCentral()
+        maven {
+            url = uri("https://plugins.gradle.org/m2/")
+        }
     }
     dependencies {
         classpath(libs.android.gradlePlugin)
@@ -11,6 +14,7 @@ buildscript {
         classpath(libs.kotlinpoet)
         classpath(libs.dagger.hilt.gradle.plugin)
         classpath(libs.firebase.crashlytics.gradlePlugin)
+        classpath(libs.gradle.plugin)
     }
 }
 

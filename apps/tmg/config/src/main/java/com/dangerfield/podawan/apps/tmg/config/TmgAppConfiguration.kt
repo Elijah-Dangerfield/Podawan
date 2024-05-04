@@ -3,7 +3,7 @@ package com.dangerfield.podawan.apps.tmg.config
 import android.content.Context
 import android.graphics.drawable.Drawable
 import dagger.hilt.android.qualifiers.ApplicationContext
-import oddoneout.core.AppConfiguration
+import podawan.core.AppConfiguration
 
 class TmgAppConfiguration(
     @ApplicationContext private val context: Context

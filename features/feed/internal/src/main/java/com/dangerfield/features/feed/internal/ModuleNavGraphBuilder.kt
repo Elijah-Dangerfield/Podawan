@@ -10,7 +10,6 @@ import com.dangerfield.features.blockingerror.navigateToGeneralErrorDialog
 import com.dangerfield.features.feed.episodeDetailsRoute
 import com.dangerfield.features.feed.feedRoute
 import com.dangerfield.features.feed.toEpisodeDetails
-import com.dangerfield.features.playback.PlaybackViewModel
 import com.dangerfield.libraries.coreflowroutines.ObserveWithLifecycle
 import com.dangerfield.libraries.navigation.HomeTabNavBuilder
 import com.dangerfield.libraries.navigation.Router
@@ -29,8 +28,6 @@ class ModuleNavGraphBuilder @Inject constructor() : HomeTabNavBuilder {
             arguments = feedRoute.navArguments
         ) {
             val viewModel: FeedViewModel = hiltViewModel()
-            val playbackViewModel: PlaybackViewModel = hiltViewModel()
-
             val state by viewModel.stateFlow.collectAsStateWithLifecycle()
 
             ObserveWithLifecycle(flow = viewModel.eventFlow) {
@@ -44,17 +41,15 @@ class ModuleNavGraphBuilder @Inject constructor() : HomeTabNavBuilder {
                 FullScreenLoader()
             } else {
                 FeedScreen(
-                    showTitle = state.podcastShow?.title.orEmpty(),
-                    showDescription = state.podcastShow?.description.orEmpty(),
-                    heroImageUrl = state.podcastShow?.image?.url,
+                    showTitle = state.showTitle,
+                    showDescription = state.showDescription,
+                    heroImageUrl = state.showHeroImageUrl,
                     episodes = state.episodes,
                     onEpisodePlayClicked = {
                         viewModel.takeAction(FeedViewModel.Action.PlayEpisode(it))
-                        playbackViewModel.loadAndPlay(it.id)
                     },
                     onEpisodePauseClicked = {
                         viewModel.takeAction(FeedViewModel.Action.PauseEpisode(it))
-                        playbackViewModel.takeAction(PlaybackViewModel.Action.Pause)
                     },
                     onEpisodeDownloadClicked = {
                         viewModel.takeAction(FeedViewModel.Action.DownloadEpisode(it))

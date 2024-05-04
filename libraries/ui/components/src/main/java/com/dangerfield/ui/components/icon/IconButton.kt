@@ -22,6 +22,7 @@ import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.Dp
 import androidx.compose.ui.unit.dp
 import com.dangerfield.libraries.ui.Dimension
+import com.dangerfield.libraries.ui.LocalContentColor
 import com.dangerfield.libraries.ui.Radii
 import com.dangerfield.libraries.ui.color.ColorResource
 import com.dangerfield.ui.components.Surface
@@ -35,7 +36,7 @@ fun IconButton(
     modifier: Modifier = Modifier,
     onClick: () -> Unit,
     backgroundColor: ColorResource? = null,
-    iconColor: ColorResource = PodawanTheme.colors.onBackground,
+    iconColor: ColorResource = LocalContentColor.current,
     size: IconButton.Size = IconButton.Size.Medium,
     enabled: Boolean = true,
     interactionSource: MutableInteractionSource = remember { MutableInteractionSource() },
@@ -73,6 +74,7 @@ object IconButton {
         Small,
         Medium,
         Large,
+        Largest,
     }
 }
 
@@ -82,6 +84,7 @@ internal val IconButton.Size.padding: Dp
         IconButton.Size.Small -> Dimension.D100
         IconButton.Size.Medium -> Dimension.D100
         IconButton.Size.Large -> Dimension.D200
+        IconButton.Size.Largest -> Dimension.D300
     }
 
 internal val IconButton.Size.iconSize: IconSize
@@ -90,6 +93,7 @@ internal val IconButton.Size.iconSize: IconSize
         IconButton.Size.Small -> IconSize.Small
         IconButton.Size.Medium -> IconSize.Medium
         IconButton.Size.Large -> IconSize.Large
+        IconButton.Size.Largest -> IconSize.Largest
     }
 
 private val iconButtons = listOf(

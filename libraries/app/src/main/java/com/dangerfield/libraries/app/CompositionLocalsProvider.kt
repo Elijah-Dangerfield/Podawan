@@ -13,7 +13,7 @@ import com.dangerfield.libraries.ui.LocalBuildInfo
 import com.dangerfield.libraries.ui.LocalAppConfiguration
 import com.dangerfield.libraries.ui.LocalColors
 import com.dangerfield.libraries.ui.color.Colors
-import oddoneout.core.AppConfiguration
+import podawan.core.AppConfiguration
 import podawan.core.BuildInfo
 import javax.inject.Inject
 

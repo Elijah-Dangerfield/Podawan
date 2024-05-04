@@ -23,6 +23,7 @@ import androidx.compose.material.icons.filled.ChevronLeft
 import androidx.compose.material.icons.filled.ChevronRight
 import androidx.compose.material.icons.filled.ContentCopy
 import androidx.compose.material.icons.filled.Edit
+import androidx.compose.material.icons.filled.Forward10
 import androidx.compose.material.icons.filled.Home
 import androidx.compose.material.icons.filled.Info
 import androidx.compose.material.icons.filled.IosShare
@@ -32,12 +33,15 @@ import androidx.compose.material.icons.filled.Palette
 import androidx.compose.material.icons.filled.Pause
 import androidx.compose.material.icons.filled.PlayArrow
 import androidx.compose.material.icons.filled.QuestionMark
+import androidx.compose.material.icons.filled.Replay10
 import androidx.compose.material.icons.filled.Search
 import androidx.compose.material.icons.filled.Videocam
+import androidx.compose.material.icons.outlined.ArrowDownward
 import androidx.compose.material.icons.outlined.Bookmarks
 import androidx.compose.material.icons.outlined.Home
 import androidx.compose.material.icons.outlined.LibraryMusic
 import androidx.compose.material.icons.outlined.Search
+import androidx.compose.material.icons.outlined.Timer
 import androidx.compose.material.icons.outlined.Upcoming
 import androidx.compose.material.icons.rounded.Add
 import androidx.compose.material.icons.rounded.ArrowBack
@@ -244,6 +248,26 @@ sealed class PodawanIcon(
         imageVector = Icons.Default.ArrowCircleDown,
         contentDescription = contentDescription
     )
+
+    class ArrowDown(contentDescription: String?) : PodawanIcon(
+        imageVector = Icons.Outlined.ArrowDownward,
+        contentDescription = contentDescription
+    )
+
+    class Rewind10Seconds(contentDescription: String?) : PodawanIcon(
+        imageVector = Icons.Default.Replay10,
+        contentDescription = contentDescription
+    )
+
+    class FastForward10Seconds(contentDescription: String?) : PodawanIcon(
+        imageVector = Icons.Default.Forward10,
+        contentDescription = contentDescription
+    )
+
+    class Timer(contentDescription: String?) : PodawanIcon(
+        imageVector = Icons.Outlined.Timer,
+        contentDescription = contentDescription
+    )
 }
 
 private val allIcons = listOf(
@@ -289,7 +313,12 @@ private val allIcons = listOf(
     PodawanIcon.Play(""),
     PodawanIcon.Pause(""),
     PodawanIcon.ArrowCircleDown(""),
-)
+    PodawanIcon.ArrowDown(""),
+    PodawanIcon.FastForward10Seconds(""),
+    PodawanIcon.Rewind10Seconds(""),
+    PodawanIcon.Timer(""),
+
+    )
 
 @Preview(device = "spec:id=reference_phone,shape=Normal,width=1000,height=1800,unit=dp,dpi=200")
 @Composable

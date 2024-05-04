@@ -36,6 +36,7 @@ import com.dangerfield.libraries.ui.VerticalSpacerD1000
 import com.dangerfield.libraries.ui.makeLookClickable
 import com.dangerfield.libraries.ui.theme.PodawanTheme
 import com.dangerfield.libraries.ui.toPainter
+import com.dangerfield.libraries.ui.visibility
 import com.dangerfield.ui.components.CircularProgressIndicator
 import com.dangerfield.ui.components.Screen
 import com.dangerfield.ui.components.button.Button
@@ -133,15 +134,13 @@ fun LoginScreen(
 
             Spacer(modifier = Modifier.weight(1f))
 
-            if (isLoading) {
-                Box(
-                    modifier = Modifier.fillMaxWidth(),
-                    contentAlignment = Center
-                ) {
+
+            Column(
+                horizontalAlignment = Alignment.CenterHorizontally
+            ) {
+                if (isLoading) {
                     CircularProgressIndicator()
-                }
-            } else {
-                Column {
+                } else {
                     Button(
                         modifier = Modifier.fillMaxWidth(),
                         onClick = {
@@ -152,29 +151,33 @@ fun LoginScreen(
                     ) {
                         Text(text = "Login")
                     }
-
-                    VerticalSpacerD1000()
-
-                    Button(
-                        modifier = Modifier.fillMaxWidth(),
-                        style = ButtonStyle.NoBackground,
-                        onClick = onSignupClicked,
-                    ) {
-                        Text(
-                            text = "New to ${appConfiguration.appName}? Sign up".makeLookClickable(linkText = "Sign up"),
-                            maxLines = 2,
-                            textAlign = TextAlign.Center,
-                            lineBreak = LineBreak(
-                                strategy = LineBreak.Strategy.Balanced,
-                                strictness = LineBreak.Strictness.Normal,
-                                wordBreak = LineBreak.WordBreak.Default,
-                            )
-                        )
-                    }
                 }
 
                 VerticalSpacerD1000()
+
+                Button(
+                    // using visibility here instead of
+                    // declarative logic lets the loading indicator remain at the button height.
+                    modifier = Modifier.fillMaxWidth().visibility(!isLoading),
+                    style = ButtonStyle.NoBackground,
+                    onClick = onSignupClicked,
+                ) {
+                    Text(
+                        text = "New to ${appConfiguration.appName}? Sign up".makeLookClickable(
+                            linkText = "Sign up"
+                        ),
+                        maxLines = 2,
+                        textAlign = TextAlign.Center,
+                        lineBreak = LineBreak(
+                            strategy = LineBreak.Strategy.Balanced,
+                            strictness = LineBreak.Strictness.Normal,
+                            wordBreak = LineBreak.WordBreak.Default,
+                        )
+                    )
+                }
             }
+
+            VerticalSpacerD1000()
         }
     }
 }

@@ -11,6 +11,7 @@ import com.dangerfield.features.inAppMessaging.InAppUpdateAvailability
 import com.dangerfield.features.inAppMessaging.InstallInAppUpdate
 import com.dangerfield.features.inAppMessaging.StartInAppUpdate
 import com.dangerfield.features.inAppMessaging.UpdateStatus
+import com.dangerfield.features.playback.PlayerStateRepository
 import com.dangerfield.libraries.config.AppConfigFlow
 import com.dangerfield.libraries.coreflowroutines.SEAViewModel
 import com.dangerfield.libraries.coreflowroutines.collectIn
@@ -26,6 +27,11 @@ import com.dangerfield.libraries.app.AppViewModel.Action
 import com.dangerfield.libraries.app.AppViewModel.State
 import com.dangerfield.libraries.app.startup.EnsureAppConfigLoaded
 import com.dangerfield.libraries.app.startup.IsInMaintenanceMode
+import com.dangerfield.libraries.podcast.CurrentlyPlayingEpisode
+import com.dangerfield.libraries.podcast.DisplayableEpisode
+import com.dangerfield.libraries.podcast.EpisodePlayback
+import com.dangerfield.libraries.podcast.GetCurrentlyPlayingEpisode
+import com.dangerfield.libraries.podcast.PodcastRepository
 import dagger.hilt.android.lifecycle.HiltViewModel
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.Deferred
@@ -52,10 +58,13 @@ class AppViewModel @Inject constructor(
     private val isAppUpdateRequired: IsAppUpdateRequired,
     private val consentStatusRepository: ConsentStatusRepository,
     private val sessionFlow: SessionFlow,
+    private val getCurrentlyPlayingEpisode: GetCurrentlyPlayingEpisode,
     private val getLanguageSupportLevel: GetDeviceLanguageSupportLevel,
     private val shouldShowLanguageSupportMessage: ShouldShowLanguageSupportMessage,
     private val languageSupportMessageShown: LanguageSupportMessageShown,
     private val appConfigFlow: AppConfigFlow,
+    private val podcastRepository: PodcastRepository,
+    private val playerStateRepository: PlayerStateRepository,
     private val isInMaintenanceMode: IsInMaintenanceMode,
     private val getInAppUpdateAvailability: GetInAppUpdateAvailability,
     private val startInAppUpdate: StartInAppUpdate,
@@ -73,6 +82,7 @@ class AppViewModel @Inject constructor(
         inAppUpdateStatus = null,
         isLoggedIn = false,
         isConsentNeeded = false,
+        currentlyPlayingEpisode = null
     )
 ) {
 
@@ -91,13 +101,14 @@ class AppViewModel @Inject constructor(
         with(action) {
             when (this) {
                 is Action.LoadApp -> loadApp()
-                is Action.MarkLanguageSupportLevelMessageShown -> languageSupportMessageShown(
-                    languageSupportLevel
-                )
+                is Action.MarkLanguageSupportLevelMessageShown ->
+                    languageSupportMessageShown(languageSupportLevel)
 
                 is Action.LoadConsentStatus -> listenForConsentStatusUpdates()
                 is Action.StartInAppUpdate -> launchInAppUpdate()
                 is Action.CompleteInAppUpdate -> handleInstall()
+                is Action.PauseEpisode -> handlePause()
+                is Action.PlayEpisode -> handlePlay()
             }
         }
     }
@@ -147,6 +158,30 @@ class AppViewModel @Inject constructor(
         }
     }
 
+    private suspend fun Action.PlayEpisode.handlePlay() {
+        updateState {state ->
+            state.copy(
+                currentlyPlayingEpisode = state.currentlyPlayingEpisode?.copy(
+                    episodePlayback = EpisodePlayback.Playing()
+                )
+            )
+        }
+
+        playerStateRepository.playEpisode(episode.episode.id)
+    }
+
+    private suspend fun Action.PauseEpisode.handlePause() {
+        updateState {state ->
+            state.copy(
+                currentlyPlayingEpisode = state.currentlyPlayingEpisode?.copy(
+                    episodePlayback = EpisodePlayback.Paused()
+                )
+            )
+        }
+
+        playerStateRepository.pauseEpisode()
+    }
+
     private suspend fun Action.LoadApp.loadApp() {
         tryWithTimeout(10.seconds) {
             requiredStartupTasks.awaitAll().failFast()
@@ -175,7 +210,16 @@ class AppViewModel @Inject constructor(
                 getLanguageSupport()
                 listenForConfigUpdates()
                 checkForAppUpdate()
+                listenForCurrentlyPlayingEpisodeUpdates()
             }
+    }
+
+    private fun Action.listenForCurrentlyPlayingEpisodeUpdates() {
+        getCurrentlyPlayingEpisode().collectIn(viewModelScope) { episode ->
+            updateState {
+                it.copy(currentlyPlayingEpisode = episode)
+            }
+        }
     }
 
     private suspend fun Action.LoadApp.checkForAppUpdate() {
@@ -284,6 +328,8 @@ class AppViewModel @Inject constructor(
 
     sealed class Action {
         data object LoadApp : Action()
+        data class PlayEpisode(val episode: CurrentlyPlayingEpisode): Action()
+        data class PauseEpisode(val episode: CurrentlyPlayingEpisode): Action()
         data class LoadConsentStatus(val activity: Activity) : Action()
         data class StartInAppUpdate(
             val activity: Activity,
@@ -304,6 +350,7 @@ class AppViewModel @Inject constructor(
         val isInMaintenanceMode: Boolean,
         val inAppUpdateStatus: UpdateStatus?,
         val isLoggedIn: Boolean,
+        val currentlyPlayingEpisode: CurrentlyPlayingEpisode?,
         val languageSupportLevelMessage: LanguageSupportLevelMessage?,
     )
 

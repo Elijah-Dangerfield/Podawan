@@ -1,6 +1,5 @@
 package com.dangerfield.features.feed.internal
 
-import androidx.annotation.DrawableRes
 import androidx.compose.foundation.Image
 import androidx.compose.foundation.border
 import androidx.compose.foundation.layout.Column
@@ -18,14 +17,13 @@ import androidx.compose.ui.draw.clip
 import androidx.compose.ui.graphics.drawscope.DrawScope
 import androidx.compose.ui.layout.ContentScale
 import androidx.compose.ui.platform.LocalContext
-import androidx.compose.ui.platform.LocalInspectionMode
-import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import coil.compose.rememberAsyncImagePainter
 import coil.request.ImageRequest
 import coil.size.Size
 import com.dangerfield.libraries.podcast.DisplayableEpisode
+import com.dangerfield.libraries.podcast.EpisodePlayback
 import com.dangerfield.libraries.ui.Dimension
 import com.dangerfield.libraries.ui.HorizontalSpacerD500
 import com.dangerfield.libraries.ui.LocalAppConfiguration
@@ -37,12 +35,14 @@ import com.dangerfield.libraries.ui.bounceClick
 import com.dangerfield.libraries.ui.fadingEdge
 import com.dangerfield.libraries.ui.preview.Preview
 import com.dangerfield.libraries.ui.preview.loremIpsum
+import com.dangerfield.libraries.ui.preview.previewableImage
 import com.dangerfield.libraries.ui.theme.PodawanTheme
 import com.dangerfield.libraries.ui.verticalScrollWithBar
-import com.dangerfield.podawan.features.feed.internal.R
 import com.dangerfield.ui.components.HorizontalDivider
 import com.dangerfield.ui.components.Screen
 import com.dangerfield.ui.components.text.Text
+import kotlinx.collections.immutable.ImmutableList
+import kotlinx.collections.immutable.persistentListOf
 import podawan.core.App
 import podawan.core.doNothing
 
@@ -52,7 +52,7 @@ fun FeedScreen(
     showTitle: String,
     showDescription: String,
     heroImageUrl: String?,
-    episodes: List<DisplayableEpisode>,
+    episodes: ImmutableList<DisplayableEpisode>,
     onEpisodePlayClicked: (DisplayableEpisode) -> Unit = {},
     onEpisodePauseClicked: (DisplayableEpisode) -> Unit = {},
     onEpisodeDownloadClicked: (DisplayableEpisode) -> Unit = {},
@@ -88,9 +88,9 @@ fun FeedScreen(
                                 .data(heroImageUrl)
                                 .size(Size.ORIGINAL)
                                 .build(),
-                            placeholder = debugPlaceholder(debugPreview = R.drawable.ic_android),
-                            error = debugPlaceholder(debugPreview = R.drawable.ic_android),
-                            fallback = debugPlaceholder(debugPreview = R.drawable.ic_android),
+                            placeholder = previewableImage(),
+                            error = previewableImage(),
+                            fallback = previewableImage(),
                             onLoading = null,
                             onSuccess = { },
                             onError = { },
@@ -159,14 +159,6 @@ fun FeedScreen(
 }
 
 @Composable
-fun debugPlaceholder(@DrawableRes debugPreview: Int) =
-    if (LocalInspectionMode.current) {
-        painterResource(id = debugPreview)
-    } else {
-        null
-    }
-
-@Composable
 @Preview
 private fun PreviewScreen() {
 
@@ -174,12 +166,13 @@ private fun PreviewScreen() {
         DisplayableEpisode(
             title = loremIpsum(2),
             releaseDate = "December 12, 2021",
-            imageUrls = emptyList(),
+            imageUrls = persistentListOf(),
             description = loremIpsum(10..20),
-            isPlaying = true,
             isDownloaded = false,
             id = "",
-            author = "Author Name"
+            author = "Author Name",
+            isPlaying = false,
+            isLoading = false
         )
 
     Preview {
@@ -188,7 +181,7 @@ private fun PreviewScreen() {
         FeedScreen(
             showDescription = loremIpsum(20),
             showTitle = appName,
-            episodes = listOf(
+            episodes = persistentListOf(
                 getRandomEpisode(),
                 getRandomEpisode(),
                 getRandomEpisode(),
@@ -208,9 +201,10 @@ private fun PreviewScreenSYSK() {
         DisplayableEpisode(
             title = loremIpsum(2),
             releaseDate = "December 12, 2021",
-            imageUrls = emptyList(),
+            imageUrls = persistentListOf(),
             description = loremIpsum(10..20),
-            isPlaying = true,
+            isPlaying = false,
+            isLoading = false,
             isDownloaded = false,
             id = "",
             author = "Author Name"
@@ -224,7 +218,7 @@ private fun PreviewScreenSYSK() {
         FeedScreen(
             showDescription = loremIpsum(20),
             showTitle = appName,
-            episodes = listOf(
+            episodes = persistentListOf(
                 getRandomEpisode(),
                 getRandomEpisode(),
                 getRandomEpisode(),

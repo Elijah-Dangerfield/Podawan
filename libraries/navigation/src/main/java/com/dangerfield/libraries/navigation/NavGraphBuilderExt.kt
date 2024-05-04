@@ -1,10 +1,12 @@
 package com.dangerfield.libraries.navigation
 
+import androidx.compose.animation.AnimatedContentScope
 import androidx.compose.runtime.Composable
 import androidx.navigation.NamedNavArgument
 import androidx.navigation.NavBackStackEntry
 import androidx.navigation.NavDeepLink
 import androidx.navigation.NavGraphBuilder
+import androidx.navigation.compose.ComposeNavigator
 import androidx.navigation.get
 import com.dangerfield.libraries.navigation.floatingwindow.FloatingWindowNavigator
 
@@ -62,6 +64,29 @@ fun NavGraphBuilder.dialog(
                 addArgument(argumentName, argument)
             }
             deepLinks.forEach { deepLink ->
+                addDeepLink(deepLink)
+            }
+        }
+    )
+}
+
+fun NavGraphBuilder.screen(
+    route: Route.Template,
+    content: @Composable AnimatedContentScope.(NavBackStackEntry) -> Unit
+) {
+    addDestination(
+        ComposeNavigator.Destination(
+            provider[ComposeNavigator::class],
+            content
+        ).apply {
+
+            this.route = route.navRoute
+
+            route.navArguments.forEach { (argumentName, argument) ->
+                addArgument(argumentName, argument)
+            }
+
+            route.deepLinks.forEach { deepLink ->
                 addDeepLink(deepLink)
             }
         }

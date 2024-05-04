@@ -2,7 +2,7 @@ package com.dangerfield.podawan.apps.stuffYouShouldKnow.config
 
 import android.content.Context
 import android.graphics.drawable.Drawable
-import oddoneout.core.AppConfiguration
+import podawan.core.AppConfiguration
 
 class StuffYouShouldKnowAppConfiguration(
     private val context: Context

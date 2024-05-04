@@ -87,6 +87,8 @@ abstract class FeatureExtension {
             """.trimIndent()
             )
 
+        project.pluginManager.apply("dev.shreyaspatil.compose-compiler-report-generator")
+
         project.configureAndroidCompose(projectExt, true)
     }
 

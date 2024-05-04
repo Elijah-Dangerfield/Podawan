@@ -20,15 +20,15 @@ import com.dangerfield.features.blockingerror.maintenanceRoute
 import com.dangerfield.features.consent.consentRoute
 import com.dangerfield.features.forcedupdate.forcedUpdateNavigationRoute
 import com.dangerfield.features.inAppMessaging.UpdateStatus
-import com.dangerfield.features.playback.MediaPlayerService
-import com.dangerfield.features.playback.PlaybackState
-import com.dangerfield.features.playback.PlaybackViewModel
+import com.dangerfield.features.playback.PlayerStateRepository
+import com.dangerfield.features.playback.PlayerState
+import com.dangerfield.features.playback.internal.MediaPlayerService
+import com.dangerfield.features.playback.openPlayer
 import com.dangerfield.libraries.analytics.LocalMetricsTracker
 import com.dangerfield.libraries.analytics.MetricsTracker
 import com.dangerfield.libraries.app.AppViewModel.Action.LoadConsentStatus
 import com.dangerfield.libraries.app.AppViewModel.Action.MarkLanguageSupportLevelMessageShown
 import com.dangerfield.libraries.app.startup.SplashScreenBuilder
-import com.dangerfield.libraries.coreflowroutines.observeWithLifecycle
 import com.dangerfield.libraries.dictionary.Dictionary
 import com.dangerfield.libraries.dictionary.LocalDictionary
 import com.dangerfield.libraries.dictionary.internal.ui.navigateToLanguageSupportDialog
@@ -45,7 +45,7 @@ import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.flow.first
 import kotlinx.coroutines.launch
 import kotlinx.coroutines.withContext
-import oddoneout.core.AppConfiguration
+import podawan.core.AppConfiguration
 import podawan.core.BuildInfo
 import podawan.core.Message
 import podawan.core.SnackBarPresenter
@@ -55,8 +55,10 @@ import javax.inject.Inject
 
 open class AppActivity : ComponentActivity() {
 
-    private val mainActivityViewModel: AppViewModel by viewModels()
-    private val playbackViewModel: PlaybackViewModel by viewModels()
+    private val appViewModel: AppViewModel by viewModels()
+
+    @Inject
+    lateinit var playerStateRepository: PlayerStateRepository
 
     @Inject
     lateinit var splashScreenBuilder: SplashScreenBuilder
@@ -101,10 +103,10 @@ open class AppActivity : ComponentActivity() {
         lifecycleScope.launch {
             lifecycle.repeatOnLifecycle(Lifecycle.State.STARTED) {
                 withContext(Dispatchers.Main.immediate) {
-                    mainActivityViewModel.stateFlow.first { !it.isLoadingApp }
+                    appViewModel.stateFlow.first { !it.isLoadingApp }
                     if (!hasDrawnApp.getAndSet(true)) {
                         setAppContent()
-                        mainActivityViewModel.takeAction(LoadConsentStatus(this@AppActivity))
+                        appViewModel.takeAction(LoadConsentStatus(this@AppActivity))
                     }
                 }
             }
@@ -113,7 +115,7 @@ open class AppActivity : ComponentActivity() {
         lifecycleScope.launch {
             lifecycle.repeatOnLifecycle(Lifecycle.State.STARTED) {
                 withContext(Dispatchers.Main.immediate) {
-                    playbackViewModel.stateFlow.first { it.playbackState is PlaybackState.Ready }
+                    playerStateRepository.getPlayerStateFlow().first { it is PlayerState.ReadyToPlay }
                     MediaPlayerService.start(applicationContext)
                 }
             }
@@ -123,7 +125,7 @@ open class AppActivity : ComponentActivity() {
     private fun setAppContent() {
         setContent {
 
-            val state by mainActivityViewModel.stateFlow.collectAsStateWithLifecycle()
+            val state by appViewModel.stateFlow.collectAsStateWithLifecycle()
 
             val startingRouteTemplate by remember {
                 derivedStateOf {
@@ -168,7 +170,11 @@ open class AppActivity : ComponentActivity() {
                     startingRouteTemplate = startingRouteTemplate,
                     delegatingRouter = delegatingRouter,
                     navGraphRegistry = navGraphRegistry,
-                    updateStatus = isAppUpdateStatus
+                    updateStatus = isAppUpdateStatus,
+                    currentlyPlayingEpisode = state.currentlyPlayingEpisode,
+                    onPauseEpisode = { appViewModel.takeAction(AppViewModel.Action.PauseEpisode(it)) },
+                    onPlayEpisode = { appViewModel.takeAction(AppViewModel.Action.PlayEpisode(it)) },
+                    onClickBottomPlayerBar = { router.openPlayer(it.episode.id) }
                 )
             }
         }
@@ -177,7 +183,7 @@ open class AppActivity : ComponentActivity() {
     private fun handleLanguageSupportMessage(message: AppViewModel.LanguageSupportLevelMessage?) {
         if (message != null) {
 
-            mainActivityViewModel.takeAction(
+            appViewModel.takeAction(
                 MarkLanguageSupportLevelMessageShown(
                     message.languageSupportLevel
                 )
@@ -194,7 +200,7 @@ open class AppActivity : ComponentActivity() {
         when (updateStatus) {
             is UpdateStatus.UpdateAvailable -> {
                 if (updateStatus.shouldUpdate) {
-                    mainActivityViewModel.startInAppUpdate(this@AppActivity, updateStatus)
+                    appViewModel.startInAppUpdate(this@AppActivity, updateStatus)
                 }
             }
 
@@ -206,7 +212,7 @@ open class AppActivity : ComponentActivity() {
                             message = "Your update has finished downloading. Tap install to use the newest version.",
                             autoDismiss = false,
                             actionLabel = "Install",
-                            action = mainActivityViewModel::installUpdate
+                            action = appViewModel::installUpdate
                         )
                     )
                 }

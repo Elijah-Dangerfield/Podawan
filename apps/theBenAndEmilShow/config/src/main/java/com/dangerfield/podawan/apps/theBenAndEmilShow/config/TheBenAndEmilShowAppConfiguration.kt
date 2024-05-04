@@ -3,7 +3,7 @@ package com.dangerfield.podawan.apps.theBenAndEmilShow.config
 import android.content.Context
 import android.graphics.drawable.Drawable
 import com.dangerfield.podawan.apps.theBenAndEmailShow.config.R
-import oddoneout.core.AppConfiguration
+import podawan.core.AppConfiguration
 
 class TheBenAndEmilShowAppConfiguration(
     private val context: Context

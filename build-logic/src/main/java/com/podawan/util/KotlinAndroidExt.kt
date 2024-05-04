@@ -70,6 +70,19 @@ private fun Project.configureKotlin() {
                 "-opt-in=kotlinx.coroutines.ExperimentalCoroutinesApi",
                 "-opt-in=kotlinx.coroutines.FlowPreview",
             )
+
+//            val composeReportsDir = "compose_reports"
+//
+//            freeCompilerArgs += listOf(
+//                // 3
+//                "-P",
+//                "plugin:androidx.compose.compiler.plugins.kotlin:reportsDestination=" +
+//                        project.layout.buildDirectory.get().dir(composeReportsDir).asFile.absolutePath,
+//                // 4
+//                "-P",
+//                "plugin:androidx.compose.compiler.plugins.kotlin:metricsDestination=" +
+//                        project.layout.buildDirectory.get().dir(composeReportsDir).asFile.absolutePath,
+//            )
         }
     }
 }

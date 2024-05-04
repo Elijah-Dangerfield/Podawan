@@ -29,7 +29,12 @@ import com.dangerfield.features.feed.feedRoute
 import com.dangerfield.features.inAppMessaging.UpdateStatus
 import com.dangerfield.features.inAppMessaging.internal.update.DownloadProgressBar
 import com.dangerfield.features.library.libraryRoute
+import com.dangerfield.features.playback.internal.ui.PlayerBottomBar
 import com.dangerfield.features.search.searchRoute
+import com.dangerfield.libraries.app.ui.AppBottomBar
+import com.dangerfield.libraries.app.ui.homeGraphRoute
+import com.dangerfield.libraries.app.ui.libraryGraphRoute
+import com.dangerfield.libraries.app.ui.searchGraphRoute
 import com.dangerfield.libraries.coreflowroutines.collectWithPrevious
 import com.dangerfield.libraries.coreflowroutines.observeWithLifecycle
 import com.dangerfield.libraries.navigation.DelegatingRouter
@@ -44,6 +49,9 @@ import com.dangerfield.libraries.navigation.floatingwindow.FloatingWindowHost
 import com.dangerfield.libraries.navigation.floatingwindow.FloatingWindowNavigator
 import com.dangerfield.libraries.navigation.mainGraphRoute
 import com.dangerfield.libraries.network.internal.OfflineBar
+import com.dangerfield.libraries.podcast.CurrentlyPlayingEpisode
+import com.dangerfield.libraries.podcast.DisplayableEpisode
+import com.dangerfield.libraries.ui.Dimension
 import com.dangerfield.libraries.ui.LocalAppState
 import com.dangerfield.libraries.ui.theme.PodawanTheme
 import com.dangerfield.ui.components.PodawanSnackbarVisuals
@@ -61,9 +69,12 @@ fun PodawanApp(
     startingRouteTemplate: Route.Template,
     delegatingRouter: DelegatingRouter,
     updateStatus: UpdateStatus?,
+    currentlyPlayingEpisode: CurrentlyPlayingEpisode?,
+    onPauseEpisode: (CurrentlyPlayingEpisode) -> Unit,
+    onPlayEpisode: (CurrentlyPlayingEpisode) -> Unit,
+    onClickBottomPlayerBar: (CurrentlyPlayingEpisode) -> Unit,
     navGraphRegistry: NavGraphRegistry
 ) {
-
     val isOffline by LocalAppState.current.isOffline.collectAsStateWithLifecycle()
     val lifecycleOwner = LocalLifecycleOwner.current
     val snackbarHostState = remember { SnackbarHostState() }
@@ -86,6 +97,8 @@ fun PodawanApp(
         )
     }
 
+    var currentSelectedTabRoute by remember { mutableStateOf(homeGraphRoute) }
+
     var currentRouteInfo: RouteInfo by remember { mutableStateOf(filledStartingRoute.asRouteInfo()) }
     var prevRouteInfo: RouteInfo? by remember { mutableStateOf(null) }
 
@@ -107,6 +120,7 @@ fun PodawanApp(
             .map { it.destination }
             .distinctUntilChanged()
             .collectWithPrevious { prev, curr ->
+                curr.bottomTabRoute()?.let { currentSelectedTabRoute = it }
                 currentDestination = curr
                 previousDestination = prev
             }
@@ -132,8 +146,6 @@ fun PodawanApp(
         )
 
     }
-
-    val currentSelectedTabRoute = currentDestination?.bottomTabRoute() ?: homeGraphRoute
 
     val navAnim = determineNavAnimation(
         to = currentRouteInfo,
@@ -190,7 +202,6 @@ fun PodawanApp(
         )
     }
 
-
     PodawanTheme {
         Screen(
             snackbarHost = {
@@ -213,29 +224,49 @@ fun PodawanApp(
                 )
             },
             bottomBar = {
-                AnimatedVisibility(
-                    visible = !currentRouteInfo.isTopLevel,
-                    enter = expandVertically(),
-                    exit = shrinkVertically(),
-                ) {
-                    AppBottomBar(
-                        currentTabRoute = currentSelectedTabRoute,
-                        onItemClick = { item ->
-                            actualRouter.navigate(
-                                item.fill {
-                                    navAnimType = NavAnimType.None
-
-                                    launchSingleTop = true
-                                    restoreState = true
-
-                                    popUpTo(
-                                        actualRouter.navHostController.graph.findStartDestination().id,
-                                        saveState = true
-                                    )
-                                }
+                Column {
+                    AnimatedVisibility(
+                        visible = currentlyPlayingEpisode != null && !currentRouteInfo.isTopLevel,
+                        enter = expandVertically(),
+                        exit = shrinkVertically(),
+                    ) {
+                        currentlyPlayingEpisode?.let { episode ->
+                            PlayerBottomBar(
+                                modifier = Modifier
+                                    .padding(vertical = Dimension.D100)
+                                    .padding(horizontal = Dimension.D400),
+                                episode = episode,
+                                onPauseClicked = { onPauseEpisode(episode) },
+                                onPlayClicked = { onPlayEpisode(episode) },
+                                onClick = { onClickBottomPlayerBar(episode) }
                             )
                         }
-                    )
+                    }
+
+                    AnimatedVisibility(
+                        visible = !currentRouteInfo.isTopLevel,
+                        enter = expandVertically(),
+                        exit = shrinkVertically(),
+                    ) {
+                        AppBottomBar(
+                            currentTabRoute = currentSelectedTabRoute,
+                            onItemClick = { item ->
+                                actualRouter.navigate(
+                                    item.fill {
+                                        navAnimType = NavAnimType.None
+
+                                        launchSingleTop = true
+                                        restoreState = true
+
+                                        popUpTo(
+                                            actualRouter.navHostController.graph.findStartDestination().id,
+                                            saveState = true
+                                        )
+                                    }
+                                )
+                            }
+                        )
+                    }
                 }
             }
         ) {

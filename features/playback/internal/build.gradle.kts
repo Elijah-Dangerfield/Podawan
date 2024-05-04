@@ -5,13 +5,20 @@ plugins {
 podawan {
     daggerHilt()
     flowroutines()
+    compose()
 }
 android {
     namespace = "com.dangerfield.podawan.features.playback.internal"
 }
 dependencies {
     implementation(projects.features.playback)
+    implementation(projects.features.blockingError)
+
     implementation(projects.libraries.common)
+    implementation(projects.libraries.navigation)
+    implementation(projects.libraries.ui)
+    implementation(projects.libraries.ui.components)
+    implementation(projects.libraries.podcast)
     implementation(libs.media3.common)
     implementation(libs.media3.session)
     implementation(libs.media3.exoplayer)

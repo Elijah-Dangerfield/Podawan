@@ -1,4 +1,4 @@
-package com.dangerfield.features.playback
+package com.dangerfield.features.playback.internal
 
 import android.content.Context
 import android.os.Build
@@ -9,7 +9,8 @@ import androidx.media3.common.util.UnstableApi
 import androidx.media3.exoplayer.ExoPlayer
 import androidx.media3.exoplayer.trackselection.DefaultTrackSelector
 import androidx.media3.session.MediaSession
-import com.dangerfield.features.playback.notification.MediaNotificationManager
+import com.dangerfield.features.playback.internal.notification.MediaNotificationManager
+import com.dangerfield.libraries.coreflowroutines.DispatcherProvider
 import dagger.Module
 import dagger.Provides
 import dagger.hilt.InstallIn
@@ -61,13 +62,4 @@ class PlaybackModule {
         player: ExoPlayer
     ): MediaSession =
         MediaSession.Builder(context, player).build()
-
-    @Provides
-    @Singleton
-    fun provideServiceHandler(
-        player: ExoPlayer
-    ): PlaybackHandler =
-        PlaybackHandler(
-            player = player
-        )
 }

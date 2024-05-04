@@ -1,5 +1,6 @@
 package com.dangerfield.libraries.ui
 
+import androidx.compose.runtime.Immutable
 import kotlin.contracts.ExperimentalContracts
 import kotlin.contracts.contract
 
@@ -7,6 +8,7 @@ import kotlin.contracts.contract
  * Used to represent a view that has a state of being idle, valid, invalid, or in an error state.
  * @param T The type of the input value, must be serializable. All fiel
  */
+@Immutable
 sealed class FieldState<out T>(val value: T?, val error: String? = null) {
 
     /**
