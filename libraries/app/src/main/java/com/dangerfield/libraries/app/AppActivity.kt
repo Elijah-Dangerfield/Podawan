@@ -28,11 +28,13 @@ import com.dangerfield.libraries.analytics.LocalMetricsTracker
 import com.dangerfield.libraries.analytics.MetricsTracker
 import com.dangerfield.libraries.app.AppViewModel.Action.LoadConsentStatus
 import com.dangerfield.libraries.app.AppViewModel.Action.MarkLanguageSupportLevelMessageShown
+import com.dangerfield.libraries.app.AppViewModel.Event.LanguageBarrierDetected
 import com.dangerfield.libraries.app.startup.SplashScreenBuilder
+import com.dangerfield.libraries.coreflowroutines.ObserveWithLifecycle
 import com.dangerfield.libraries.dictionary.Dictionary
 import com.dangerfield.libraries.dictionary.LocalDictionary
 import com.dangerfield.libraries.dictionary.internal.ui.navigateToLanguageSupportDialog
-import com.dangerfield.libraries.navigation.DelegatingRouter
+import com.dangerfield.libraries.navigation.internal.DelegatingRouter
 import com.dangerfield.libraries.navigation.Router
 import com.dangerfield.libraries.navigation.mainGraphRoute
 import com.dangerfield.libraries.network.NetworkMonitor
@@ -50,6 +52,7 @@ import podawan.core.BuildInfo
 import podawan.core.Message
 import podawan.core.SnackBarPresenter
 import podawan.core.doNothing
+import timber.log.Timber
 import java.util.concurrent.atomic.AtomicBoolean
 import javax.inject.Inject
 
@@ -115,7 +118,8 @@ open class AppActivity : ComponentActivity() {
         lifecycleScope.launch {
             lifecycle.repeatOnLifecycle(Lifecycle.State.STARTED) {
                 withContext(Dispatchers.Main.immediate) {
-                    playerStateRepository.getPlayerStateFlow().first { it is PlayerState.ReadyToPlay }
+                    playerStateRepository.getPlayerStateFlow()
+                        .first { it is PlayerState.ReadyToPlay }
                     MediaPlayerService.start(applicationContext)
                 }
             }
@@ -125,7 +129,17 @@ open class AppActivity : ComponentActivity() {
     private fun setAppContent() {
         setContent {
 
+            Timber.i("CALLING SET APP CONTENT")
             val state by appViewModel.stateFlow.collectAsStateWithLifecycle()
+
+            ObserveWithLifecycle(flow = appViewModel.eventFlow) {
+                when (it) {
+                    is LanguageBarrierDetected -> handleLanguageSupportMessage(it.message)
+                    is AppViewModel.Event.UpdateAvailable -> handleInAppUpdateStatus(it.status)
+                    is AppViewModel.Event.UpdateDownloaded -> handleInAppUpdateStatus(it.status)
+                    is AppViewModel.Event.UpdateFailed -> handleInAppUpdateStatus(it.status)
+                }
+            }
 
             val startingRouteTemplate by remember {
                 derivedStateOf {
@@ -142,22 +156,6 @@ open class AppActivity : ComponentActivity() {
 
             val appState = rememberAppState(networkMonitor = networkMonitor)
 
-            val isAppUpdateStatus by remember {
-                derivedStateOf { state.inAppUpdateStatus }
-            }
-
-            LaunchedEffect(state.languageSupportLevelMessage) {
-                state.languageSupportLevelMessage?.let {
-                    handleLanguageSupportMessage(it)
-                }
-            }
-
-            LaunchedEffect(state.inAppUpdateStatus) {
-                state.inAppUpdateStatus?.let {
-                    handleInAppUpdateStatus(it)
-                }
-            }
-
             CompositionLocalProvider(
                 LocalColors provides colors,
                 LocalAppConfiguration provides appConfiguration,
@@ -170,30 +168,27 @@ open class AppActivity : ComponentActivity() {
                     startingRouteTemplate = startingRouteTemplate,
                     delegatingRouter = delegatingRouter,
                     navGraphRegistry = navGraphRegistry,
-                    updateStatus = isAppUpdateStatus,
-                    currentlyPlayingEpisode = state.currentlyPlayingEpisode,
-                    onPauseEpisode = { appViewModel.takeAction(AppViewModel.Action.PauseEpisode(it)) },
-                    onPlayEpisode = { appViewModel.takeAction(AppViewModel.Action.PlayEpisode(it)) },
-                    onClickBottomPlayerBar = { router.openPlayer(it.episode.id) }
+                    updateStatus = { state.inAppUpdateStatus },
+                    currentlyPlayingEpisode = { state.currentlyPlayingEpisode },
+                    onPauseEpisode = appViewModel::pauseEpisode,
+                    onPlayEpisode = appViewModel::playEpisode,
+                    onClickBottomPlayerBar = router::openPlayer
                 )
             }
         }
     }
 
-    private fun handleLanguageSupportMessage(message: AppViewModel.LanguageSupportLevelMessage?) {
-        if (message != null) {
-
-            appViewModel.takeAction(
-                MarkLanguageSupportLevelMessageShown(
-                    message.languageSupportLevel
-                )
+    private fun handleLanguageSupportMessage(message: AppViewModel.LanguageSupportLevelMessage) {
+        appViewModel.takeAction(
+            MarkLanguageSupportLevelMessageShown(
+                message.languageSupportLevel
             )
+        )
 
-            router.navigateToLanguageSupportDialog(
-                supportLevelName = message.languageSupportLevel.name,
-                languageDisplayName = message.languageSupportLevel.locale.displayLanguage
-            )
-        }
+        router.navigateToLanguageSupportDialog(
+            supportLevelName = message.languageSupportLevel.name,
+            languageDisplayName = message.languageSupportLevel.locale.displayLanguage
+        )
     }
 
     private fun handleInAppUpdateStatus(updateStatus: UpdateStatus) {

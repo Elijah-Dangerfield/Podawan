@@ -1,7 +1,6 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <project version="4">
   <component name="AppInsightsSettings">
-    <option name="selectedTabId" value="Firebase Crashlytics" />
     <option name="tabSettings">
       <map>
         <entry key="Android Vitals">
@@ -11,11 +10,6 @@
                 <ConnectionSetting>
                   <option name="appId" value="com.dangerfield.spyfall.free" />
                 </ConnectionSetting>
-              </option>
-              <option name="failureTypes">
-                <list>
-                  <option value="FATAL" />
-                </list>
               </option>
               <option name="signal" value="SIGNAL_UNSPECIFIED" />
               <option name="timeIntervalDays" value="SEVEN_DAYS" />
@@ -28,8 +22,8 @@
             <InsightsFilterSettings>
               <option name="connection">
                 <ConnectionSetting>
-                  <option name="appId" value="com.dangerfield.podawan.theBenAndEmilShow.debug" />
-                  <option name="mobileSdkAppId" value="1:379879852781:android:5aa8afdda6428c5a3c9ae4" />
+                  <option name="appId" value="com.dangerfield.podawan.tmg.debug" />
+                  <option name="mobileSdkAppId" value="1:379879852781:android:925c549f6a87edc33c9ae4" />
                   <option name="projectId" value="podawan-63ec0" />
                   <option name="projectNumber" value="379879852781" />
                 </ConnectionSetting>

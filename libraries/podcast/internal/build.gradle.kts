@@ -14,8 +14,8 @@ android {
 dependencies {
     implementation(libs.rss.parser)
     implementation(libs.coil)
-    implementation(projects.libraries.podcast)
     implementation(projects.features.playback)
+    implementation(projects.libraries.podcast)
     implementation(projects.libraries.common)
     implementation(projects.libraries.podcast.storage)
     implementation(libs.immutable.collections)

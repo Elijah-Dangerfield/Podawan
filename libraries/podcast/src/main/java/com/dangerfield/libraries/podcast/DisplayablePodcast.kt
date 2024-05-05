@@ -1,14 +1,12 @@
 package com.dangerfield.libraries.podcast
 
+import androidx.compose.runtime.Immutable
+import androidx.compose.runtime.Stable
 import kotlinx.collections.immutable.ImmutableList
 import kotlin.time.Duration
 import kotlin.time.Duration.Companion.seconds
 
-
-//TODO so im going to have the idea of a an episode and an episodes playback state be completely seperate.
-// maybe CurrentlyPlayingEpisode is a good entity to have and this can be a constatnt updating object.
-// the view model of the feed and listen to changes to update its list but only update on episdoe changes and playback status change ,
-// not on every playback state change.
+@Immutable
 data class DisplayableEpisode(
     val id: String,
     val title: String,
@@ -21,11 +19,13 @@ data class DisplayableEpisode(
     val isLoading: Boolean,
 )
 
+@Immutable
 data class CurrentlyPlayingEpisode(
     val episode: DisplayableEpisode,
     val episodePlayback: EpisodePlayback
 )
 
+@Immutable
 sealed class EpisodePlayback(
     val isPlaying: Boolean = false,
     val isLoading: Boolean = false,

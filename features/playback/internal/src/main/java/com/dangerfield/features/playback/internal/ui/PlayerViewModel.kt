@@ -119,19 +119,27 @@ class PlayerViewModel @Inject constructor(
             getDisplayableEpisode(id).map { it.logOnFailure().getOrNull() },
             getCurrentlyPlayingEpisode()
         ) { displayableEpisode, currentlyPlayingEpisode ->
+
             when {
                 currentlyPlayingEpisode == null && displayableEpisode == null -> { sendEvent(Event.LoadFailed) }
                 displayableEpisode != null && currentlyPlayingEpisode == null -> {
-                    State(
-                        episode = CurrentlyPlayingEpisode(
-                            episode = displayableEpisode,
-                            episodePlayback = EpisodePlayback.None()
-                        ),
-                        isLoading = false
-                    )
+                    updateState {
+                        it.copy(
+                            episode = CurrentlyPlayingEpisode(
+                                episode = displayableEpisode,
+                                episodePlayback = EpisodePlayback.None()
+                            ),
+                            isLoading = false
+                        )
+                    }
                 }
                 else -> {
-                    State(episode = currentlyPlayingEpisode, isLoading = false)
+                    updateState {
+                        it.copy(
+                            episode = currentlyPlayingEpisode,
+                            isLoading = false
+                        )
+                    }
                 }
             }
 

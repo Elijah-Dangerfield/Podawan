@@ -16,6 +16,7 @@ import androidx.compose.material3.NavigationBarDefaults
 import androidx.compose.material3.NavigationBarItem
 import androidx.compose.material3.NavigationBarItemColors
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.Immutable
 import androidx.compose.runtime.getValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
@@ -167,6 +168,7 @@ fun BottomBarBadge(count: Int? = null) {
     }
 }
 
+@Immutable
 data class BottomBarItem(
     val title: String,
     val route: Route.Template,

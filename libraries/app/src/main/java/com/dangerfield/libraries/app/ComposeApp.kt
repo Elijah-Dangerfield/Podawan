@@ -37,7 +37,7 @@ import com.dangerfield.libraries.app.ui.libraryGraphRoute
 import com.dangerfield.libraries.app.ui.searchGraphRoute
 import com.dangerfield.libraries.coreflowroutines.collectWithPrevious
 import com.dangerfield.libraries.coreflowroutines.observeWithLifecycle
-import com.dangerfield.libraries.navigation.DelegatingRouter
+import com.dangerfield.libraries.navigation.internal.DelegatingRouter
 import com.dangerfield.libraries.navigation.NavAnimType
 import com.dangerfield.libraries.navigation.internal.NavControllerRouter
 import com.dangerfield.libraries.navigation.NavGraphRegistry
@@ -50,7 +50,6 @@ import com.dangerfield.libraries.navigation.floatingwindow.FloatingWindowNavigat
 import com.dangerfield.libraries.navigation.mainGraphRoute
 import com.dangerfield.libraries.network.internal.OfflineBar
 import com.dangerfield.libraries.podcast.CurrentlyPlayingEpisode
-import com.dangerfield.libraries.podcast.DisplayableEpisode
 import com.dangerfield.libraries.ui.Dimension
 import com.dangerfield.libraries.ui.LocalAppState
 import com.dangerfield.libraries.ui.theme.PodawanTheme
@@ -68,11 +67,11 @@ import timber.log.Timber
 fun PodawanApp(
     startingRouteTemplate: Route.Template,
     delegatingRouter: DelegatingRouter,
-    updateStatus: UpdateStatus?,
-    currentlyPlayingEpisode: CurrentlyPlayingEpisode?,
+    updateStatus: () -> UpdateStatus?,
+    currentlyPlayingEpisode: () -> CurrentlyPlayingEpisode?,
     onPauseEpisode: (CurrentlyPlayingEpisode) -> Unit,
     onPlayEpisode: (CurrentlyPlayingEpisode) -> Unit,
-    onClickBottomPlayerBar: (CurrentlyPlayingEpisode) -> Unit,
+    onClickBottomPlayerBar: (String) -> Unit,
     navGraphRegistry: NavGraphRegistry
 ) {
     val isOffline by LocalAppState.current.isOffline.collectAsStateWithLifecycle()
@@ -98,7 +97,6 @@ fun PodawanApp(
     }
 
     var currentSelectedTabRoute by remember { mutableStateOf(homeGraphRoute) }
-
     var currentRouteInfo: RouteInfo by remember { mutableStateOf(filledStartingRoute.asRouteInfo()) }
     var prevRouteInfo: RouteInfo? by remember { mutableStateOf(null) }
 
@@ -226,11 +224,11 @@ fun PodawanApp(
             bottomBar = {
                 Column {
                     AnimatedVisibility(
-                        visible = currentlyPlayingEpisode != null && !currentRouteInfo.isTopLevel,
+                        visible = currentlyPlayingEpisode() != null && !currentRouteInfo.isTopLevel,
                         enter = expandVertically(),
                         exit = shrinkVertically(),
                     ) {
-                        currentlyPlayingEpisode?.let { episode ->
+                        currentlyPlayingEpisode()?.let { episode ->
                             PlayerBottomBar(
                                 modifier = Modifier
                                     .padding(vertical = Dimension.D100)
@@ -238,7 +236,7 @@ fun PodawanApp(
                                 episode = episode,
                                 onPauseClicked = { onPauseEpisode(episode) },
                                 onPlayClicked = { onPlayEpisode(episode) },
-                                onClick = { onClickBottomPlayerBar(episode) }
+                                onClick = { onClickBottomPlayerBar(episode.episode.id) }
                             )
                         }
                     }

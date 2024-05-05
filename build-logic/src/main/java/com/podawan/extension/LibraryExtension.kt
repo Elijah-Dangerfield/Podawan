@@ -87,6 +87,8 @@ abstract class LibraryExtension {
             """.trimIndent()
             )
 
+        project.pluginManager.apply("dev.shreyaspatil.compose-compiler-report-generator")
+
         project.configureAndroidCompose(projectExt, false)
     }
 

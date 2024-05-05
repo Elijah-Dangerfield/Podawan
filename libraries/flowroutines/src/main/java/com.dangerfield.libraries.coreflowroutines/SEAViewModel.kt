@@ -16,6 +16,7 @@ import kotlinx.coroutines.launch
 import podawan.core.Catching
 import podawan.core.logOnFailure
 import podawan.core.throwIfDebug
+import timber.log.Timber
 import kotlin.time.Duration
 import java.util.concurrent.ConcurrentHashMap
 import kotlin.time.Duration.Companion.seconds
@@ -174,6 +175,7 @@ abstract class SEAViewModel<S : Any, E : Any, A : Any>(
      * - etc...
      */
     fun sendEvent(event: E) {
+        Timber.i("Sending event ${event::class.simpleName}")
         events.trySend(event)
     }
 

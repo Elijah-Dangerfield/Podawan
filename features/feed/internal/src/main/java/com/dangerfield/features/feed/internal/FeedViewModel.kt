@@ -16,6 +16,7 @@ import kotlinx.collections.immutable.ImmutableList
 import kotlinx.collections.immutable.persistentListOf
 import kotlinx.collections.immutable.toPersistentList
 import podawan.core.doNothing
+import timber.log.Timber
 import javax.inject.Inject
 
 @HiltViewModel
@@ -90,6 +91,7 @@ class FeedViewModel @Inject constructor(
 
         podcastRepository.getPodcast().onSuccess { show ->
             getDisplayableEpisodes(show).collectIn(viewModelScope) {
+                Timber.i("Feed Episodes updated. Playing id: ${it.firstOrNull { it.isPlaying }?.id}")
                 updateState { state ->
                     state.copy(
                         isLoading = false,
@@ -105,13 +107,6 @@ class FeedViewModel @Inject constructor(
             .onFailure { sendEvent(Event.LoadFailed) }
     }
 
-    // TODO its probably much more efficient to just keep a currentPlaying episode in the state
-    /*
-    so right now this list is updated every single second with just 1 item changing
-    that change might not even get used by the ui.
-
-    I should change the way we represent a playing episode in the state to just be a single item
-     */
     data class State(
         val isLoading: Boolean = false,
         val showTitle: String = "",

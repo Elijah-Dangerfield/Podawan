@@ -1,5 +1,6 @@
 package com.dangerfield.libraries.dictionary
 
+import androidx.compose.runtime.Stable
 import java.util.Locale
 
 /**
@@ -9,6 +10,7 @@ interface GetDeviceLanguageSupportLevel {
     suspend operator fun invoke(): LanguageSupportLevel
 }
 
+@Stable
 sealed class LanguageSupportLevel(val locale: Locale, val name: String) {
     /**
      * We have full support for the user's detected language. All strings are translated and available

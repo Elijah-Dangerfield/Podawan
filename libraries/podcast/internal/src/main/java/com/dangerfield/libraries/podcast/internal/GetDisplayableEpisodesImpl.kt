@@ -11,6 +11,8 @@ import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.flow.distinctUntilChanged
 import kotlinx.coroutines.flow.map
 import se.ansman.dagger.auto.AutoBind
+import timber.log.Timber
+import java.util.Timer
 import javax.inject.Inject
 
 @AutoBind
@@ -35,6 +37,7 @@ class GetDisplayableEpisodesImpl @Inject constructor(
             .getPlayerStateFlow()
             .map { getCurrentlyPlayingDetails(it) }
             .map { (currentlyPlayingId, currentlyPlayingStatus) ->
+                Timber.i("playback update: currentlyPlayingId: $currentlyPlayingId, currentlyPlayingStatus: $currentlyPlayingStatus")
                 if (currentlyPlayingId != null && currentlyPlayingStatus != null) {
                     // update the last playing episode
                     lastPlayingId?.let { lastPlayingId ->
@@ -57,10 +60,8 @@ class GetDisplayableEpisodesImpl @Inject constructor(
 
                 }
 
-                runningMap.entries
+                runningMap.values.toPersistentList()
             }
-            .distinctUntilChanged() // added before conversion to list as new list object so that ordering doesnt matter
-            .map { map -> map.map { it.value }.toPersistentList() }
     }
 }
 

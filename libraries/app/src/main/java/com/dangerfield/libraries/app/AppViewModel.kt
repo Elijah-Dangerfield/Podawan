@@ -1,6 +1,8 @@
 package com.dangerfield.libraries.app
 
 import android.app.Activity
+import androidx.compose.runtime.Immutable
+import androidx.compose.runtime.Stable
 import androidx.lifecycle.SavedStateHandle
 import androidx.lifecycle.viewModelScope
 import com.dangerfield.features.consent.ConsentStatus
@@ -63,7 +65,6 @@ class AppViewModel @Inject constructor(
     private val shouldShowLanguageSupportMessage: ShouldShowLanguageSupportMessage,
     private val languageSupportMessageShown: LanguageSupportMessageShown,
     private val appConfigFlow: AppConfigFlow,
-    private val podcastRepository: PodcastRepository,
     private val playerStateRepository: PlayerStateRepository,
     private val isInMaintenanceMode: IsInMaintenanceMode,
     private val getInAppUpdateAvailability: GetInAppUpdateAvailability,
@@ -71,7 +72,7 @@ class AppViewModel @Inject constructor(
     private val installInAppUpdate: InstallInAppUpdate,
     private val userRepository: UserRepository,
     savedStateHandle: SavedStateHandle
-) : SEAViewModel<State, Unit, Action>(
+) : SEAViewModel<State, AppViewModel.Event, Action>(
     savedStateHandle,
     State(
         isUpdateRequired = false,
@@ -122,6 +123,14 @@ class AppViewModel @Inject constructor(
 
     fun installUpdate() {
         takeAction(Action.CompleteInAppUpdate)
+    }
+
+    fun pauseEpisode(episode: CurrentlyPlayingEpisode) {
+        takeAction(Action.PauseEpisode(episode))
+    }
+
+    fun playEpisode(episode: CurrentlyPlayingEpisode) {
+        takeAction(Action.PlayEpisode(episode))
     }
 
     private suspend fun Action.CompleteInAppUpdate.handleInstall() {
@@ -342,6 +351,14 @@ class AppViewModel @Inject constructor(
             Action()
     }
 
+    sealed class Event {
+        class UpdateDownloaded(val status: UpdateStatus.Downloaded) : Event()
+        class UpdateFailed(val status: UpdateStatus.Failed) : Event()
+        class UpdateAvailable(val status: UpdateStatus.UpdateAvailable): Event()
+        class LanguageBarrierDetected(val message: LanguageSupportLevelMessage) : Event()
+    }
+
+    @Immutable
     data class State(
         val isLoadingApp: Boolean,
         val isUpdateRequired: Boolean,
@@ -354,6 +371,7 @@ class AppViewModel @Inject constructor(
         val languageSupportLevelMessage: LanguageSupportLevelMessage?,
     )
 
+    @Immutable
     data class LanguageSupportLevelMessage(
         val languageSupportLevel: LanguageSupportLevel
     )

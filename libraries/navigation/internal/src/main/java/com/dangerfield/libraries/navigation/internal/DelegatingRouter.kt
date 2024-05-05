@@ -1,4 +1,4 @@
-package com.dangerfield.libraries.navigation
+package com.dangerfield.libraries.navigation.internal
 
 import androidx.compose.runtime.Stable
 import androidx.lifecycle.Lifecycle
@@ -7,6 +7,9 @@ import androidx.navigation.NavDestination
 import com.dangerfield.libraries.coreflowroutines.AppScope
 import com.dangerfield.libraries.coreflowroutines.observeWithLifecycle
 import com.dangerfield.libraries.coreflowroutines.observeWithLifecycleIn
+import com.dangerfield.libraries.navigation.Route
+import com.dangerfield.libraries.navigation.RouteInfo
+import com.dangerfield.libraries.navigation.Router
 import com.dangerfield.ui.components.dialog.bottomsheet.BottomSheetState
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.channels.Channel

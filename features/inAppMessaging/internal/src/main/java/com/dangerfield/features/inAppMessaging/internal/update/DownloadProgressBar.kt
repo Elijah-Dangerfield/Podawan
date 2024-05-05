@@ -7,6 +7,7 @@ import androidx.compose.animation.core.tween
 import androidx.compose.animation.slideInVertically
 import androidx.compose.animation.slideOutVertically
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.derivedStateOf
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.remember
 import com.dangerfield.ui.components.ProgressRow
@@ -14,7 +15,9 @@ import com.dangerfield.ui.components.text.Text
 import podawan.core.Catching
 
 @Composable
-fun DownloadProgressBar(updateStatus: UpdateStatus?) {
+fun DownloadProgressBar(updateStatus: () ->UpdateStatus?) {
+    val updateStatus by remember { derivedStateOf { updateStatus() } }
+
     AnimatedVisibility(
         visible = updateStatus != null && updateStatus is UpdateStatus.Downloading,
         enter = slideInVertically(),

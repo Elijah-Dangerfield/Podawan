@@ -2,6 +2,7 @@ package com.dangerfield.features.inAppMessaging
 
 import android.app.Activity
 import android.os.Parcelable
+import androidx.compose.runtime.Stable
 import com.google.android.play.core.appupdate.AppUpdateInfo
 import com.google.android.play.core.install.model.AppUpdateType
 import kotlinx.coroutines.flow.Flow
@@ -21,6 +22,7 @@ interface StartInAppUpdateIfAvailable {
     ): Flow<UpdateStatus>
 }
 
+@Stable
 sealed class UpdateStatus {
     data object NoUpdateAvailable : UpdateStatus()
     data class UpdateAvailable(
