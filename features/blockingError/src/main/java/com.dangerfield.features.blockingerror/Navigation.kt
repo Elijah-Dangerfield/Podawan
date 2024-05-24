@@ -15,7 +15,7 @@ fun Router.navigateToBlockingError() {
     navigate(
         blockingErrorRoute.fill {
             isTopLevel = true
-            navAnimType = NavAnimType.SlideOver
+            navAnimType = NavAnimType.SlideUp
         }
     )
 }

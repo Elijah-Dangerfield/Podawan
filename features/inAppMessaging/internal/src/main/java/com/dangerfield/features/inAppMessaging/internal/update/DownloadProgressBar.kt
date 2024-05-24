@@ -42,7 +42,7 @@ fun DownloadProgressBar(updateStatus: () ->UpdateStatus?) {
         val displayProgress =
             if (actualProgress > 0f) (0.5f + (actualProgress / 2)) else fakeProgress
 
-        ProgressRow(progress = displayProgress) {
+        ProgressRow(progressPercent = displayProgress) {
             Text(text = "Downloading Update...")
         }
     }

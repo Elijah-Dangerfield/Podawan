@@ -5,14 +5,16 @@ import androidx.hilt.navigation.compose.hiltViewModel
 import androidx.lifecycle.compose.collectAsStateWithLifecycle
 import androidx.navigation.NavGraphBuilder
 import androidx.navigation.compose.composable
-import com.dangerfield.features.blockingerror.navigateToBlockingError
 import com.dangerfield.features.blockingerror.navigateToGeneralErrorDialog
 import com.dangerfield.features.feed.episodeDetailsRoute
 import com.dangerfield.features.feed.feedRoute
+import com.dangerfield.features.feed.showDetailsRoute
 import com.dangerfield.features.feed.toEpisodeDetails
+import com.dangerfield.features.feed.toShowDetails
 import com.dangerfield.libraries.coreflowroutines.ObserveWithLifecycle
 import com.dangerfield.libraries.navigation.HomeTabNavBuilder
 import com.dangerfield.libraries.navigation.Router
+import com.dangerfield.libraries.navigation.screen
 import com.dangerfield.ui.components.FullScreenLoader
 import podawan.core.doNothing
 import podawan.core.showDebugSnack
@@ -45,6 +47,7 @@ class ModuleNavGraphBuilder @Inject constructor() : HomeTabNavBuilder {
                     showDescription = state.showDescription,
                     heroImageUrl = state.showHeroImageUrl,
                     episodes = state.episodes,
+                    currentlyPlayingEpisode = state.currentlyPlaying?.episode,
                     onEpisodePlayClicked = {
                         viewModel.takeAction(FeedViewModel.Action.PlayEpisode(it))
                     },
@@ -54,12 +57,19 @@ class ModuleNavGraphBuilder @Inject constructor() : HomeTabNavBuilder {
                     onEpisodeDownloadClicked = {
                         viewModel.takeAction(FeedViewModel.Action.DownloadEpisode(it))
                     },
-                    onClickTitle = {
-                        router.navigateToBlockingError()
+                    onHeaderClicked = {
+                        router.toShowDetails()
                     },
                     onClickEpisode = {
                         router.toEpisodeDetails(it.id)
-                    }
+                    },
+                    onCurrentlyPlayingExitView = {
+                        viewModel.takeAction(FeedViewModel.Action.CurrentlyPlayingNotShowing)
+                    },
+                    onCurrentlyPlayingEnterView = {
+                        viewModel.takeAction(FeedViewModel.Action.CurrentlyPlayingShowing)
+                    },
+                    onAddToPlaylistClicked = { doNothing() }
                 )
             }
         }
@@ -83,6 +93,7 @@ class ModuleNavGraphBuilder @Inject constructor() : HomeTabNavBuilder {
                 } else {
                     EpisodeDetailsScreen(
                         episode = episode,
+                        isCurrentlyPlaying = state.isCurrentlyPlaying,
                         onPauseClicked = {
                             viewModel.takeAction(EpisodeDetailsViewModel.Action.PauseEpisode)
                         },
@@ -94,9 +105,27 @@ class ModuleNavGraphBuilder @Inject constructor() : HomeTabNavBuilder {
                         },
                         onShareClicked = { doNothing() },
                         onNavigateBack = { router.goBack() },
-                        onClickLink = { router.openWebLink(it) }
+                        onClickLink = { router.openWebLink(it) },
+                        onAddToPlaylistClicked = { doNothing() }
                     )
                 }
+            }
+        }
+
+        screen(route = showDetailsRoute) {
+            val viewModel: ShowDetailsViewModel = hiltViewModel()
+            val state by viewModel.stateFlow.collectAsStateWithLifecycle()
+
+            when (val show = state.show) {
+                null -> FullScreenLoader()
+                else -> ShowDetailsScreen(
+                    onNavigateBack = { router.goBack() },
+                    showTitle = show.title.orEmpty(),
+                    showDescription = show.description.orEmpty(),
+                    heroImageUrl = show.heroImage?.url,
+                    episodeCount = show.episodes.size,
+                    categories = show.itunesShowData?.categories.orEmpty()
+                )
             }
         }
     }

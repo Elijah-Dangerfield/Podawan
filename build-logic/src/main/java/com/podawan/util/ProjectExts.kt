@@ -37,7 +37,7 @@ fun Project.getVersionName(): String = loadAppProperty("${project.name}.versionN
 
 fun Project.getVersionCode(): Int = loadAppProperty("${project.name}.versionCode").toInt()
 
-val Project.commonExt: CommonExtension<*, *, *, *, *>
+val Project.commonExt: CommonExtension<*, *, *, *, *,*>
     get() = extensions.getByType(CommonExtension::class.java)
 
 @Suppress("TooGenericExceptionCaught")

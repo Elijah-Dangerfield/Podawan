@@ -4,7 +4,7 @@ package com.podawan.extension
 import com.android.build.api.dsl.ApplicationExtension
 import com.android.build.gradle.LibraryExtension
 import com.android.build.gradle.TestExtension
-import com.spyfall.podawan.util.SharedConstants
+import com.podawan.util.SharedConstants
 import com.google.devtools.ksp.gradle.KspExtension
 import com.spyfall.podawan.util.configureAndroidCompose
 import com.spyfall.podawan.util.getModule
@@ -40,11 +40,14 @@ abstract class LibraryExtension {
         }
     }
 
+
     fun room() {
-        kapt()
+        ksp()
         project.dependencies {
-            "implementation"(project.libs.room)
-            "kapt"(project.libs.room.compiler)
+            "api"(project.libs.room)
+            "api"(project.libs.room.runtime)
+            "api"(project.libs.room.common)
+            "ksp"(project.libs.room.compiler)
         }
     }
 

@@ -49,7 +49,7 @@ import com.dangerfield.libraries.navigation.floatingwindow.FloatingWindowHost
 import com.dangerfield.libraries.navigation.floatingwindow.FloatingWindowNavigator
 import com.dangerfield.libraries.navigation.mainGraphRoute
 import com.dangerfield.libraries.network.internal.OfflineBar
-import com.dangerfield.libraries.podcast.CurrentlyPlayingEpisode
+import com.dangerfield.libraries.podcast.CurrentlyPlaying
 import com.dangerfield.libraries.ui.Dimension
 import com.dangerfield.libraries.ui.LocalAppState
 import com.dangerfield.libraries.ui.theme.PodawanTheme
@@ -68,9 +68,9 @@ fun PodawanApp(
     startingRouteTemplate: Route.Template,
     delegatingRouter: DelegatingRouter,
     updateStatus: () -> UpdateStatus?,
-    currentlyPlayingEpisode: () -> CurrentlyPlayingEpisode?,
-    onPauseEpisode: (CurrentlyPlayingEpisode) -> Unit,
-    onPlayEpisode: (CurrentlyPlayingEpisode) -> Unit,
+    currentlyPlayingEpisode: () -> CurrentlyPlaying?,
+    onPauseEpisode: (CurrentlyPlaying) -> Unit,
+    onPlayEpisode: (CurrentlyPlaying) -> Unit,
     onClickBottomPlayerBar: (String) -> Unit,
     navGraphRegistry: NavGraphRegistry
 ) {
@@ -233,7 +233,7 @@ fun PodawanApp(
                                 modifier = Modifier
                                     .padding(vertical = Dimension.D100)
                                     .padding(horizontal = Dimension.D400),
-                                episode = episode,
+                                currentlyPlaying = episode,
                                 onPauseClicked = { onPauseEpisode(episode) },
                                 onPlayClicked = { onPlayEpisode(episode) },
                                 onClick = { onClickBottomPlayerBar(episode.episode.id) }

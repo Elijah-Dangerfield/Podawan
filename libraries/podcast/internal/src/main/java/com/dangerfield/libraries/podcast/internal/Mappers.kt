@@ -13,6 +13,8 @@ import com.dangerfield.libraries.podcast.storage.PodcastEpisodeEntity
 import com.prof18.rssparser.model.RssChannel
 import com.prof18.rssparser.model.RssItem
 import podawan.core.ifNotEmpty
+import kotlin.time.DurationUnit
+import kotlin.time.toDuration
 
 fun EpisodeItunesDataEntity.toDomain() =
     ItunesEpisodeData(
@@ -47,7 +49,10 @@ fun PodcastEpisodeEntity.toDomain(
     categories = categories,
     itunesItemData = itunesItemData,
     commentsUrl = commentsUrl?.ifNotEmpty(),
-    showHeroImage = showHeroImage
+    showHeroImage = showHeroImage,
+    resumePoint = resumePointSeconds.toDuration(DurationUnit.SECONDS),
+    totalDuration = totalDurationSeconds.toDuration(DurationUnit.SECONDS),
+    showRssFeedLink = showRssFeedLink
 )
 
 fun HeroImageEntity.toDomain() =
@@ -110,7 +115,9 @@ fun Episode.toEntity(
     itunesItemDataId = itunesItemDataId,
     showRssFeedLink = rssFeedLink,
     commentsUrl = commentsUrl?.ifNotEmpty(),
-    showHeroImageId = showHeroImageId
+    showHeroImageId = showHeroImageId,
+    resumePointSeconds = resumePoint.inWholeSeconds.toInt(),
+    totalDurationSeconds = totalDuration?.inWholeSeconds?.toInt() ?: 0
 )
 
 fun HeroImage.toEntity() = HeroImageEntity(
@@ -135,7 +142,10 @@ fun ItunesShowData.toEntity() = ItunesChannelDataEntity(
     newsFeedUrl = newsFeedUrl?.ifNotEmpty(),
 )
 
-fun RssChannel.toDomain(rssFeedLink: String): PodcastShow {
+fun RssChannel.toDomain(
+    rssFeedLink: String,
+    itemsToEpisodes: (List<RssItem>, HeroImage?) -> List<Episode>
+): PodcastShow {
     val heroImage = this.image?.let {
         HeroImage(
             title = it.title?.ifNotEmpty(),
@@ -151,42 +161,7 @@ fun RssChannel.toDomain(rssFeedLink: String): PodcastShow {
         heroImage = heroImage,
         lastBuildDate = this.lastBuildDate?.ifNotEmpty(),
         updatePeriod = this.updatePeriod?.ifNotEmpty(),
-        episodes = this.items.mapIndexed { index, it ->
-
-            val identifier = getIdentifier(it, items.size, index)
-
-            Episode(
-                guid = identifier,
-                title = it.title?.ifNotEmpty(),
-                author = it.author?.ifNotEmpty(),
-                link = it.link?.ifNotEmpty(),
-                pubDate = it.pubDate?.ifNotEmpty(),
-                description = it.description?.ifNotEmpty(),
-                content = it.content?.ifNotEmpty(),
-                image = it.image?.ifNotEmpty(),
-                audio = it.audio?.ifNotEmpty(),
-                video = it.video?.ifNotEmpty(),
-                sourceName = it.sourceName?.ifNotEmpty(),
-                sourceUrl = it.sourceUrl?.ifNotEmpty(),
-                categories = it.categories,
-                itunesItemData = it.itunesItemData?.let { itunesData ->
-                    ItunesEpisodeData(
-                        author = itunesData.author?.ifNotEmpty(),
-                        duration = itunesData.duration?.ifNotEmpty(),
-                        episode = itunesData.episode?.ifNotEmpty(),
-                        episodeType = itunesData.episodeType?.ifNotEmpty(),
-                        explicit = itunesData.explicit?.ifNotEmpty(),
-                        image = itunesData.image?.ifNotEmpty(),
-                        keywords = itunesData.keywords,
-                        subtitle = itunesData.subtitle?.ifNotEmpty(),
-                        summary = itunesData.summary?.ifNotEmpty(),
-                        season = itunesData.season
-                    )
-                },
-                commentsUrl = it.commentsUrl?.ifNotEmpty(),
-                showHeroImage = heroImage
-            )
-        },
+        episodes = itemsToEpisodes(this.items, heroImage),
         itunesShowData = this.itunesChannelData?.let {
             ItunesShowData(
                 author = it.author?.ifNotEmpty(),
@@ -213,6 +188,6 @@ fun RssChannel.toDomain(rssFeedLink: String): PodcastShow {
  * Items are sorted by publish date, and naturally only have episodes added to the front of the list
  * this should make size - index a stable identifier to fallback on if all else fails.
  */
-private fun getIdentifier(episode: RssItem, size: Int, index: Int): String {
+fun getIdentifier(episode: RssItem, size: Int, index: Int): String {
     return  episode.guid ?: episode.title ?: episode.link ?: episode.pubDate ?: (size - index).toString()
 }

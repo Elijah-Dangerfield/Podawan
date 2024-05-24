@@ -61,7 +61,7 @@ fun determineNavAnimation(
                 { fadeOutToStart() }
             }
 
-            NavAnimType.SlideOver -> {
+            NavAnimType.SlideUp -> {
                 // if new one is sliding over, the previous one should stay put
                 { noAnimExit() }
             }
@@ -93,7 +93,7 @@ fun determineNavAnimation(
             }
 
             // if previous screen slide over, then itll side back out, dont anim previous screen
-            NavAnimType.SlideOver -> {
+            NavAnimType.SlideUp -> {
                 {
                     noAnimEnter()
                 }

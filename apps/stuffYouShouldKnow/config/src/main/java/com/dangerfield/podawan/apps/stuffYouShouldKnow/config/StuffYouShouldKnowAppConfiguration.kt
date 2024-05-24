@@ -2,8 +2,9 @@ package com.dangerfield.podawan.apps.stuffYouShouldKnow.config
 
 import android.content.Context
 import android.graphics.drawable.Drawable
+import androidx.compose.runtime.Immutable
 import podawan.core.AppConfiguration
-
+@Immutable
 class StuffYouShouldKnowAppConfiguration(
     private val context: Context
 ): AppConfiguration {

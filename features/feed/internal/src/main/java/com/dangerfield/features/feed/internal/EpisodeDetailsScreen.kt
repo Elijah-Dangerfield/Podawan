@@ -17,6 +17,10 @@ import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import com.dangerfield.libraries.podcast.DisplayableEpisode
 import com.dangerfield.libraries.podcast.EpisodeImage
+import com.dangerfield.libraries.podcast.EpisodePlayback
+import com.dangerfield.libraries.podcast.isLoading
+import com.dangerfield.libraries.podcast.isPaused
+import com.dangerfield.libraries.podcast.isPlaying
 import com.dangerfield.libraries.ui.Dimension
 import com.dangerfield.libraries.ui.HorizontalSpacerD200
 import com.dangerfield.libraries.ui.HorizontalSpacerD500
@@ -27,6 +31,7 @@ import com.dangerfield.libraries.ui.preview.Preview
 import com.dangerfield.libraries.ui.preview.loremIpsum
 import com.dangerfield.libraries.ui.theme.PodawanTheme
 import com.dangerfield.ui.components.CircularProgressIndicator
+import com.dangerfield.ui.components.LinearProgressIndicator
 import com.dangerfield.ui.components.Screen
 import com.dangerfield.ui.components.icon.IconButton
 import com.dangerfield.ui.components.icon.PodawanIcon
@@ -34,17 +39,21 @@ import com.dangerfield.ui.components.text.ClickableText
 import com.dangerfield.ui.components.text.Text
 import kotlinx.collections.immutable.persistentListOf
 import podawan.core.App
+import podawan.core.allOrNone
+import kotlin.time.Duration.Companion.seconds
 
 @Composable
 fun EpisodeDetailsScreen(
     modifier: Modifier = Modifier,
     episode: DisplayableEpisode,
+    isCurrentlyPlaying: Boolean,
     onPauseClicked: () -> Unit = {},
     onPlayClicked: () -> Unit = {},
     onDownloadClicked: () -> Unit = {},
     onShareClicked: () -> Unit = {},
     onNavigateBack: () -> Unit = {},
     onClickLink: (String) -> Unit = {},
+    onAddToPlaylistClicked: () -> Unit = {},
 ) {
     val scrollState = rememberScrollState()
     Screen(
@@ -111,6 +120,19 @@ fun EpisodeDetailsScreen(
 
             VerticalSpacerD500()
 
+            allOrNone(
+                episode.playback.progress.inWholeSeconds,
+                episode.playback.duration.inWholeSeconds.takeIf { it > 0 }
+            ) { progress, duration ->
+                LinearProgressIndicator(
+                    modifier = Modifier.fillMaxWidth().clip(Radii.Card.shape),
+                    trackColor = PodawanTheme.colors.textDisabled.color,
+                    progress = progress.toFloat() / duration,
+                )
+
+                VerticalSpacerD500()
+            }
+
             val playingIcon = if (episode.isPlaying) PodawanIcon.Pause("") else PodawanIcon.Play("")
             val downloadIcon =
                 if (episode.isDownloaded) PodawanIcon.Check("") else PodawanIcon.ArrowCircleDown("")
@@ -133,6 +155,14 @@ fun EpisodeDetailsScreen(
                     size = IconButton.Size.Medium,
                 )
 
+                HorizontalSpacerD200()
+
+                IconButton(
+                    icon = PodawanIcon.Add(""),
+                    onClick = onAddToPlaylistClicked,
+                    size = IconButton.Size.Medium,
+                )
+
                 Spacer(modifier = Modifier.weight(1f))
 
                 if (episode.isLoading) {
@@ -142,6 +172,19 @@ fun EpisodeDetailsScreen(
                         color = PodawanTheme.colors.onBackground.color,
                     )
                 } else {
+
+                    val backgroundColor = if (isCurrentlyPlaying) {
+                        PodawanTheme.colors.accent
+                    } else {
+                        PodawanTheme.colors.onBackground
+                    }
+
+                    val iconColor = if (isCurrentlyPlaying) {
+                        PodawanTheme.colors.onAccent
+                    } else {
+                        PodawanTheme.colors.background
+                    }
+
                     IconButton(
                         icon = playingIcon,
                         onClick = {
@@ -151,8 +194,8 @@ fun EpisodeDetailsScreen(
                                 onPlayClicked()
                             }
                         },
-                        backgroundColor = PodawanTheme.colors.onBackground,
-                        iconColor = PodawanTheme.colors.background,
+                        backgroundColor = backgroundColor,
+                        iconColor = iconColor,
                         size = IconButton.Size.Medium,
                     )
                 }
@@ -182,11 +225,14 @@ private fun PreviewEpisodeDetailsScreen() {
                 imageUrls = persistentListOf(),
                 description = loremIpsum(50..100),
                 isDownloaded = false,
-                isPlaying = false,
-                isLoading = false,
                 id = "",
-                author = "Author Name"
+                author = "Author Name",
+                playback = EpisodePlayback.None(
+                    progress = 450.seconds,
+                    duration = 1000.seconds
+                )
             ),
+            isCurrentlyPlaying = false,
         )
     }
 }
@@ -201,12 +247,38 @@ private fun PreviewEpisodeDetailsScreenStuffYouShouldKnow() {
                 releaseDate = "Dec 12, 2021",
                 imageUrls = persistentListOf(),
                 description = loremIpsum(50..100),
-                isPlaying = true,
-                isLoading = false,
                 isDownloaded = false,
                 id = "",
-                author = "Author Name"
+                author = "Author Name",
+                playback = EpisodePlayback.None(
+                    progress = 45.seconds,
+                    duration = 1000.seconds
+                )
             ),
+            isCurrentlyPlaying = false,
+        )
+    }
+}
+
+@Composable
+@Preview
+private fun PreviewEpisodeDetailsScreenStuffYouShouldKnowPlyaing() {
+    Preview(app = App.StuffYouShouldKnow) {
+        EpisodeDetailsScreen(
+            episode = DisplayableEpisode(
+                title = loremIpsum(3..10),
+                releaseDate = "Dec 12, 2021",
+                imageUrls = persistentListOf(),
+                description = loremIpsum(50..100),
+                isDownloaded = false,
+                id = "",
+                author = "Author Name",
+                playback = EpisodePlayback.None(
+                    progress = 45.seconds,
+                    duration = 1000.seconds
+                )
+            ),
+            isCurrentlyPlaying = false,
         )
     }
 }

@@ -17,8 +17,11 @@ import androidx.compose.ui.draw.clip
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import com.dangerfield.libraries.podcast.DisplayableEpisode
-import com.dangerfield.libraries.podcast.EpisodePlayback
 import com.dangerfield.libraries.podcast.EpisodeImage
+import com.dangerfield.libraries.podcast.EpisodePlayback.Playing
+import com.dangerfield.libraries.podcast.isLoading
+import com.dangerfield.libraries.podcast.isPaused
+import com.dangerfield.libraries.podcast.isPlaying
 import com.dangerfield.libraries.ui.Dimension.D1500
 import com.dangerfield.libraries.ui.Dimension.D50
 import com.dangerfield.libraries.ui.Dimension.D800
@@ -30,10 +33,13 @@ import com.dangerfield.libraries.ui.preview.Preview
 import com.dangerfield.libraries.ui.rememberRipple
 import com.dangerfield.libraries.ui.theme.PodawanTheme
 import com.dangerfield.ui.components.CircularProgressIndicator
+import com.dangerfield.ui.components.LinearProgressIndicator
+import com.dangerfield.ui.components.ProgressRow
 import com.dangerfield.ui.components.icon.IconButton
 import com.dangerfield.ui.components.icon.PodawanIcon
 import com.dangerfield.ui.components.text.Text
 import kotlinx.collections.immutable.persistentListOf
+import podawan.core.allOrNone
 
 @Composable
 fun EpisodeItem(
@@ -43,9 +49,8 @@ fun EpisodeItem(
     onDownloadClicked: () -> Unit = {},
     onShareClicked: () -> Unit = {},
     onClickEpisode: () -> Unit = {},
-
-    ) {
-
+    onAddToPlaylistClicked: () -> Unit = {},
+) {
     Column(
         modifier = Modifier.clickable(
             indication = rememberRipple(),
@@ -83,13 +88,34 @@ fun EpisodeItem(
             colorResource = PodawanTheme.colors.textSecondary
         )
 
-        episode.releaseDate?.let {
-            VerticalSpacerD500()
+        VerticalSpacerD500()
 
-            Text(
-                text = it,
-                typography = PodawanTheme.typography.Label.L400,
-            )
+        Row(
+            modifier = Modifier.fillMaxWidth(),
+            verticalAlignment = Alignment.CenterVertically,
+        ) {
+            episode.releaseDate?.let {
+                VerticalSpacerD500()
+
+                Text(
+                    text = it,
+                    typography = PodawanTheme.typography.Label.L400,
+                )
+            }
+
+
+            HorizontalSpacerD500()
+
+            allOrNone(
+                episode.playback.progress.inWholeSeconds,
+                episode.playback.duration.inWholeSeconds.takeIf { it > 0 }
+            ) { progress, duration ->
+                LinearProgressIndicator(
+                    modifier = Modifier.clip(Radii.Card.shape),
+                    trackColor = PodawanTheme.colors.textDisabled.color,
+                    progress = progress.toFloat() / duration,
+                )
+            }
         }
 
         VerticalSpacerD500()
@@ -116,6 +142,15 @@ fun EpisodeItem(
                 size = IconButton.Size.Small,
             )
 
+            HorizontalSpacerD200()
+
+            IconButton(
+                icon = PodawanIcon.Add(""),
+                onClick = onAddToPlaylistClicked,
+                size = IconButton.Size.Small,
+            )
+
+
             Spacer(modifier = Modifier.weight(1f))
 
 
@@ -126,6 +161,20 @@ fun EpisodeItem(
                     color = PodawanTheme.colors.onBackground.color,
                 )
             } else {
+                val isCurrentlyPlaying = episode.isPlaying || episode.isPaused || episode.isLoading
+
+                val backgroundColor = if (isCurrentlyPlaying) {
+                    PodawanTheme.colors.accent
+                } else {
+                    PodawanTheme.colors.onBackground
+                }
+
+                val iconColor = if (isCurrentlyPlaying) {
+                    PodawanTheme.colors.onAccent
+                } else {
+                    PodawanTheme.colors.background
+                }
+
                 IconButton(
                     icon = playingIcon,
                     onClick = {
@@ -135,8 +184,8 @@ fun EpisodeItem(
                             onPlayClicked()
                         }
                     },
-                    backgroundColor = PodawanTheme.colors.onBackground,
-                    iconColor = PodawanTheme.colors.background,
+                    backgroundColor = backgroundColor,
+                    iconColor = iconColor,
                     size = IconButton.Size.Small,
                 )
             }
@@ -157,11 +206,10 @@ private fun PreviewEpisodeItem() {
                 releaseDate = "Dec 12, 2021",
                 imageUrls = persistentListOf(),
                 description = com.dangerfield.libraries.ui.preview.loremIpsum(20..30),
-                isPlaying = false,
-                isLoading = false,
                 isDownloaded = false,
                 id = "",
-                author = "Author Name"
+                author = "Author Name",
+               playback = Playing()
             ),
         )
     }
@@ -177,11 +225,10 @@ private fun PreviewEpisodeItemPlaying() {
                 releaseDate = "Dec 12, 2021",
                 imageUrls = persistentListOf(),
                 description = com.dangerfield.libraries.ui.preview.loremIpsum(20..30),
-                isPlaying = false,
-                isLoading = false,
+                playback = Playing(),
                 isDownloaded = true,
                 id = "",
-                author = "Author Name"
+                author = "Author Name",
             ),
         )
     }

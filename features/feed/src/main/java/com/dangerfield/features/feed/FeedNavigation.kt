@@ -16,6 +16,14 @@ fun Router.toEpisodeDetails(id: String) {
     )
 }
 
+
+fun Router.toShowDetails() {
+    navigate(
+        showDetailsRoute.fill(),
+
+    )
+}
+
 val feedRoute = route("feed") {
     isTopLevelAlways(false)
     animTypeAlways(NavAnimType.None)
@@ -27,4 +35,10 @@ val episodeIdArgument = navArgument("episodeId") {
 
 val episodeDetailsRoute = route("episodeDetails") {
      argument(episodeIdArgument)
+}
+
+
+val showDetailsRoute = route("showDetails") {
+    isTopLevelAlways(true)
+    animTypeAlways(NavAnimType.SlideUp)
 }

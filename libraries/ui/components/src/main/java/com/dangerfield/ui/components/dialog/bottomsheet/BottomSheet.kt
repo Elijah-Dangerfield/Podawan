@@ -13,6 +13,8 @@ import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import com.dangerfield.libraries.ui.Dimension
+import com.dangerfield.libraries.ui.LocalContentColor
+import com.dangerfield.libraries.ui.color.ColorResource
 import com.dangerfield.libraries.ui.color.ProvideContentColor
 import com.dangerfield.libraries.ui.theme.PodawanTheme
 import com.dangerfield.ui.components.text.Text
@@ -22,13 +24,12 @@ fun BottomSheet(
     onDismissRequest: () -> Unit,
     modifier: Modifier = Modifier,
     showDragHandle: Boolean = true,
+    backgroundColor: ColorResource = PodawanTheme.colors.background,
+    contentColor: ColorResource = LocalContentColor.current,
     state: BottomSheetState = rememberBottomSheetState(),
     contentAlignment: Alignment.Horizontal = Alignment.CenterHorizontally,
     content: @Composable ColumnScope.() -> Unit,
 ) {
-    val backgroundColor = PodawanTheme.colors.background
-    val contentColor = PodawanTheme.colors.onBackground
-
     ModalBottomSheet(
         onDismissRequest = onDismissRequest,
         sheetState = state.materialSheetStateDelegate,

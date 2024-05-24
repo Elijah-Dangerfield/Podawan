@@ -12,6 +12,10 @@ import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.foundation.lazy.items
 import androidx.compose.foundation.lazy.rememberLazyListState
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.LaunchedEffect
+import androidx.compose.runtime.derivedStateOf
+import androidx.compose.runtime.getValue
+import androidx.compose.runtime.remember
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
 import androidx.compose.ui.graphics.drawscope.DrawScope
@@ -52,105 +56,128 @@ fun FeedScreen(
     showTitle: String,
     showDescription: String,
     heroImageUrl: String?,
+    currentlyPlayingEpisode: DisplayableEpisode? = null,
     episodes: ImmutableList<DisplayableEpisode>,
     onEpisodePlayClicked: (DisplayableEpisode) -> Unit = {},
     onEpisodePauseClicked: (DisplayableEpisode) -> Unit = {},
     onEpisodeDownloadClicked: (DisplayableEpisode) -> Unit = {},
-    onClickTitle: () -> Unit,
+    onCurrentlyPlayingEnterView: () -> Unit = {},
+    onCurrentlyPlayingExitView: () -> Unit = {},
+    onHeaderClicked: () -> Unit,
     onClickEpisode: (DisplayableEpisode) -> Unit = {},
+    onAddToPlaylistClicked: (DisplayableEpisode) -> Unit = {},
 ) {
     val scrollState = rememberLazyListState()
 
-    Screen(modifier) {
-        Column(
-            Modifier
+    val isCurrentlyPlayingVisible by remember(currentlyPlayingEpisode, scrollState) {
+        derivedStateOf {
+            scrollState.layoutInfo
+                .visibleItemsInfo
+                .any { it.key == currentlyPlayingEpisode?.id }
+        }
+    }
+
+    LaunchedEffect(isCurrentlyPlayingVisible) {
+        if (isCurrentlyPlayingVisible) {
+            onCurrentlyPlayingEnterView()
+        } else {
+            onCurrentlyPlayingExitView()
+        }
+    }
+
+    Screen(modifier) { padding ->
+
+        LazyColumn(
+            modifier = Modifier
                 .fillMaxSize()
-                .padding(it)
+                .padding(padding)
                 .fadingEdge(scrollState)
                 .verticalScrollWithBar(scrollState)
-                .padding(horizontal = Dimension.D500)
+                .padding(horizontal = Dimension.D500),
+            state = scrollState
         ) {
 
-            LazyColumn(
-                state = scrollState
-            ) {
+            item {
 
-                item {
+                VerticalSpacerD1200()
 
-                    VerticalSpacerD1200()
+                Row(
+                    modifier = Modifier.bounceClick { onHeaderClicked() },
+                ) {
 
-                    Row {
+                    val painter = rememberAsyncImagePainter(
+                        model = ImageRequest.Builder(LocalContext.current)
+                            .diskCacheKey(heroImageUrl)
+                            .memoryCacheKey(heroImageUrl)
+                            .data(heroImageUrl)
+                            .size(Size.ORIGINAL)
+                            .build(),
+                        placeholder = previewableImage(),
+                        error = previewableImage(),
+                        fallback = previewableImage(),
+                        onLoading = null,
+                        onSuccess = { },
+                        onError = { },
+                        contentScale = ContentScale.FillWidth,
+                        filterQuality = DrawScope.DefaultFilterQuality,
+                    )
 
-                        val painter = rememberAsyncImagePainter(
-                            model = ImageRequest.Builder(LocalContext.current)
-                                .diskCacheKey(heroImageUrl)
-                                .memoryCacheKey(heroImageUrl)
-                                .data(heroImageUrl)
-                                .size(Size.ORIGINAL)
-                                .build(),
-                            placeholder = previewableImage(),
-                            error = previewableImage(),
-                            fallback = previewableImage(),
-                            onLoading = null,
-                            onSuccess = { },
-                            onError = { },
-                            contentScale = ContentScale.FillWidth,
-                            filterQuality = DrawScope.DefaultFilterQuality,
+                    Image(
+                        modifier = Modifier
+                            .fillMaxWidth(0.3f)
+                            .aspectRatio(1f)
+                            .clip(Radii.Card.shape)
+                            .border(
+                                2.dp,
+                                PodawanTheme.colors.border.color,
+                                Radii.Card.shape
+                            ),
+                        painter = painter,
+                        contentDescription = "",
+                        contentScale = ContentScale.FillWidth,
+                    )
+
+
+                    HorizontalSpacerD500()
+
+                    Column {
+                        Text(
+                            text = showTitle,
+                            typography = PodawanTheme.typography.Heading.H1000
                         )
 
-                        Image(
-                            modifier = Modifier
-                                .fillMaxWidth(0.3f)
-                                .aspectRatio(1f)
-                                .clip(Radii.Card.shape)
-                                .border(
-                                    2.dp,
-                                    PodawanTheme.colors.border.color,
-                                    Radii.Card.shape
-                                ),
-                            painter = painter,
-                            contentDescription = "",
-                            contentScale = ContentScale.FillWidth,
+                        VerticalSpacerD200()
+
+                        Text(
+                            text = showDescription,
+                            typography = PodawanTheme.typography.Body.B500,
+                            maxLines = 2
                         )
-
-
-                        HorizontalSpacerD500()
-
-                        Column {
-                            Text(
-                                modifier = Modifier.bounceClick { onClickTitle() },
-                                text = showTitle,
-                                typography = PodawanTheme.typography.Heading.H1000
-                            )
-
-                            VerticalSpacerD200()
-
-                            Text(
-                                text = showDescription,
-                                typography = PodawanTheme.typography.Body.B500,
-                                maxLines = 2
-                            )
-                        }
                     }
-
-                    VerticalSpacerD1200()
                 }
 
-                items(episodes) { episode ->
-                    Column {
-                        EpisodeItem(
-                            episode = episode,
-                            onPauseClicked = { onEpisodePauseClicked(episode) },
-                            onPlayClicked = { onEpisodePlayClicked(episode) },
-                            onDownloadClicked = { onEpisodeDownloadClicked(episode) },
-                            onShareClicked = { doNothing() },
-                            onClickEpisode = { onClickEpisode(episode) }
-                        )
+                VerticalSpacerD1200()
+            }
 
-                        if (episodes.last() != episode) {
-                            HorizontalDivider(color = PodawanTheme.colors.borderDisabled.color)
-                            VerticalSpacerD1000()
-                        }
+            items(episodes, { it.id }) { episode ->
+                Column {
+                    EpisodeItem(
+                        episode = if (episode.id == currentlyPlayingEpisode?.id) {
+                            currentlyPlayingEpisode // so that live updates are shown
+                        } else {
+                            episode
+                        },
+                        onPauseClicked = { onEpisodePauseClicked(episode) },
+                        onPlayClicked = { onEpisodePlayClicked(episode) },
+                        onDownloadClicked = { onEpisodeDownloadClicked(episode) },
+                        onShareClicked = { doNothing() },
+                        onClickEpisode = { onClickEpisode(episode) },
+                        onAddToPlaylistClicked = { onAddToPlaylistClicked(episode) }
+                    )
+
+                    if (episodes.last() != episode) {
+                        HorizontalDivider(color = PodawanTheme.colors.borderDisabled.color)
+                        VerticalSpacerD1000()
                     }
                 }
             }
@@ -171,8 +198,7 @@ private fun PreviewScreen() {
             isDownloaded = false,
             id = "",
             author = "Author Name",
-            isPlaying = false,
-            isLoading = false
+            playback = EpisodePlayback.None()
         )
 
     Preview {
@@ -187,7 +213,7 @@ private fun PreviewScreen() {
                 getRandomEpisode(),
                 getRandomEpisode(),
             ),
-            onClickTitle = {},
+            onHeaderClicked = {},
             heroImageUrl = "https://i.scdn.co/image/ab67616d0000b273f3b3b3b3b3b3b3b3b3b3b3b3"
         )
     }
@@ -203,11 +229,10 @@ private fun PreviewScreenSYSK() {
             releaseDate = "December 12, 2021",
             imageUrls = persistentListOf(),
             description = loremIpsum(10..20),
-            isPlaying = false,
-            isLoading = false,
             isDownloaded = false,
             id = "",
-            author = "Author Name"
+            author = "Author Name",
+            playback = EpisodePlayback.None()
         )
 
     Preview(
@@ -224,7 +249,7 @@ private fun PreviewScreenSYSK() {
                 getRandomEpisode(),
                 getRandomEpisode(),
             ),
-            onClickTitle = {},
+            onHeaderClicked = {},
             heroImageUrl = "https://i.scdn.co/image/ab67616d0000b273f3b3b3b3b3b3b3b3b3b3b3b3"
         )
     }

@@ -4,17 +4,25 @@ import androidx.lifecycle.SavedStateHandle
 import androidx.lifecycle.viewModelScope
 import com.dangerfield.features.playback.PlayerStateRepository
 import com.dangerfield.libraries.coreflowroutines.SEAViewModel
-import com.dangerfield.libraries.coreflowroutines.collectIn
+import com.dangerfield.libraries.coreflowroutines.collectWithPrevious
+import com.dangerfield.libraries.podcast.CurrentlyPlaying
 import com.dangerfield.libraries.podcast.DisplayableEpisode
 import com.dangerfield.libraries.podcast.EpisodePlayback
 import com.dangerfield.libraries.podcast.EpisodePlayback.None
 import com.dangerfield.libraries.podcast.EpisodePlayback.Paused
+import com.dangerfield.libraries.podcast.GetCurrentlyPlaying
 import com.dangerfield.libraries.podcast.GetDisplayableEpisodes
 import com.dangerfield.libraries.podcast.PodcastRepository
+import com.dangerfield.libraries.podcast.duration
+import com.dangerfield.libraries.podcast.isLoading
+import com.dangerfield.libraries.podcast.isPlaying
+import com.dangerfield.libraries.podcast.progress
 import dagger.hilt.android.lifecycle.HiltViewModel
 import kotlinx.collections.immutable.ImmutableList
 import kotlinx.collections.immutable.persistentListOf
 import kotlinx.collections.immutable.toPersistentList
+import kotlinx.coroutines.launch
+import podawan.core.allOrNone
 import podawan.core.doNothing
 import timber.log.Timber
 import javax.inject.Inject
@@ -24,11 +32,14 @@ class FeedViewModel @Inject constructor(
     private val podcastRepository: PodcastRepository,
     private val playerStateRepository: PlayerStateRepository,
     private val getDisplayableEpisodes: GetDisplayableEpisodes,
+    private val getCurrentlyPlaying: GetCurrentlyPlaying,
     savedStateHandle: SavedStateHandle
 ) : SEAViewModel<FeedViewModel.State, FeedViewModel.Event, FeedViewModel.Action>(
     savedStateHandle,
     State()
 ) {
+
+    private var observeAllCurrentlyPlayingUpdates: Boolean = false
 
     init {
         takeAction(Action.Load)
@@ -40,18 +51,35 @@ class FeedViewModel @Inject constructor(
             is Action.PauseEpisode -> action.handlePause()
             is Action.PlayEpisode -> action.handlePlay()
             is Action.DownloadEpisode -> doNothing()
+            is Action.CurrentlyPlayingShowing -> action.handleCurrentlyPlayingShowing()
+            is Action.CurrentlyPlayingNotShowing -> action.handleCurrentlyPlayingNotShowing()
         }
     }
 
     private suspend fun Action.PlayEpisode.handlePlay() {
+        takeAction(Action.CurrentlyPlayingShowing)
         updateState { state ->
             state.copy(
                 episodes = state.episodes.withUpdatedEpisode(
-                    predicate = { it.isPlaying },
-                    update = { it.copy(isPlaying = false) }
+                    predicate = { it.isPlaying || it.isLoading },
+                    update = {
+                        it.copy(
+                            playback = None(
+                                progress = it.progress,
+                                duration = it.duration
+                            )
+                        )
+                    }
                 ).withUpdatedEpisode(
                     predicate = { it.id == episode.id },
-                    update = { it.copy(isPlaying = true) }
+                    update = {
+                        it.copy(
+                            playback = EpisodePlayback.Playing(
+                                progress = it.progress,
+                                duration = it.duration
+                            )
+                        )
+                    }
                 )
             )
         }
@@ -64,7 +92,14 @@ class FeedViewModel @Inject constructor(
             state.copy(
                 episodes = state.episodes.withUpdatedEpisode(
                     predicate = { it.id == episode.id },
-                    update = { it.copy(isPlaying = false) }
+                    update = {
+                        it.copy(
+                            playback = Paused(
+                                progress = it.progress,
+                                duration = it.duration
+                            )
+                        )
+                    }
                 )
             )
         }
@@ -90,21 +125,48 @@ class FeedViewModel @Inject constructor(
         updateState { it.copy(isLoading = true) }
 
         podcastRepository.getPodcast().onSuccess { show ->
-            getDisplayableEpisodes(show).collectIn(viewModelScope) {
-                Timber.i("Feed Episodes updated. Playing id: ${it.firstOrNull { it.isPlaying }?.id}")
-                updateState { state ->
-                    state.copy(
-                        isLoading = false,
-                        episodes = it,
-                        showTitle = show.title.orEmpty(),
-                        showDescription = show.description.orEmpty(),
-                        showHeroImageUrl = show.itunesShowData?.image
-                            ?: show.heroImage?.url.orEmpty()
-                    )
+            getDisplayableEpisodes(show)
+                .map {
+                    Timber.i("Feed Episodes updated. Playing id: ${it.firstOrNull { it.playback.isPlaying }?.id}")
+                    updateState { state ->
+                        state.copy(
+                            isLoading = false,
+                            episodes = it,
+                            showTitle = show.title.orEmpty(),
+                            showDescription = show.description.orEmpty(),
+                            showHeroImageUrl = show.itunesShowData?.image
+                                ?: show.heroImage?.url.orEmpty()
+                        )
+                    }
+                }
+        }
+            .onFailure { sendEvent(Event.LoadFailed) }
+
+        viewModelScope.launch {
+            getCurrentlyPlaying().collectWithPrevious { prev, cur ->
+                val didEpisodeChange = allOrNone(prev?.episode?.id, cur?.episode?.id) { prevId, curId ->
+                    curId != prevId
+                } ?: false
+
+                when {
+                    observeAllCurrentlyPlayingUpdates -> {
+                        updateState { it.copy(currentlyPlaying = cur) }
+                    }
+                    didEpisodeChange -> {
+                        updateState { it.copy(currentlyPlaying = cur) }
+                    }
+                    else -> doNothing()
                 }
             }
         }
-            .onFailure { sendEvent(Event.LoadFailed) }
+    }
+
+    private suspend fun Action.CurrentlyPlayingShowing.handleCurrentlyPlayingShowing() {
+        observeAllCurrentlyPlayingUpdates = true
+    }
+
+    private suspend fun Action.CurrentlyPlayingNotShowing.handleCurrentlyPlayingNotShowing() {
+        observeAllCurrentlyPlayingUpdates = true
     }
 
     data class State(
@@ -112,6 +174,13 @@ class FeedViewModel @Inject constructor(
         val showTitle: String = "",
         val showDescription: String = "",
         val showHeroImageUrl: String = "",
+        /**
+         * Null if no episode is playing
+         * this field updates
+         * 1. if being displayed = on every change
+         * 2. if not being displayed = on every change of episode id
+         */
+        val currentlyPlaying: CurrentlyPlaying? = null,
         val episodes: ImmutableList<DisplayableEpisode> = persistentListOf(),
     )
 
@@ -124,6 +193,11 @@ class FeedViewModel @Inject constructor(
         object Load : Action()
         class PlayEpisode(val episode: DisplayableEpisode) : Action()
         class PauseEpisode(val episode: DisplayableEpisode) : Action()
+
         class DownloadEpisode(val episode: DisplayableEpisode) : Action()
+
+        object CurrentlyPlayingShowing : Action()
+
+        object CurrentlyPlayingNotShowing : Action()
     }
 }

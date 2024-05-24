@@ -15,10 +15,8 @@ import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
 import androidx.compose.ui.tooling.preview.Preview
-import com.dangerfield.libraries.podcast.CurrentlyPlayingEpisode
+import com.dangerfield.libraries.podcast.CurrentlyPlaying
 import com.dangerfield.libraries.podcast.DisplayableEpisode
-import com.dangerfield.libraries.podcast.EpisodePlayback.Paused
-import com.dangerfield.libraries.podcast.EpisodePlayback.Playing
 import com.dangerfield.libraries.podcast.EpisodeImage
 import com.dangerfield.libraries.podcast.EpisodePlayback
 import com.dangerfield.libraries.ui.Dimension
@@ -35,14 +33,11 @@ import com.dangerfield.ui.components.icon.IconButton
 import com.dangerfield.ui.components.icon.PodawanIcon
 import com.dangerfield.ui.components.text.Text
 import kotlinx.collections.immutable.persistentListOf
-import kotlin.time.Duration.Companion.hours
-import kotlin.time.Duration.Companion.minutes
-import kotlin.time.Duration.Companion.seconds
 
 @OptIn(ExperimentalFoundationApi::class)
 @Composable
 fun PlayerBottomBar(
-    episode: CurrentlyPlayingEpisode,
+    currentlyPlaying: CurrentlyPlaying,
     onClick: () -> Unit,
     onPauseClicked: () -> Unit,
     onPlayClicked: () -> Unit,
@@ -64,7 +59,7 @@ fun PlayerBottomBar(
 
             EpisodeImage(
                 modifier = Modifier.height(Dimension.D1200),
-                imageUrls = episode.episode.imageUrls,
+                imageUrls = currentlyPlaying.episode.imageUrls,
             )
 
             HorizontalSpacerD600()
@@ -74,12 +69,12 @@ fun PlayerBottomBar(
             ) {
                 Text(
                     modifier = Modifier.basicMarquee(),
-                    text = episode.episode.title,
+                    text = currentlyPlaying.episode.title,
                     typography = PodawanTheme.typography.Label.L600.SemiBold,
                     maxLines = 1
                 )
 
-                episode.episode.author?.let {
+                currentlyPlaying.episode.author?.let {
                     Text(
                         modifier = Modifier.basicMarquee(),
                         text = it,
@@ -92,13 +87,13 @@ fun PlayerBottomBar(
 
             HorizontalSpacerD600()
 
-            val playingIcon = if (episode.episodePlayback.isPlaying) {
+            val playingIcon = if (currentlyPlaying.episode.playback.isPlaying) {
                 PodawanIcon.Pause(null)
             } else {
                 PodawanIcon.Play(null)
             }
 
-            if (episode.episodePlayback.isLoading) {
+            if (currentlyPlaying.episode.playback.isLoading) {
                 CircularProgressIndicator(
                     modifier = Modifier.size(Dimension.D800),
                     strokeWidth = Dimension.D50,
@@ -108,7 +103,7 @@ fun PlayerBottomBar(
                 IconButton(
                     icon = playingIcon,
                     onClick = {
-                        if (episode.episodePlayback.isPlaying) {
+                        if (currentlyPlaying.episode.playback.isPlaying) {
                             onPauseClicked()
                         } else {
                             onPlayClicked()
@@ -122,14 +117,14 @@ fun PlayerBottomBar(
         }
 
         if (
-            episode.episodePlayback.duration.inWholeSeconds > 0
-            && episode.episodePlayback.progress.inWholeSeconds > 0
+            currentlyPlaying.episode.playback.duration.inWholeSeconds > 0
+            && currentlyPlaying.episode.playback.progress.inWholeSeconds > 0
         ) {
             ProgressRow(
                 modifier = Modifier
                     .fillMaxWidth()
                     .height(Dimension.D50),
-                progress = (episode.episodePlayback.progress.inWholeSeconds.toFloat() / episode.episodePlayback.duration.inWholeSeconds)
+                progressPercent = (currentlyPlaying.episode.playback.progress.inWholeSeconds.toFloat() / currentlyPlaying.episode.playback.duration.inWholeSeconds)
             )
         }
     }
@@ -140,7 +135,7 @@ fun PlayerBottomBar(
 private fun PreviewPlayerBottomBar() {
     Preview {
         PlayerBottomBar(
-            CurrentlyPlayingEpisode(
+            CurrentlyPlaying(
                 DisplayableEpisode(
                     id = "1",
                     title = "Healing",
@@ -149,10 +144,8 @@ private fun PreviewPlayerBottomBar() {
                     description = "Emma Hinkley",
                     author = "Emma Hinkley",
                     isDownloaded = false,
-                    isPlaying = false,
-                    isLoading = false
+                    playback = EpisodePlayback.None()
                 ),
-                episodePlayback = EpisodePlayback.None()
             ),
             onPauseClicked = {},
             onPlayClicked = {},
@@ -166,7 +159,7 @@ private fun PreviewPlayerBottomBar() {
 private fun PreviewPlayerBottomBarPaused() {
     Preview {
         PlayerBottomBar(
-            CurrentlyPlayingEpisode(
+            CurrentlyPlaying(
                 DisplayableEpisode(
                     id = "1",
                     title = "Healing",
@@ -175,10 +168,9 @@ private fun PreviewPlayerBottomBarPaused() {
                     description = "Emma Hinkley",
                     author = "Emma Hinkley",
                     isDownloaded = false,
-                    isPlaying = false,
-                    isLoading = false
+                    playback = EpisodePlayback.None()
+
                 ),
-                episodePlayback = EpisodePlayback.None()
             ),
             onPauseClicked = {},
             onPlayClicked = {},

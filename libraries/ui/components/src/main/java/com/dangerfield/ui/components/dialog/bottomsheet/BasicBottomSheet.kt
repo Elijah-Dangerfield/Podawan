@@ -11,6 +11,8 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.tooling.preview.Preview
 import com.dangerfield.libraries.ui.Dimension
 import com.dangerfield.libraries.ui.VerticalSpacerD800
+import com.dangerfield.libraries.ui.color.ColorResource
+import com.dangerfield.libraries.ui.theme.PodawanTheme
 import com.dangerfield.ui.components.button.Button
 import com.dangerfield.ui.components.icon.IconButton
 import com.dangerfield.ui.components.icon.PodawanIcon
@@ -23,6 +25,8 @@ fun BasicBottomSheet(
     modifier: Modifier = Modifier,
     state: BottomSheetState = rememberBottomSheetState(),
     showCloseButton: Boolean = false,
+    showDragHandle: Boolean = true,
+    backgroundColor: ColorResource = PodawanTheme.colors.background,
     contentAlignment: Alignment.Horizontal = Alignment.CenterHorizontally,
     stickyTopContent: @Composable () -> Unit = {},
     content: @Composable () -> Unit = {},
@@ -32,6 +36,8 @@ fun BasicBottomSheet(
         onDismissRequest = onDismissRequest,
         modifier = Modifier,
         state = state,
+        backgroundColor = backgroundColor,
+        showDragHandle = showDragHandle,
         contentAlignment = contentAlignment,
     ) {
         Column(
@@ -59,6 +65,7 @@ fun BasicBottomSheet(
                 modifier = modifier,
                 topContent = stickyTopContent,
                 content = content,
+                backgroundColor = if(backgroundColor.color.alpha < 1f) backgroundColor.withAlpha(0f) else backgroundColor,
                 bottomContent = stickyBottomContent,
             )
         }

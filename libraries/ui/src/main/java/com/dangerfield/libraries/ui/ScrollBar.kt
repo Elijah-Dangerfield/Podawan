@@ -63,10 +63,10 @@ fun Modifier.scrollbar(
             val viewPortCrossAxisLength = if (direction == Orientation.Vertical)
                 size.width else size.height
             val contentLength = max(viewPortLength + state.maxValue, 0.001f)  // To prevent divide by zero error
-            val indicatorLength = ((viewPortLength / contentLength) * viewPortLength) - (
+            val indicatorLength =( ((viewPortLength / contentLength) * viewPortLength) - (
                     if (direction == Orientation.Vertical) topPadding + bottomPadding
                     else startPadding + endPadding
-                    )
+                    )).coerceAtLeast(20.dp.toPx())
 
             val indicatorThicknessPx = indicatorThickness.toPx()
 
@@ -137,7 +137,7 @@ fun Modifier.scrollbar(
                 (state.firstVisibleItemIndex * averageVisibleItemSize) + state.firstVisibleItemScrollOffset
             val scrolledPercentage = scrolledDistance / (totalContentHeight - viewportHeight)
 
-            val scrollbarHeight = viewportHeight / totalContentHeight * viewportHeight
+            val scrollbarHeight = (viewportHeight / totalContentHeight * viewportHeight).coerceAtLeast(20.dp.toPx())
             val scrollbarYPosition = scrolledPercentage * (viewportHeight - scrollbarHeight)
 
             val indicatorThicknessPx = indicatorThickness.toPx()

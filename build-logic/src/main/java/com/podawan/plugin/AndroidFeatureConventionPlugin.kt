@@ -28,13 +28,12 @@ class AndroidFeatureConventionPlugin : Plugin<Project> {
             // TODO cleanup truly need tp update the spyfall ext to be split into
             // what type of module it is. I could also do some huge cleanup on this module
             if (extensions.findByName("podawan") == null) {
-                extensions.create("podawan", com.podawan.extension.FeatureExtension::class.java)
+                extensions.create("podawan", FeatureExtension::class.java)
             }
 
             pluginManager.apply {
                 apply("ooo.android.library")
                 apply("kotlin-parcelize")
-
             }
 
             // Libraries Shared Between All Features

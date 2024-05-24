@@ -1,7 +1,7 @@
 package com.podawan.plugin
 
 import com.android.build.gradle.LibraryExtension
-import com.spyfall.podawan.util.SharedConstants
+import com.podawan.util.SharedConstants
 import com.spyfall.podawan.util.configureKotlinAndroid
 import com.spyfall.podawan.util.libs
 import org.gradle.api.Plugin

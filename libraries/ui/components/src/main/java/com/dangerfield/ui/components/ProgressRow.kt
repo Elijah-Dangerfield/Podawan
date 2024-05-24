@@ -15,7 +15,7 @@ import com.dangerfield.libraries.ui.theme.PodawanTheme
 
 @Composable
 fun ProgressRow(
-    progress: Float,
+    progressPercent: Float,
     modifier: Modifier = Modifier,
     content: @Composable () -> Unit = {}
 ) {
@@ -29,7 +29,7 @@ fun ProgressRow(
         Box(
             modifier = Modifier
                 .fillMaxHeight()
-                .fillMaxWidth(progress)
+                .fillMaxWidth(progressPercent)
                 .background(PodawanTheme.colors.surfacePrimary.color)
         ) {}
 
@@ -51,7 +51,7 @@ fun ProgressRow(
 fun ProgressRowPreview() {
     com.dangerfield.libraries.ui.preview.Preview(
     ) {
-        ProgressRow(progress = 0.5f) {
+        ProgressRow(progressPercent = 0.5f) {
             Text("Hello")
         }
     }

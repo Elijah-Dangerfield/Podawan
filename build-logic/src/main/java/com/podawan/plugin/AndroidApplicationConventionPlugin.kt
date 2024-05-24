@@ -1,11 +1,9 @@
 package com.podawan.plugin
 
 import com.android.build.api.dsl.ApplicationExtension
-import com.android.build.gradle.internal.scope.ProjectInfo.Companion.getBaseName
 import com.podawan.extension.AppExtension
-import com.podawan.extension.FeatureExtension
 import com.spyfall.podawan.util.BuildEnvironment
-import com.spyfall.podawan.util.SharedConstants
+import com.podawan.util.SharedConstants
 import com.spyfall.podawan.util.buildConfigField
 import com.spyfall.podawan.util.checkForAppModuleSecretFiles
 import com.spyfall.podawan.util.configureGitHooksCheck
@@ -37,6 +35,12 @@ class AndroidApplicationConventionPlugin : Plugin<Project> {
             extensions.configure<ApplicationExtension> {
 
                 namespace = "com.dangerfield.podawan.${project.name}"
+
+//                project.pluginManager.apply("kotlin-kapt")
+//
+//                project.extensions.configure(KaptExtension::class.java) {
+//                    correctErrorTypes = true
+//                }
 
                 configureKotlinAndroid(this)
 

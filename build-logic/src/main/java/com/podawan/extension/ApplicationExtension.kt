@@ -5,7 +5,7 @@ import com.android.build.api.dsl.ApplicationExtension
 import com.android.build.api.dsl.CommonExtension
 import com.android.build.gradle.LibraryExtension
 import com.android.build.gradle.TestExtension
-import com.spyfall.podawan.util.SharedConstants
+import com.podawan.util.SharedConstants
 import com.google.devtools.ksp.gradle.KspExtension
 import com.spyfall.podawan.util.configureAndroidCompose
 import com.spyfall.podawan.util.getModule
@@ -42,10 +42,12 @@ abstract class AppExtension {
     }
 
     fun room() {
-        kapt()
+        ksp()
         project.dependencies {
             "api"(project.libs.room)
-            "kapt"(project.libs.room.compiler)
+            "api"(project.libs.room.runtime)
+            "api"(project.libs.room.common)
+            "ksp"(project.libs.room.compiler)
         }
     }
 
@@ -155,5 +157,5 @@ abstract class AppExtension {
     }
 }
 
-private val Project.android: CommonExtension<*, *, *, *, *,>
+private val Project.android: CommonExtension<*, *, *, *, *, *>
     get() = extensions.getByType(CommonExtension::class.java)

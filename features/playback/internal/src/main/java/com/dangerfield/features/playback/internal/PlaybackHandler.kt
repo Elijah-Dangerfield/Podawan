@@ -71,6 +71,11 @@ class PlaybackHandler @Inject constructor(
 
     fun prepareItem(mediaItem: MediaItem, playWhenReady: Boolean = false) {
         playerScope.launch {
+            if (player.currentMediaItem == mediaItem) {
+                Timber.i("Playback Log. Media item already prepared. Skipping")
+                return@launch
+            }
+
             player.playWhenReady = playWhenReady
             player.setMediaItem(mediaItem)
             player.prepare()
@@ -78,9 +83,12 @@ class PlaybackHandler @Inject constructor(
     }
 
     private fun startProgressTimer() {
+        if (progressUpdateJob?.isActive == true) {
+            return
+        }
+
         progressUpdateJob = appScope.launch {
             while (isActive) {
-
                 _playerState.update {
                     if (it is Playing) {
                         it.copy(progressSeconds = it.progressSeconds + 1)
@@ -184,11 +192,12 @@ class PlaybackHandler @Inject constructor(
         playerScope.launch {
             when (playerEvent) {
                 is PlayerEvent.Play -> {
-                    player.seekTo(playerEvent.startingPoint.inWholeMilliseconds)
+                    playerEvent.seekTo?.inWholeMilliseconds?.let { player.seekTo(it) }
                     player.play()
                 }
 
                 PlayerEvent.Pause -> player.pause()
+
                 is PlayerEvent.Seek -> {
                     player.seekTo(playerEvent.seekSeconds.toDuration(SECONDS).inWholeMilliseconds)
                 }
@@ -212,7 +221,7 @@ class PlaybackHandler @Inject constructor(
 }
 
 sealed class PlayerEvent {
-    data class Play(val startingPoint: Duration) : PlayerEvent()
+    data class Play(val seekTo: Duration? = null) : PlayerEvent()
     data class Seek(val seekSeconds: Int) : PlayerEvent()
     object Pause : PlayerEvent()
 

@@ -24,3 +24,4 @@ fun rememberDominantColorState(
     isSwatchValid = isSwatchValid,
     builder = builder,
 )
+

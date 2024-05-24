@@ -1,24 +1,26 @@
 [versions]
 androidxActivity = "1.8.0"
-androidxComposeBom = "2024.04.00"
-androidxComposeCompiler = "1.5.11" # used in [AndroidComposeExt]
+
+androidxComposeCompiler = "1.5.13" # used in [AndroidComposeExt]
+androidxComposeBom = "2024.05.00"
+
 androidxCoreSplashscreen = "1.0.1"
 androidDesugarJdkLibs = "2.0.4"
 androidxNavigation = "2.7.7"
-androidGradlePlugin = "8.2.2"
+androidGradlePlugin = "8.4.1"
 androidxComposeRuntimeTracing = "1.0.0-beta01"
 androidxLifecycle = "2.7.0"
 androidxTestRunner = "1.5.2"
 androidxTestRules = "1.5.0"
-autoDagger = "0.11.0"
+autoDagger = "1.2.1"
 assertk = "0.28.0"
-coroutines = "1.7.3"
+coroutines = "1.8.1"
 coil = "2.6.0"
 cacheFixGradlePlugin = "2.7.2"
 crashlyticsGradlePlugin = "2.9.9"
-dagger = "2.48.1"
+dagger = "2.51.1"
 fragment = "1.6.1"
-firebase = "32.6.0"
+firebase = "33.0.0"
 gradlePlugin = "1.6.0-1.0.0-beta10"
 gradlePluginVersion = "1.2.0"
 hilt = "2.48.1"
@@ -40,12 +42,12 @@ timber = "5.0.1"
 #plugins
 detekt = "1.21.0"
 kotlin1910 = "1.9.10"
-core-ktx = "1.12.0"
+core-ktx = "1.13.1"
 junit = "4.13.2"
 androidx-test-ext-junit = "1.1.5"
 espresso-core = "3.5.1"
 appcompat = "1.6.1"
-material = "1.11.0"
+material = "1.12.0"
 browser = "1.6.0"
 customviewPoolingcontainer = "1.0.0"
 uiTooling = "1.5.3"
@@ -61,7 +63,6 @@ androidx-browser = "1.7.0"
 uiToolingVersion = "1.6.1"
 firebaseFirestoreKtxVersion = "24.11.1"
 playServicesMeasurementApi = "21.6.2"
-lifecycleProcess = "2.7.0"
 browserVersion = "1.8.0"
 media3Ui = "1.3.1"
 
@@ -70,11 +71,12 @@ media3Ui = "1.3.1"
 firebase-crashlytics-gradlePlugin = { module = "com.google.firebase:firebase-crashlytics-gradle", version.ref = "crashlyticsGradlePlugin" }
 
 androidx-appcompat = "androidx.appcompat:appcompat:1.6.1"
-androidx-core = "androidx.core:core-ktx:1.13.0"
+androidx-core = "androidx.core:core-ktx:1.13.1"
 androidx-constraintlayout = "androidx.constraintlayout:constraintlayout:2.1.4"
 androidx-legacy-support = "androidx.legacy:legacy-support-v4:1.0.0"
 androidx-lifecycle-ext = "androidx.lifecycle:lifecycle-extensions:2.2.0"
-androidx-lifecycle-vm = "androidx.lifecycle:lifecycle-viewmodel-ktx:2.7.0"
+androidx-lifecycle-vm = { group = "androidx.lifecycle", name = "lifecycle-viewmodel-ktx", version.ref = "androidxLifecycle" }
+
 androidx-test-junit = "androidx.test.ext:junit-ktx:1.1.5"
 androidx-test-core = "androidx.test:core-ktx:1.5.0"
 androidx-test-arch-core = "androidx.arch.core:core-testing:2.2.0"
@@ -110,7 +112,7 @@ androidx-compose-material-iconsExtended = { group = "androidx.compose.material",
 androidx-compose-material3 = { group = "androidx.compose.material3", name = "material3" }
 androidx-compose-material3-windowSizeClass = { group = "androidx.compose.material3", name = "material3-window-size-class" }
 androidx-compose-runtime-livedata = { group = "androidx.compose.runtime", name = "runtime-livedata" }
-androidx-compose-runtime-tracing = { group = "androidx.compose.runtime", name = "runtime-tracing", version.ref = "androidxComposeRuntimeTracing" }
+androidx-compose-runtime-tracing = { group = "androidx.compose.runtime", name = "runtime-tracing" }
 androidx-compose-ui-test = { group = "androidx.compose.ui", name = "ui-test-junit4" }
 coil = { module = "io.coil-kt:coil-compose", version.ref = "coil"}
 immutable-collections = { group = "org.jetbrains.kotlinx", name = "kotlinx-collections-immutable", version = "0.3.7" }
@@ -136,8 +138,8 @@ android-play-app-update = { group = "com.google.android.play", name = "app-updat
 android-play-app-update-ktx = { group = "com.google.android.play", name = "app-update-ktx", version.ref = "in-app-update" }
 
 #Datastore
-androidx-datastore = "androidx.datastore:datastore-preferences:1.0.0"
-androidx-datastore-core = "androidx.datastore:datastore-core:1.1.0-alpha07"
+androidx-datastore = "androidx.datastore:datastore-preferences:1.1.1"
+androidx-datastore-core = "androidx.datastore:datastore-core:1.1.1"
 
 kmpalette-core = { module = "com.kmpalette:kmpalette-core", version.ref = "kmpalette" }
 
@@ -158,7 +160,7 @@ firebase-firestore-ktx = { group = "com.google.firebase", name = "firebase-fires
 
 # code gen / serialization
 kotlinpoet = "com.squareup:kotlinpoet:1.14.2"
-moshi = "com.squareup.moshi:moshi:1.15.0"
+moshi = "com.squareup.moshi:moshi:1.15.1"
 moshix-gradlePlugin = { module = "dev.zacsweers.moshix:moshi-gradle-plugin", version.ref = "moshiXGradlePlugin" }
 
 # Logging
@@ -186,8 +188,11 @@ dagger = { module = "com.google.dagger:dagger", version.ref = "dagger" }
 dagger-compiler = { module = "com.google.dagger:dagger-compiler", version.ref = "dagger" }
 
 # Room
+
+# Room
 room = { module = "androidx.room:room-ktx", version.ref = "room" }
 room-common = { module = "androidx.room:room-common", version.ref = "room" }
+room-runtime = { module = "androidx.room:room-runtime", version.ref = "room" }
 room-compiler = { module = "androidx.room:room-compiler", version.ref = "room" }
 room-gradlePlugin = { module = "androidx.room:room-gradle-plugin", version.ref = "room" }
 
@@ -251,7 +256,7 @@ androidx-material3 = { group = "androidx.compose.material3", name = "material3",
 browser = { group = "androidx.browser", name = "browser", version.ref = "androidx-browser" }
 google-firebase-firestore-ktx = { group = "com.google.firebase", name = "firebase-firestore-ktx", version.ref = "firebaseFirestoreKtxVersion" }
 play-services-measurement-api = { group = "com.google.android.gms", name = "play-services-measurement-api", version.ref = "playServicesMeasurementApi" }
-androidx-lifecycle-process = { group = "androidx.lifecycle", name = "lifecycle-process", version.ref = "lifecycleProcess" }
+androidx-lifecycle-process = { group = "androidx.lifecycle", name = "lifecycle-process", version.ref = "androidxLifecycle" }
 androidx-browser-browser = { group = "androidx.browser", name = "browser", version.ref = "browserVersion" }
 
 

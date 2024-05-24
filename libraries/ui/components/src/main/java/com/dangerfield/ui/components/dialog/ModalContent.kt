@@ -14,6 +14,8 @@ import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.tooling.preview.Preview
 import com.dangerfield.libraries.ui.Dimension
+import com.dangerfield.libraries.ui.color.ColorResource
+import com.dangerfield.libraries.ui.color.ProvideContentColor
 import com.dangerfield.ui.components.button.Button
 import com.dangerfield.ui.components.button.ButtonSize
 import com.dangerfield.ui.components.button.ProvideButtonConfig
@@ -24,47 +26,53 @@ import com.dangerfield.libraries.ui.theme.PodawanTheme
 @Composable
 fun ModalContent(
     modifier: Modifier = Modifier,
+    backgroundColor: ColorResource = PodawanTheme.colors.surfaceSecondary,
+    contentColor: ColorResource = PodawanTheme.colors.onSurfaceSecondary,
     topContent: @Composable () -> Unit = {},
     content: @Composable () -> Unit = {},
     bottomContent: @Composable (() -> Unit)? = null,
 ) {
 
     Column(
-        modifier = modifier
-            .background(PodawanTheme.colors.surfaceSecondary.color)
+        modifier = modifier.background(backgroundColor.color)
     ) {
-        ProvideTextConfig(PodawanTheme.typography.Heading.H900) {
-            topContent()
-        }
 
-        Spacer(modifier = Modifier.height(Dimension.D600))
+        ProvideContentColor(color = contentColor) {
 
-        ProvideTextConfig(PodawanTheme.typography.Body.B700) {
-            Box(
-                modifier = Modifier
-                    .fillMaxWidth()
-                    .weight(1f, fill = false)
-
-            ) {
-                content()
+            ProvideTextConfig(PodawanTheme.typography.Heading.H900) {
+                topContent()
             }
-        }
 
-        if (bottomContent != null) {
-            Spacer(modifier = Modifier.height(Dimension.D1000))
+            Spacer(modifier = Modifier.height(Dimension.D600))
 
-            Column(
-                modifier = Modifier
-                    .fillMaxWidth()
-                    .padding(horizontal = Dimension.D1000),
-                horizontalAlignment = Alignment.CenterHorizontally
-            ) {
-                ProvideButtonConfig(size = ButtonSize.Small) {
-                    bottomContent()
+            ProvideTextConfig(PodawanTheme.typography.Body.B700) {
+                Box(
+                    modifier = Modifier
+                        .fillMaxWidth()
+                        .weight(1f, fill = false)
+
+                ) {
+                    content()
                 }
             }
 
-            Spacer(modifier = Modifier.height(Dimension.D800))
+            if (bottomContent != null) {
+                Spacer(modifier = Modifier.height(Dimension.D1000))
+
+                Column(
+                    modifier = Modifier
+                        .fillMaxWidth()
+                        .background(backgroundColor.color)
+                        .padding(horizontal = Dimension.D1000),
+                    horizontalAlignment = Alignment.CenterHorizontally
+                ) {
+                    ProvideButtonConfig(size = ButtonSize.Small) {
+                        bottomContent()
+                    }
+                }
+
+                Spacer(modifier = Modifier.height(Dimension.D800))
+            }
         }
     }
 }

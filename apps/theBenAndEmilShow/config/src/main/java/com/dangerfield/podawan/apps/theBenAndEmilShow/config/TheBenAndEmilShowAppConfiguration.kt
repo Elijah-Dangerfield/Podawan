@@ -2,8 +2,11 @@ package com.dangerfield.podawan.apps.theBenAndEmilShow.config
 
 import android.content.Context
 import android.graphics.drawable.Drawable
+import androidx.compose.runtime.Immutable
 import com.dangerfield.podawan.apps.theBenAndEmailShow.config.R
 import podawan.core.AppConfiguration
+
+@Immutable
 
 class TheBenAndEmilShowAppConfiguration(
     private val context: Context

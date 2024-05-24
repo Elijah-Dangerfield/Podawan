@@ -13,6 +13,7 @@ fun Slider(
     onValueChange: (Float) -> Unit,
     modifier: Modifier = Modifier,
     enabled: Boolean = true,
+    onValueChangeFinished: (() -> Unit)? = null,
     valueRange: ClosedFloatingPointRange<Float> = 0f..1f,
     interactionSource: MutableInteractionSource = remember { MutableInteractionSource() }
 ) {
@@ -35,5 +36,6 @@ fun Slider(
         ),
         interactionSource = interactionSource,
         valueRange = valueRange,
+        onValueChangeFinished = onValueChangeFinished
     )
 }

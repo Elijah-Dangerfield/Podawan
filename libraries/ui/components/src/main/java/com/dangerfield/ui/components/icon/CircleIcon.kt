@@ -6,6 +6,7 @@ import androidx.compose.runtime.Composable
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.Dp
+import androidx.compose.ui.unit.dp
 import com.dangerfield.libraries.ui.Dimension
 import com.dangerfield.libraries.ui.Elevation
 import com.dangerfield.ui.components.Surface
@@ -17,8 +18,8 @@ import com.dangerfield.libraries.ui.color.ColorResource
 fun CircleIcon(
     icon: PodawanIcon,
     iconSize: IconSize,
-    padding: Dp,
     modifier: Modifier = Modifier,
+    padding: Dp = 0.dp,
     backgroundColor: ColorResource = PodawanTheme.colors.surfacePrimary,
     contentColor: ColorResource = PodawanTheme.colors.onSurfacePrimary,
     elevation: Elevation = Elevation.None,

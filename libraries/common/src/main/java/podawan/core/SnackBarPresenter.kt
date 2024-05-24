@@ -46,4 +46,8 @@ data class Message(
     val title: String? = null,
     val action: (() -> Unit)? = null,
     val actionLabel: String? = null
-)
+) {
+    override fun equals(other: Any?): Boolean {
+        return this === other
+    }
+}

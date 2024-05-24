@@ -8,7 +8,7 @@ import com.dangerfield.libraries.ui.color.PreviewColorSwatch
 
 object BenAndEmilShowColors : Colors {
     override val accent = ColorResource.Purple500
-    override val onAccent = ColorResource.Black800
+    override val onAccent = ColorResource.White900
     override val shadow = ColorResource.Black800
     override val textDisabled = ColorResource.Black600
     override val textWarning = ColorResource.CherryPop700

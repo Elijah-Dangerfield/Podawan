@@ -8,6 +8,7 @@ import androidx.compose.runtime.Composable
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.focus.FocusRequester
 import androidx.compose.ui.focus.focusRequester
+import androidx.compose.ui.text.input.VisualTransformation
 import androidx.compose.ui.tooling.preview.Preview
 import com.dangerfield.libraries.ui.FieldState
 import com.dangerfield.libraries.ui.FieldState.Error
@@ -24,8 +25,10 @@ fun InputField(
     fieldState: FieldState<String>,
     onFieldUpdated: (String) -> Unit,
     modifier: Modifier = Modifier,
+    trailingIcon: @Composable (() -> Unit)? = null,
     subtitle: String? = null,
     errorBorder: Boolean = false,
+    visualTransformation: VisualTransformation = VisualTransformation.None,
     focusRequester: FocusRequester = FocusRequester(),
     keyboardActions: KeyboardActions = KeyboardActions.Default,
     keyboardOptions: KeyboardOptions = KeyboardOptions.Default,
@@ -67,6 +70,8 @@ fun InputField(
                 value = fieldState.value.orEmpty(),
                 onValueChange = onFieldUpdated,
                 enabled = enabled,
+                visualTransformation = visualTransformation,
+                trailingIcon = trailingIcon,
                 placeholder = {
                     hint?.let { Text(text = it) }
                 },

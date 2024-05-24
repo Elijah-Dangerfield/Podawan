@@ -2,6 +2,7 @@ package com.dangerfield.libraries.podcast.internal
 
 import com.dangerfield.libraries.coreflowroutines.AppScope
 import com.dangerfield.libraries.coreflowroutines.DispatcherProvider
+import com.dangerfield.libraries.podcast.Episode
 import com.dangerfield.libraries.podcast.PodcastShow
 import com.dangerfield.libraries.podcast.storage.HeroImageDao
 import com.dangerfield.libraries.podcast.storage.ItunesDataDao
@@ -14,10 +15,14 @@ import kotlinx.coroutines.withContext
 import podawan.core.Catching
 import se.ansman.dagger.auto.AutoBind
 import javax.inject.Inject
+import kotlin.time.Duration
 
 interface PodcastCacheDatasource {
     suspend fun getPodcastWithRssFeedLink(rssFeedLink: String): Catching<PodcastShow>
     suspend fun savePodcast(podcastShow: PodcastShow)
+    suspend fun updateResumePoint(id: String, resumePoint: Duration): Catching<Unit>
+
+    suspend fun updateDuration(id: String, duration: Duration): Catching<Unit>
 }
 
 @AutoBind
@@ -69,8 +74,10 @@ class RoomPodcastCacheDatasource @Inject constructor(
 
     override suspend fun savePodcast(podcastShow: PodcastShow) {
         appScope.launch {
-            val heroImageId = podcastShow.heroImage?.let { heroImageDao.insertHeroImage(it.toEntity()) }
-            val itunesChannelDataId = podcastShow.itunesShowData?.let { itunesDataDao.insertChannelData(it.toEntity()) }
+            val heroImageId =
+                podcastShow.heroImage?.let { heroImageDao.insertHeroImage(it.toEntity()) }
+            val itunesChannelDataId =
+                podcastShow.itunesShowData?.let { itunesDataDao.insertChannelData(it.toEntity()) }
 
             val showEntity = PodcastShowEntity(
                 rssFeedLink = podcastShow.rssFeedLink,
@@ -86,7 +93,8 @@ class RoomPodcastCacheDatasource @Inject constructor(
             podcastDao.insertShow(showEntity)
 
             val episodeEntities = podcastShow.episodes.map { episode ->
-                val itunesItemDataId = episode.itunesItemData?.let { itunesDataDao.insertEpisodeData(it.toEntity()) }
+                val itunesItemDataId =
+                    episode.itunesItemData?.let { itunesDataDao.insertEpisodeData(it.toEntity()) }
                 episode.toEntity(
                     rssFeedLink = showEntity.rssFeedLink,
                     itunesItemDataId = itunesItemDataId,
@@ -95,6 +103,17 @@ class RoomPodcastCacheDatasource @Inject constructor(
             }
 
             episodeDao.insertEpisodes(episodeEntities)
+        }
+    }
+
+    override suspend fun updateResumePoint(id: String, resumePoint: Duration): Catching<Unit> =
+        Catching {
+            appScope.launch { episodeDao.updateResumePoint(id, resumePoint.inWholeSeconds.toInt()) }
+        }
+
+    override suspend fun updateDuration(id: String, duration: Duration): Catching<Unit> {
+        return Catching {
+            appScope.launch { episodeDao.updateDuration(id, duration.inWholeSeconds.toInt()) }
         }
     }
 }

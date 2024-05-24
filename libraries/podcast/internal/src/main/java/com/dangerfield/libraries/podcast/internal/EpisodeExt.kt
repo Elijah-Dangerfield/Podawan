@@ -60,8 +60,7 @@ fun List<DisplayableEpisode>.updatedEpisode(
 
 fun Episode.toDisplayable(
     show: PodcastShow,
-    isPlaying: Boolean,
-    isLoading: Boolean,
+    playback: EpisodePlayback,
 ): DisplayableEpisode {
     val episode = this
 
@@ -78,8 +77,7 @@ fun Episode.toDisplayable(
         isDownloaded = false, // TODO hook up with playback repo for download state
         author = episode.author ?: show.title,
         id = episode.guid,
-        isLoading = isLoading,
-        isPlaying = isPlaying,
+        playback = playback
     )
 }
 

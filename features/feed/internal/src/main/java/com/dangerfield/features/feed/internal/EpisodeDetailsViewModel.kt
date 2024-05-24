@@ -9,15 +9,20 @@ import com.dangerfield.libraries.coreflowroutines.collectIn
 import com.dangerfield.libraries.navigation.navArgument
 import com.dangerfield.libraries.podcast.DisplayableEpisode
 import com.dangerfield.libraries.podcast.EpisodePlayback
+import com.dangerfield.libraries.podcast.GetCurrentlyPlaying
 import com.dangerfield.libraries.podcast.GetDisplayableEpisode
 import dagger.hilt.android.lifecycle.HiltViewModel
+import kotlinx.coroutines.flow.first
+import kotlinx.coroutines.flow.firstOrNull
 import podawan.core.doNothing
+import timber.log.Timber
 import javax.inject.Inject
 
 @HiltViewModel
 class EpisodeDetailsViewModel @Inject constructor(
-    private val playerStateRepository: PlayerStateRepository,
     private val getDisplayableEpisode: GetDisplayableEpisode,
+    private val getCurrentlyPlaying: GetCurrentlyPlaying,
+    private val playerStateRepository: PlayerStateRepository,
     savedStateHandle: SavedStateHandle
 ) : SEAViewModel<EpisodeDetailsViewModel.State, EpisodeDetailsViewModel.Event, EpisodeDetailsViewModel.Action>(
     savedStateHandle,
@@ -44,7 +49,10 @@ class EpisodeDetailsViewModel @Inject constructor(
         updateState {
             it.copy(
                 episode = it.episode?.copy(
-                    isPlaying = true
+                    playback = EpisodePlayback.Playing(
+                        progress = it.episode.playback.progress,
+                        duration = it.episode.playback.duration
+                    )
                 )
             )
         }
@@ -56,7 +64,10 @@ class EpisodeDetailsViewModel @Inject constructor(
         updateState {
             it.copy(
                 episode = it.episode?.copy(
-                    isPlaying = false
+                    playback = EpisodePlayback.Paused(
+                        progress = it.episode.playback.progress, 
+                        duration = it.episode.playback.duration
+                    )
                 )
             )
         }
@@ -70,17 +81,25 @@ class EpisodeDetailsViewModel @Inject constructor(
             return
         }
 
-        getDisplayableEpisode(id).collectIn(viewModelScope) { result ->
-            result
-                .onSuccess { episode ->
-                    updateState { it.copy(episode = episode) }
+        getDisplayableEpisode(id)
+            .onSuccess { episode -> updateState { it.copy(episode = episode) } }
+            .onFailure { sendEvent(Event.LoadFailed) }
+
+        getCurrentlyPlaying().collectIn(viewModelScope) { currentlyPlaying ->
+            if (currentlyPlaying?.episode?.id == id) {
+                updateState { currentState ->
+                    currentState.copy(
+                        episode = currentlyPlaying.episode,
+                        isCurrentlyPlaying = true
+                    )
                 }
-                .onFailure { sendEvent(Event.LoadFailed) }
+            }
         }
     }
 
     data class State(
         val episode: DisplayableEpisode? = null,
+        val isCurrentlyPlaying: Boolean = false
     )
 
     sealed class Event {

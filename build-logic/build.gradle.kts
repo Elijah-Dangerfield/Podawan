@@ -33,6 +33,7 @@ dependencies {
     api(libs.moshix.gradlePlugin)
     api(libs.ksp.gradlePlugin)
     implementation(libs.moshi)
+    implementation(libs.room.gradlePlugin)
     implementation("com.google.firebase:firebase-admin:9.1.1")
     implementation("com.google.gms:google-services:4.3.14")
     implementation("org.kohsuke:github-api:1.319")

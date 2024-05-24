@@ -1,9 +1,8 @@
 package com.dangerfield.libraries.podcast.internal
 
 import com.dangerfield.features.playback.PlayerStateRepository
-import com.dangerfield.libraries.podcast.CurrentlyPlayingEpisode
-import com.dangerfield.libraries.podcast.DisplayableEpisode
-import com.dangerfield.libraries.podcast.GetCurrentlyPlayingEpisode
+import com.dangerfield.libraries.podcast.CurrentlyPlaying
+import com.dangerfield.libraries.podcast.GetCurrentlyPlaying
 import com.dangerfield.libraries.podcast.PodcastRepository
 import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.flow.combine
@@ -16,16 +15,16 @@ import se.ansman.dagger.auto.AutoBind
 import javax.inject.Inject
 
 @AutoBind
-class GetCurrentlyPlayingEpisodeImpl @Inject constructor(
+class GetCurrentlyPlayingImpl @Inject constructor(
     private val podcastRepository: PodcastRepository,
     private val playerStateRepository: PlayerStateRepository,
-) : GetCurrentlyPlayingEpisode {
+) : GetCurrentlyPlaying {
 
     /**
      * Returns the currently playing episode from the show or null if nothing is playing or the
      * episode cant be found
      */
-    override fun invoke(): Flow<CurrentlyPlayingEpisode?> {
+    override fun invoke(): Flow<CurrentlyPlaying?> {
 
         return combine(
             flow { emit(podcastRepository.getPodcast().logOnFailure().getOrNull()) },
@@ -41,8 +40,7 @@ class GetCurrentlyPlayingEpisodeImpl @Inject constructor(
                     .firstOrNull { it.guid == currentlyPlayingId }
                     ?.toDisplayable(
                         show = show,
-                        isPlaying = currentlyPlayingStatus.isPlaying,
-                        isLoading = currentlyPlayingStatus.isLoading
+                        playback = currentlyPlayingStatus
                     )
 
                 checkInDebug(currentlyPlayingShowEpisode != null) {
@@ -50,10 +48,7 @@ class GetCurrentlyPlayingEpisodeImpl @Inject constructor(
                 }
 
                 currentlyPlayingShowEpisode?.let {
-                    CurrentlyPlayingEpisode(
-                        episode = it,
-                        episodePlayback = currentlyPlayingStatus
-                    )
+                    CurrentlyPlaying(episode = it,)
                 }
             }
         }

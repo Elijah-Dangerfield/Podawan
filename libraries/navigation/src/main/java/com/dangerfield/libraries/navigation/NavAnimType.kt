@@ -25,7 +25,7 @@ enum class NavAnimType(
         popExitTransition = { fadeOutToEndAnim() }
     ),
 
-    SlideOver(
+    SlideUp(
         enterTransition =  { slideUpToEnterBottomSheet() },
         exitTransition = { slideDownToExitBottomSheet() },
         popEnterTransition = { noAnimEnter() },

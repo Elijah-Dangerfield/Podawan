@@ -1,7 +1,7 @@
 package podawan.core
 
 import android.graphics.drawable.Drawable
-import javax.annotation.concurrent.Immutable
+import androidx.compose.runtime.Immutable
 
 @Immutable
 interface AppConfiguration {

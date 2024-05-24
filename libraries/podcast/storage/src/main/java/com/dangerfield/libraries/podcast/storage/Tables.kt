@@ -3,6 +3,8 @@ package com.dangerfield.libraries.podcast.storage
 import androidx.room.Entity
 import androidx.room.ForeignKey
 import androidx.room.PrimaryKey
+import kotlin.time.Duration
+import kotlin.time.Duration.Companion.seconds
 
 @Entity(
     tableName = "podcast_shows",
@@ -81,7 +83,9 @@ data class PodcastEpisodeEntity(
     val sourceUrl: String?,
     val itunesItemDataId: Long?,  // Foreign key to EpisodeItunesData
     val commentsUrl: String?,
-    val showHeroImageId: Long?,  // Foreign key for HeroImage
+    val showHeroImageId: Long?,  // Foreign key for HeroImage,
+    val resumePointSeconds: Int,
+    val totalDurationSeconds: Int,
 )
 
 @Entity(tableName = "itunes_episode_data")
@@ -98,6 +102,7 @@ data class EpisodeItunesDataEntity(
     val summary: String?,
     val season: String?
 )
+
 
 @Entity(tableName = "itunes_channel_data")
 data class ItunesChannelDataEntity(

@@ -4,7 +4,7 @@ package com.podawan.extension
 import com.android.build.api.dsl.ApplicationExtension
 import com.android.build.gradle.LibraryExtension
 import com.android.build.gradle.TestExtension
-import com.spyfall.podawan.util.SharedConstants
+import com.podawan.util.SharedConstants
 import com.google.devtools.ksp.gradle.KspExtension
 import com.spyfall.podawan.util.configureAndroidCompose
 import com.spyfall.podawan.util.getModule
@@ -41,13 +41,14 @@ abstract class FeatureExtension {
     }
 
     fun room() {
-        kapt()
+        ksp()
         project.dependencies {
             "api"(project.libs.room)
-            "kapt"(project.libs.room.compiler)
+            "api"(project.libs.room.runtime)
+            "api"(project.libs.room.common)
+            "ksp"(project.libs.room.compiler)
         }
     }
-
     fun daggerHilt(withProcessors: Boolean = true) {
         if (withProcessors) {
             project.pluginManager.apply("dagger.hilt.android.plugin")
@@ -87,6 +88,7 @@ abstract class FeatureExtension {
             """.trimIndent()
             )
 
+        // ./gradlew :features:auth:internal:releaseComposeCompilerHtmlReport
         project.pluginManager.apply("dev.shreyaspatil.compose-compiler-report-generator")
 
         project.configureAndroidCompose(projectExt, true)

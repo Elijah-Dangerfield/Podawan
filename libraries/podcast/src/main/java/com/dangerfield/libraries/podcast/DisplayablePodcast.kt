@@ -1,10 +1,11 @@
 package com.dangerfield.libraries.podcast
 
 import androidx.compose.runtime.Immutable
-import androidx.compose.runtime.Stable
 import kotlinx.collections.immutable.ImmutableList
 import kotlin.time.Duration
 import kotlin.time.Duration.Companion.seconds
+import kotlin.time.DurationUnit
+import kotlin.time.toDuration
 
 @Immutable
 data class DisplayableEpisode(
@@ -15,15 +16,32 @@ data class DisplayableEpisode(
     val description: String,
     val author: String?,
     val isDownloaded: Boolean,
-    val isPlaying: Boolean,
-    val isLoading: Boolean,
+    val playback: EpisodePlayback
 )
 
+val DisplayableEpisode.isPlaying: Boolean
+    get() = playback.isPlaying
+
+val DisplayableEpisode.isPaused: Boolean
+    get() = playback is EpisodePlayback.Paused
+
+val DisplayableEpisode.isLoading: Boolean
+    get() = playback.isLoading
+
+val DisplayableEpisode.progress: Duration
+    get() = playback.progress
+
+val DisplayableEpisode.duration: Duration
+    get() = playback.duration
+
 @Immutable
-data class CurrentlyPlayingEpisode(
+data class CurrentlyPlaying(
     val episode: DisplayableEpisode,
-    val episodePlayback: EpisodePlayback
-)
+) {
+    fun copyWithPlayback( f: (EpisodePlayback) -> EpisodePlayback): CurrentlyPlaying {
+        return this.copy(episode = episode.copy(playback = f(episode.playback)))
+    }
+}
 
 @Immutable
 sealed class EpisodePlayback(
@@ -75,6 +93,8 @@ sealed class EpisodePlayback(
         duration = duration
     )
 }
+
+fun Int.playerSecondsDisplay(): String = this.toDuration(DurationUnit.SECONDS).toDisplayString()
 
 fun Duration.toDisplayString(): String  {
     return toComponents { hours, minutes, seconds, _ ->

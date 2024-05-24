@@ -1,5 +1,6 @@
 package com.dangerfield.features.auth.internal.login
 
+import androidx.compose.runtime.Immutable
 import androidx.lifecycle.SavedStateHandle
 import androidx.lifecycle.viewModelScope
 import com.dangerfield.features.auth.internal.IsValidEmail
@@ -142,6 +143,7 @@ class LoginViewModel @Inject constructor(
         )
     }
 
+    @Immutable
     data class State(
         val emailFieldState: FieldState<String> = Idle(""),
         val passwordFieldState: FieldState<String> = Idle(""),

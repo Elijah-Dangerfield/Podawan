@@ -2,8 +2,11 @@ package com.dangerfield.podawan.apps.tmg.config
 
 import android.content.Context
 import android.graphics.drawable.Drawable
+import androidx.compose.runtime.Immutable
 import dagger.hilt.android.qualifiers.ApplicationContext
 import podawan.core.AppConfiguration
+
+@Immutable
 
 class TmgAppConfiguration(
     @ApplicationContext private val context: Context

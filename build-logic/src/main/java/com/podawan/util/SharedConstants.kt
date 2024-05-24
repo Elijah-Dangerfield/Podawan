@@ -1,4 +1,4 @@
-package com.spyfall.podawan.util
+package com.podawan.util
 
 object SharedConstants {
     const val targetSdk = 34

@@ -7,26 +7,17 @@ import com.dangerfield.features.playback.episodeIdArgument
 import com.dangerfield.libraries.coreflowroutines.SEAViewModel
 import com.dangerfield.libraries.coreflowroutines.collectIn
 import com.dangerfield.libraries.navigation.navArgument
-import com.dangerfield.libraries.podcast.CurrentlyPlayingEpisode
-import com.dangerfield.libraries.podcast.DisplayableEpisode
+import com.dangerfield.libraries.podcast.CurrentlyPlaying
 import com.dangerfield.libraries.podcast.EpisodePlayback
-import com.dangerfield.libraries.podcast.GetCurrentlyPlayingEpisode
-import com.dangerfield.libraries.podcast.GetDisplayableEpisode
+import com.dangerfield.libraries.podcast.GetCurrentlyPlaying
 import dagger.hilt.android.lifecycle.HiltViewModel
-import kotlinx.coroutines.flow.combine
-import kotlinx.coroutines.flow.flow
-import kotlinx.coroutines.flow.launchIn
-import kotlinx.coroutines.flow.map
-import podawan.core.eitherWay
-import podawan.core.logOnFailure
-import kotlin.time.toDuration
 import javax.inject.Inject
 import kotlin.time.DurationUnit.SECONDS
+import kotlin.time.toDuration
 
 @HiltViewModel
 class PlayerViewModel @Inject constructor(
-    private val getCurrentlyPlayingEpisode: GetCurrentlyPlayingEpisode,
-    private val getDisplayableEpisode: GetDisplayableEpisode,
+    private val getCurrentlyPlaying: GetCurrentlyPlaying,
     private val playerStateRepository: PlayerStateRepository,
     savedStateHandle: SavedStateHandle
 ) : SEAViewModel<PlayerViewModel.State, PlayerViewModel.Event, PlayerViewModel.Action>(
@@ -39,7 +30,7 @@ class PlayerViewModel @Inject constructor(
         takeAction(Action.Load)
     }
 
-    override fun initialState() = State(episode = null, isLoading = true)
+    override fun initialState() = State(currentlyPlaying = null, isLoading = true)
 
     override suspend fun handleAction(action: Action) {
         with(action) {
@@ -47,7 +38,9 @@ class PlayerViewModel @Inject constructor(
                 is Action.Load -> handleLoad()
                 is Action.Pause -> handlePause()
                 is Action.Play -> handlePlay()
-                is Action.Seek -> handleSeek()
+                is Action.Seek -> handleSeekTo(seconds.toInt())
+                Action.Rewind10Seconds -> currentProgress()?.let { handleSeekTo(it - 10) }
+                Action.Skip10Seconds -> currentProgress()?.let { handleSeekTo(it + 10) }
             }
         }
     }
@@ -55,35 +48,33 @@ class PlayerViewModel @Inject constructor(
     private suspend fun Action.Pause.handlePause() {
         updateState {
             it.copy(
-                episode = it.episode?.let { currentEpisode ->
-                    currentEpisode.copy(
-                        episodePlayback = EpisodePlayback.Paused(
-                            duration = currentEpisode.episodePlayback.duration,
-                            progress = currentEpisode.episodePlayback.progress
-                        )
+                currentlyPlaying = it.currentlyPlaying?.copyWithPlayback {
+                    EpisodePlayback.Paused(
+                        duration = it.duration,
+                        progress = it.progress
                     )
-                }
+                },
             )
         }
 
         playerStateRepository.pauseEpisode()
     }
 
-    private suspend fun Action.Seek.handleSeek() {
+
+    private suspend fun Action.handleSeekTo(seconds: Int) {
+
         updateState {
             it.copy(
-                episode = it.episode?.let { currentEpisode ->
-                    currentEpisode.copy(
-                        episodePlayback = EpisodePlayback.Paused(
-                            duration = currentEpisode.episodePlayback.duration,
-                            progress = seconds.toInt().toDuration(SECONDS)
-                        )
+                currentlyPlaying = it.currentlyPlaying?.copyWithPlayback {
+                    EpisodePlayback.Paused(
+                        duration = it.duration,
+                        progress = seconds.toDuration(SECONDS)
                     )
-                }
+                },
             )
         }
 
-        playerStateRepository.seekTo(seconds.toInt())
+        playerStateRepository.seekTo(seconds)
     }
 
     private suspend fun Action.Play.handlePlay() {
@@ -94,16 +85,13 @@ class PlayerViewModel @Inject constructor(
 
         updateState {
             it.copy(
-                episode = it.episode?.let { currentEpisode ->
-                    currentEpisode.copy(
-                        episodePlayback = EpisodePlayback.Playing(
-                            duration = currentEpisode.episodePlayback.duration,
-                            progress = currentEpisode.episodePlayback.progress
-                        )
+                currentlyPlaying = it.currentlyPlaying?.copyWithPlayback {
+                    EpisodePlayback.Playing(
+                        duration = it.duration,
+                        progress = it.progress
                     )
-                }
+                },
             )
-
         }
 
         playerStateRepository.playEpisode(id)
@@ -115,40 +103,25 @@ class PlayerViewModel @Inject constructor(
             return
         }
 
-        combine(
-            getDisplayableEpisode(id).map { it.logOnFailure().getOrNull() },
-            getCurrentlyPlayingEpisode()
-        ) { displayableEpisode, currentlyPlayingEpisode ->
-
-            when {
-                currentlyPlayingEpisode == null && displayableEpisode == null -> { sendEvent(Event.LoadFailed) }
-                displayableEpisode != null && currentlyPlayingEpisode == null -> {
-                    updateState {
-                        it.copy(
-                            episode = CurrentlyPlayingEpisode(
-                                episode = displayableEpisode,
-                                episodePlayback = EpisodePlayback.None()
-                            ),
-                            isLoading = false
-                        )
-                    }
-                }
-                else -> {
-                    updateState {
-                        it.copy(
-                            episode = currentlyPlayingEpisode,
-                            isLoading = false
-                        )
-                    }
+        getCurrentlyPlaying().collectIn(viewModelScope) { currentlyPlaying ->
+            if (currentlyPlaying == null) {
+                sendEvent(Event.LoadFailed)
+            } else {
+                updateState {
+                    it.copy(
+                        currentlyPlaying = currentlyPlaying,
+                        isLoading = false
+                    )
                 }
             }
-
-        }.launchIn(viewModelScope)
+        }
     }
 
+    private fun currentProgress() =
+        state.currentlyPlaying?.episode?.playback?.progress?.inWholeSeconds?.toInt()
 
     data class State(
-        val episode: CurrentlyPlayingEpisode?,
+        val currentlyPlaying: CurrentlyPlaying?,
         val isLoading: Boolean
     )
 
@@ -160,6 +133,8 @@ class PlayerViewModel @Inject constructor(
         object Load : Action()
         object Play : Action()
         object Pause : Action()
+        object Skip10Seconds : Action()
+        object Rewind10Seconds : Action()
         data class Seek(val seconds: Float) : Action()
     }
 }

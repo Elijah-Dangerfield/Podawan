@@ -36,10 +36,13 @@ import androidx.compose.material.icons.filled.QuestionMark
 import androidx.compose.material.icons.filled.Replay10
 import androidx.compose.material.icons.filled.Search
 import androidx.compose.material.icons.filled.Videocam
+import androidx.compose.material.icons.filled.Visibility
+import androidx.compose.material.icons.filled.VisibilityOff
 import androidx.compose.material.icons.outlined.ArrowDownward
 import androidx.compose.material.icons.outlined.Bookmarks
 import androidx.compose.material.icons.outlined.Home
 import androidx.compose.material.icons.outlined.LibraryMusic
+import androidx.compose.material.icons.outlined.Queue
 import androidx.compose.material.icons.outlined.Search
 import androidx.compose.material.icons.outlined.Timer
 import androidx.compose.material.icons.outlined.Upcoming
@@ -269,6 +272,21 @@ sealed class PodawanIcon(
         imageVector = Icons.Outlined.Timer,
         contentDescription = contentDescription
     )
+    class Queue(contentDescription: String?) : PodawanIcon(
+        imageVector = Icons.Outlined.Queue,
+        contentDescription = contentDescription
+    )
+
+    class Visible(contentDescription: String?) : PodawanIcon(
+        imageVector = Icons.Default.Visibility,
+        contentDescription = contentDescription
+    )
+
+    class NotVisible(contentDescription: String?) : PodawanIcon(
+        imageVector = Icons.Default.VisibilityOff,
+        contentDescription = contentDescription
+    )
+
 }
 
 private val allIcons = listOf(
@@ -318,7 +336,9 @@ private val allIcons = listOf(
     PodawanIcon.FastForward10Seconds(""),
     PodawanIcon.Rewind10Seconds(""),
     PodawanIcon.Timer(""),
-
+    PodawanIcon.Queue(""),
+    PodawanIcon.Visible(""),
+    PodawanIcon.NotVisible(""),
     )
 
 @Preview(device = "spec:id=reference_phone,shape=Normal,width=1000,height=1800,unit=dp,dpi=200")

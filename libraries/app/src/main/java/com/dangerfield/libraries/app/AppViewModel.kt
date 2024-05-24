@@ -2,7 +2,6 @@ package com.dangerfield.libraries.app
 
 import android.app.Activity
 import androidx.compose.runtime.Immutable
-import androidx.compose.runtime.Stable
 import androidx.lifecycle.SavedStateHandle
 import androidx.lifecycle.viewModelScope
 import com.dangerfield.features.consent.ConsentStatus
@@ -14,6 +13,10 @@ import com.dangerfield.features.inAppMessaging.InstallInAppUpdate
 import com.dangerfield.features.inAppMessaging.StartInAppUpdate
 import com.dangerfield.features.inAppMessaging.UpdateStatus
 import com.dangerfield.features.playback.PlayerStateRepository
+import com.dangerfield.libraries.app.AppViewModel.Action
+import com.dangerfield.libraries.app.AppViewModel.State
+import com.dangerfield.libraries.app.startup.EnsureAppConfigLoaded
+import com.dangerfield.libraries.app.startup.IsInMaintenanceMode
 import com.dangerfield.libraries.config.AppConfigFlow
 import com.dangerfield.libraries.coreflowroutines.SEAViewModel
 import com.dangerfield.libraries.coreflowroutines.collectIn
@@ -22,18 +25,12 @@ import com.dangerfield.libraries.dictionary.GetDeviceLanguageSupportLevel
 import com.dangerfield.libraries.dictionary.LanguageSupportLevel
 import com.dangerfield.libraries.dictionary.LanguageSupportMessageShown
 import com.dangerfield.libraries.dictionary.ShouldShowLanguageSupportMessage
+import com.dangerfield.libraries.podcast.CurrentlyPlaying
+import com.dangerfield.libraries.podcast.EpisodePlayback
+import com.dangerfield.libraries.podcast.GetCurrentlyPlaying
 import com.dangerfield.libraries.session.EnsureSessionLoaded
 import com.dangerfield.libraries.session.SessionFlow
 import com.dangerfield.libraries.session.UserRepository
-import com.dangerfield.libraries.app.AppViewModel.Action
-import com.dangerfield.libraries.app.AppViewModel.State
-import com.dangerfield.libraries.app.startup.EnsureAppConfigLoaded
-import com.dangerfield.libraries.app.startup.IsInMaintenanceMode
-import com.dangerfield.libraries.podcast.CurrentlyPlayingEpisode
-import com.dangerfield.libraries.podcast.DisplayableEpisode
-import com.dangerfield.libraries.podcast.EpisodePlayback
-import com.dangerfield.libraries.podcast.GetCurrentlyPlayingEpisode
-import com.dangerfield.libraries.podcast.PodcastRepository
 import dagger.hilt.android.lifecycle.HiltViewModel
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.Deferred
@@ -60,7 +57,7 @@ class AppViewModel @Inject constructor(
     private val isAppUpdateRequired: IsAppUpdateRequired,
     private val consentStatusRepository: ConsentStatusRepository,
     private val sessionFlow: SessionFlow,
-    private val getCurrentlyPlayingEpisode: GetCurrentlyPlayingEpisode,
+    private val getCurrentlyPlaying: GetCurrentlyPlaying,
     private val getLanguageSupportLevel: GetDeviceLanguageSupportLevel,
     private val shouldShowLanguageSupportMessage: ShouldShowLanguageSupportMessage,
     private val languageSupportMessageShown: LanguageSupportMessageShown,
@@ -125,11 +122,11 @@ class AppViewModel @Inject constructor(
         takeAction(Action.CompleteInAppUpdate)
     }
 
-    fun pauseEpisode(episode: CurrentlyPlayingEpisode) {
+    fun pauseEpisode(episode: CurrentlyPlaying) {
         takeAction(Action.PauseEpisode(episode))
     }
 
-    fun playEpisode(episode: CurrentlyPlayingEpisode) {
+    fun playEpisode(episode: CurrentlyPlaying) {
         takeAction(Action.PlayEpisode(episode))
     }
 
@@ -162,17 +159,31 @@ class AppViewModel @Inject constructor(
         viewModelScope.launch {
             consentStatusRepository.getStatusFlow(activity)
                 .collectLatest { status ->
-                    updateState { it.copy(isConsentNeeded = status in listOf(ConsentStatus.ConsentNeeded, ConsentStatus.ConsentDenied)) }
+                    updateState {
+                        it.copy(
+                            isConsentNeeded = status in listOf(
+                                ConsentStatus.ConsentNeeded,
+                                ConsentStatus.ConsentDenied
+                            )
+                        )
+                    }
                 }
         }
     }
 
     private suspend fun Action.PlayEpisode.handlePlay() {
-        updateState {state ->
+        updateState { state ->
             state.copy(
-                currentlyPlayingEpisode = state.currentlyPlayingEpisode?.copy(
-                    episodePlayback = EpisodePlayback.Playing()
-                )
+                currentlyPlayingEpisode = state.currentlyPlayingEpisode?.episode?.let {
+                    CurrentlyPlaying(
+                        it.copy(
+                            playback = EpisodePlayback.Playing(
+                                progress = it.playback.progress,
+                                duration = it.playback.duration
+                            )
+                        )
+                    )
+                }
             )
         }
 
@@ -180,11 +191,18 @@ class AppViewModel @Inject constructor(
     }
 
     private suspend fun Action.PauseEpisode.handlePause() {
-        updateState {state ->
+        updateState { state ->
             state.copy(
-                currentlyPlayingEpisode = state.currentlyPlayingEpisode?.copy(
-                    episodePlayback = EpisodePlayback.Paused()
-                )
+                currentlyPlayingEpisode = state.currentlyPlayingEpisode?.episode?.let {
+                    CurrentlyPlaying(
+                        it.copy(
+                            playback = EpisodePlayback.Paused(
+                                progress = it.playback.progress,
+                                duration = it.playback.duration
+                            )
+                        )
+                    )
+                }
             )
         }
 
@@ -219,12 +237,12 @@ class AppViewModel @Inject constructor(
                 getLanguageSupport()
                 listenForConfigUpdates()
                 checkForAppUpdate()
-                listenForCurrentlyPlayingEpisodeUpdates()
+                listenForCurrentlyPlayingUpdates()
             }
     }
 
-    private fun Action.listenForCurrentlyPlayingEpisodeUpdates() {
-        getCurrentlyPlayingEpisode().collectIn(viewModelScope) { episode ->
+    private fun Action.listenForCurrentlyPlayingUpdates() {
+        getCurrentlyPlaying().collectIn(viewModelScope) { episode ->
             updateState {
                 it.copy(currentlyPlayingEpisode = episode)
             }
@@ -337,8 +355,8 @@ class AppViewModel @Inject constructor(
 
     sealed class Action {
         data object LoadApp : Action()
-        data class PlayEpisode(val episode: CurrentlyPlayingEpisode): Action()
-        data class PauseEpisode(val episode: CurrentlyPlayingEpisode): Action()
+        data class PlayEpisode(val episode: CurrentlyPlaying) : Action()
+        data class PauseEpisode(val episode: CurrentlyPlaying) : Action()
         data class LoadConsentStatus(val activity: Activity) : Action()
         data class StartInAppUpdate(
             val activity: Activity,
@@ -354,7 +372,7 @@ class AppViewModel @Inject constructor(
     sealed class Event {
         class UpdateDownloaded(val status: UpdateStatus.Downloaded) : Event()
         class UpdateFailed(val status: UpdateStatus.Failed) : Event()
-        class UpdateAvailable(val status: UpdateStatus.UpdateAvailable): Event()
+        class UpdateAvailable(val status: UpdateStatus.UpdateAvailable) : Event()
         class LanguageBarrierDetected(val message: LanguageSupportLevelMessage) : Event()
     }
 
@@ -367,7 +385,7 @@ class AppViewModel @Inject constructor(
         val isInMaintenanceMode: Boolean,
         val inAppUpdateStatus: UpdateStatus?,
         val isLoggedIn: Boolean,
-        val currentlyPlayingEpisode: CurrentlyPlayingEpisode?,
+        val currentlyPlayingEpisode: CurrentlyPlaying?,
         val languageSupportLevelMessage: LanguageSupportLevelMessage?,
     )
 

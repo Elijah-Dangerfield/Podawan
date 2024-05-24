@@ -51,20 +51,13 @@ fun Surface(
     onClick: () -> Unit,
     bounceScale: Float = 0.95f,
     interactionSource: MutableInteractionSource = remember { MutableInteractionSource() },
-    indication: Indication? = rememberRipple(color = contentColor.color),
+    indication: Indication? = rememberRipple(bounded = true, color = contentColor.color),
     role: Role? = null,
     contentPadding: PaddingValues = PaddingValues(0.dp),
     content: @Composable () -> Unit,
 ) {
     Box(
         modifier = modifier
-            .bounceClick(
-                enabled = enabled,
-                scaleDown = bounceScale,
-                indication = indication,
-                mutableInteractionSource = interactionSource,
-                onClick = onClick,
-            )
             .thenIfNotNull(role) {
                 semantics {
                     this.role = it
@@ -77,6 +70,13 @@ fun Surface(
                 clip = true,
                 alpha = alpha,
                 border = border
+            )
+            .bounceClick(
+                enabled = enabled,
+                scaleDown = bounceScale,
+                indication = indication,
+                mutableInteractionSource = interactionSource,
+                onClick = onClick,
             )
             .padding(contentPadding),
         propagateMinConstraints = true

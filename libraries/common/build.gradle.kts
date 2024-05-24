@@ -7,6 +7,7 @@ plugins {
 podawan {
     moshi()
     firebase()
+    compose()
 }
 
 dependencies {

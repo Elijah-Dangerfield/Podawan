@@ -16,7 +16,7 @@
           </compositeBuild>
         </compositeConfiguration>
         <option name="externalProjectPath" value="$PROJECT_DIR$" />
-        <option name="gradleJvm" value="#GRADLE_LOCAL_JAVA_HOME" />
+        <option name="gradleJvm" value="zulu-21" />
         <option name="modules">
           <set>
             <option value="$PROJECT_DIR$" />
@@ -45,6 +45,9 @@
             <option value="$PROJECT_DIR$/features/library/internal" />
             <option value="$PROJECT_DIR$/features/playback" />
             <option value="$PROJECT_DIR$/features/playback/internal" />
+            <option value="$PROJECT_DIR$/features/playlist" />
+            <option value="$PROJECT_DIR$/features/playlist/internal" />
+            <option value="$PROJECT_DIR$/features/playlist/storage" />
             <option value="$PROJECT_DIR$/features/qa" />
             <option value="$PROJECT_DIR$/features/qa/internal" />
             <option value="$PROJECT_DIR$/features/search" />

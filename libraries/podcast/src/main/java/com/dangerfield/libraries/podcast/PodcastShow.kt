@@ -1,5 +1,7 @@
 package com.dangerfield.libraries.podcast
 
+import kotlin.time.Duration
+
 
 data class PodcastShow(
     val rssFeedLink: String,
@@ -33,10 +35,13 @@ data class Episode(
     val video: String?,
     val sourceName: String?,
     val sourceUrl: String?,
+    val showRssFeedLink: String,
     val categories: List<String>,
     val itunesItemData: ItunesEpisodeData?,
     val commentsUrl: String?,
-    val showHeroImage: HeroImage?
+    val showHeroImage: HeroImage?,
+    val resumePoint: Duration,
+    val totalDuration: Duration?
 )
 
 data class ItunesEpisodeData(

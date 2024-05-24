@@ -18,6 +18,12 @@ interface PodcastEpisodeDao {
     @Update
     suspend fun updateEpisode(episode: PodcastEpisodeEntity)
 
+    @Query("UPDATE podcast_episodes SET resumePointSeconds = :resumePointSeconds WHERE guid = :id")
+    suspend fun updateResumePoint(id: String, resumePointSeconds: Int)
+
+    @Query("UPDATE podcast_episodes SET totalDurationSeconds = :durationSeconds WHERE guid = :id")
+    suspend fun updateDuration(id: String, durationSeconds: Int)
+
     @Delete
     suspend fun deleteEpisode(episode: PodcastEpisodeEntity)
 

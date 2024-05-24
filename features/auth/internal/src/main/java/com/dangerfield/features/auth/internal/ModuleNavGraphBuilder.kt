@@ -1,6 +1,9 @@
 package com.dangerfield.features.auth.internal
 
+import androidx.compose.runtime.derivedStateOf
 import androidx.compose.runtime.getValue
+import androidx.compose.runtime.remember
+import androidx.compose.ui.focus.FocusRequester
 import androidx.hilt.navigation.compose.hiltViewModel
 import androidx.lifecycle.compose.collectAsStateWithLifecycle
 import androidx.navigation.NavGraphBuilder
@@ -41,12 +44,12 @@ class ModuleNavGraphBuilder @Inject constructor() : GlobalNavBuilder {
             LoginScreen(
                 emailFieldState = state.emailFieldState,
                 passwordFieldState = state.passwordFieldState,
-                isFormValid = state.isFormValid,
+                isFormValid = state.isFormValid ,
                 onEmailChanged = { viewmodel.takeAction(UpdateEmail(it)) },
                 onPasswordChanged = { viewmodel.takeAction(UpdatePassword(it)) },
                 onLoginClicked = { viewmodel.takeAction(Login) },
                 isLoading = state.isLoading,
-                onSignupClicked = { router.navigateToSignup() }
+                onSignupClicked = router::navigateToSignup
             )
         }
 
@@ -79,6 +82,7 @@ class ModuleNavGraphBuilder @Inject constructor() : GlobalNavBuilder {
             route = authenticationError.navRoute,
             arguments = authenticationError.navArguments
         ) {
+
             val errorClass = it.navArgument<String>(errorClassArgument)
 
             AuthenticationFailedDialog(
