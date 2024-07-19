@@ -1,7 +1,6 @@
 package com.podawan.plugin
 
-import com.android.build.api.dsl.ApplicationExtension
-import com.podawan.extension.ApplicationExtension
+import com.podawan.extension.AppExtension
 import com.spyfall.podawan.util.BuildEnvironment
 import com.podawan.util.SharedConstants
 import com.spyfall.podawan.util.buildConfigField
@@ -30,7 +29,7 @@ class AndroidApplicationConventionPlugin : Plugin<Project> {
                 apply("org.jetbrains.kotlin.android")
             }
 
-            extensions.create("podawan", ApplicationExtension::class.java)
+            extensions.create("podawan", AppExtension::class.java)
 
             extensions.configure<com.android.build.api.dsl.ApplicationExtension> {
 

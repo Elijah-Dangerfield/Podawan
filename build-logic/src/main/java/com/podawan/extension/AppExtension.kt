@@ -26,7 +26,7 @@ AndroidLibrary
 JavaLibrary
  */
 @com.podawan.extension.PodawanExtensionDsl
-abstract class ApplicationExtension {
+abstract class AppExtension {
     @get:Inject
     internal abstract val project: Project
 
