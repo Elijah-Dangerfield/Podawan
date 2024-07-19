@@ -1,28 +1,10 @@
-# Welcome to Odd One Out!
-
-*A game of deception, misdirection, and deduction.*
-
-<img src="https://github.com/podawangame/Podawan/assets/45648517/a9050c7c-9348-4f6e-9d0c-1233a2468caa" alt="drawing" width="1000"/>
-
-[Click here to download](https://play.google.com/store/apps/details?id=com.dangerfield.spyfall.free)
-
+# Welcome to Podawan!
 
 ## Description
-Odd One Out is a multiplayer game in which one person is assigned to be the odd one out while all other players are assigned a role at a location. The Odd one Out's objective is to figure out the location through a series of well-worded questions while not giving away that he or she is the Odd One Out. Meanwhile, everyone else's objective is to figure out the Odd One Out. All players take turns asking questions and having fun!
+This project is an exploration into white labeled apps. In this codebase I have 3 different applications
+for 3 different podcasts being built from the same codebase. 
 
-
-
-## Rules
-
-- As the game starts, every player gets the secret word.
-<p align="center">
-<img src="https://github.com/podawangame/Podawan/assets/45648517/b0c05918-a33f-41ac-8dc5-b52e63afd541" alt="drawing" style="height:150px;"/>
-</p>
-
-- One player doesn’t get to see the secret location. They are the Odd One Out.
-- Everyone takes turns picking someone to ask a question to about the secret location and their role there.
-- The odd one out is trying to figure out the location without revealing that they are the odd one out.
-- The players are trying to figure out who the odd one out is without revealing the secret location.
+The goal is to have a single codebase that can be used to build multiple apps with different branding and features.
 
 # How to build
 
@@ -34,11 +16,10 @@ The build will fail unless:
 
 Please reach out if youd like to receive access to the secret files to build the app. 
 
-
 ## Architecture
 
 The architecture of this application aims to follow recommendations outlined in the [Guide To App Architecture](https://developer.android.com/topic/architecture) by: 
-- ensuring unidirectional dataflow via [SEAViewModel](https://github.com/podawangame/Podawan/blob/main/libraries/flowroutines/src/main/java/com.dangerfield.libraries.coreflowroutines/SEAViewModel.kt)
+- ensuring unidirectional dataflow via [SEAViewModel](https://github.com/Elijah-Dangerfield/Podawan/blob/main/libraries/flowroutines/src/main/java/com.dangerfield.libraries.coreflowroutines/SEAViewModel.kt)
 - maintaining an immutable state
 - maintaining a clear separation of concerns between components
 - using lifecycle-aware state collection
@@ -79,6 +60,6 @@ On every PR we check:
 - **style** - static code analysis that keeps that smelly code out
 - **test** - runs all tests to make sure things are smoother than a fresh jar of skippy
 
-The workflows for these can be found [here](https://github.com/podawangame/Podawan/blob/main/.github/workflows)
+The workflows for these can be found [here](https://github.com/Elijah-Dangerfield/Podawan/blob/main/.github/workflows)
 
 
