@@ -1,10 +1,14 @@
 # Welcome to Podawan!
 
+<img src="https://github.com/user-attachments/assets/a198b47b-17b9-4dd2-a4f6-ff2fce004466" width="400"/>
+
+
 ## Description
 This project is an exploration into white labeled apps. In this codebase I have 3 different applications
 for 3 different podcasts being built from the same codebase. 
 
 The goal is to have a single codebase that can be used to build multiple apps with different branding and features.
+
 
 # How to build
 
