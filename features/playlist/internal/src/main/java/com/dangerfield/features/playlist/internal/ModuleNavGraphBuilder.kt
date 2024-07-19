@@ -34,6 +34,7 @@ import javax.inject.Inject
 @AutoBindIntoSet
 class ModuleNavGraphBuilder @Inject constructor() : LibraryTabNavBuilder {
 
+    @Suppress("LongMethod")
     override fun NavGraphBuilder.addDestinations(router: Router) {
 
         registerEpisodeDetails(

@@ -10,9 +10,6 @@ import androidx.media3.session.MediaSession
 import androidx.media3.session.MediaSessionService
 import com.dangerfield.features.playback.internal.notification.MediaNotificationManager
 import dagger.hilt.android.AndroidEntryPoint
-import kotlinx.coroutines.CoroutineScope
-import kotlinx.coroutines.Dispatchers
-import kotlinx.coroutines.SupervisorJob
 import javax.inject.Inject
 
 /**
@@ -29,8 +26,6 @@ class MediaPlayerService : MediaSessionService() {
 
     @Inject
     lateinit var notificationManager: MediaNotificationManager
-
-    private val serviceScope: CoroutineScope = CoroutineScope(SupervisorJob() + Dispatchers.Main)
 
     @RequiresApi(Build.VERSION_CODES.O)
     @UnstableApi

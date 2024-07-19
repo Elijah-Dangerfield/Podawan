@@ -50,6 +50,7 @@ import java.util.concurrent.atomic.AtomicBoolean
 import javax.inject.Inject
 import kotlin.time.Duration.Companion.seconds
 
+@Suppress("LongParameterList")
 @HiltViewModel
 class AppViewModel @Inject constructor(
     private val ensureAppConfigLoaded: EnsureAppConfigLoaded,

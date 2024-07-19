@@ -93,10 +93,11 @@ data class Location(
     val roles: List<String>
 )
 
+@Suppress("TooGenericExceptionThrown")
 fun checkArgs() {
     val isHelpCall = args.isNotEmpty() && (args[0] == "-h" || args[0].contains("help"))
     if (isHelpCall) {
-        @kotlin.Suppress("MaxLineLength")
+        @Suppress("MaxLineLength")
         printRed(
             """
         This script takes in a json file of packs and uploads it to the debug db as a new pack 
@@ -104,7 +105,6 @@ fun checkArgs() {
         """.trimIndent()
         )
 
-        @kotlin.Suppress("TooGenericExceptionThrown")
         throw Exception(if (isHelpCall) "See Message Above" else "MUST PROVIDE ALL ARGUMENTS")
     }
 }

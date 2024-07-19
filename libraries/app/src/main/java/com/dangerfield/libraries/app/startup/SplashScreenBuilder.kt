@@ -74,28 +74,6 @@ class SplashScreenBuilder @Inject constructor(
     }.onFailure { Timber.e("SplashScreenBuilder: Failed to build splash screen. Exception caught: $it")}
 
     @Suppress("MagicNumber", "TooGenericExceptionCaught")
-    private fun SplashScreenViewProvider.startIconRotation(): ValueAnimator? = try {
-        val animator = ValueAnimator.ofFloat(0f, 360f)
-        animator.addUpdateListener { animation ->
-            try {
-                if (iconView != null) {
-                    iconView.rotation = animation.animatedValue as Float
-                }
-            } catch (t: Throwable) {
-                Timber.e("SplashScreenBuilder: icon view was null. Exception caught: $t")
-            }
-        }
-        animator.duration = 1000 // duration for one rotation
-        animator.repeatCount = ValueAnimator.INFINITE
-        animator.repeatMode = ValueAnimator.RESTART
-        animator.start()
-        animator
-    } catch (t: Throwable) {
-        Timber.e("SplashScreenBuilder: Failed to start icon rotation. Exception caught: $t")
-        null
-    }
-
-    @Suppress("MagicNumber", "TooGenericExceptionCaught")
     private fun SplashScreenViewProvider.startIconPulse(): ValueAnimator? = try {
         val animator = ValueAnimator.ofFloat(0.8f, 1.2f) // Scale values from 0.8x to 1.2x
         animator.addUpdateListener { animation ->

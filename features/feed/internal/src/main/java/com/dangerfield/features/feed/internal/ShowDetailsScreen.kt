@@ -140,6 +140,7 @@ fun ShowDetailsScreen(
     }
 }
 
+@Suppress("MaxLineLength")
 @Preview
 @Composable
 private fun ShowDetailsScreenPreview() {

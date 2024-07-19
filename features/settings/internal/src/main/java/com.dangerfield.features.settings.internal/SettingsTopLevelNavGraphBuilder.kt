@@ -11,8 +11,6 @@ import com.dangerfield.features.blockingerror.navigateToGeneralErrorDialog
 import com.dangerfield.features.consent.OpenGDRPConsentForm
 import com.dangerfield.features.consent.ShouldShowGDRPSettingsOption
 import com.dangerfield.features.qa.navigateToQa
-import com.dangerfield.features.settings.internal.referral.ReferralViewModel.Action.Redeem
-import com.dangerfield.features.settings.internal.referral.ReferralViewModel.Action.UpdateReferralCodeField
 import com.dangerfield.features.settings.internal.contactus.ContactUsScreen
 import com.dangerfield.features.settings.internal.contactus.ContactUsViewModel
 import com.dangerfield.features.settings.internal.contactus.ContactUsViewModel.Action.DismissSomethingWentWrong
@@ -24,13 +22,14 @@ import com.dangerfield.features.settings.internal.contactus.ContactUsViewModel.A
 import com.dangerfield.features.settings.internal.referral.IsReferralFeatureEnabled
 import com.dangerfield.features.settings.internal.referral.ReferralScreen
 import com.dangerfield.features.settings.internal.referral.ReferralViewModel
+import com.dangerfield.features.settings.internal.referral.ReferralViewModel.Action.Redeem
+import com.dangerfield.features.settings.internal.referral.ReferralViewModel.Action.UpdateReferralCodeField
 import com.dangerfield.features.settings.settingsNavigationRoute
 import com.dangerfield.libraries.analytics.PageLogEffect
 import com.dangerfield.libraries.analytics.PageType
 import com.dangerfield.libraries.dictionary.Dictionary
 import com.dangerfield.libraries.navigation.GlobalNavBuilder
 import com.dangerfield.libraries.navigation.Router
-import com.dangerfield.libraries.session.SessionFlow
 import com.dangerfield.oddoneoout.features.settings.internal.R
 import dagger.hilt.android.scopes.ActivityScoped
 import kotlinx.coroutines.launch
@@ -44,7 +43,6 @@ import javax.inject.Inject
 @ActivityScoped
 class SettingsTopLevelNavGraphBuilder @Inject constructor(
     private val buildInfo: BuildInfo,
-    private val sessionFlow: SessionFlow,
     private val dictionary: Dictionary,
     private val shouldShowGDRPSettingsOption: ShouldShowGDRPSettingsOption,
     private val openGDRPConsentForm: OpenGDRPConsentForm,
