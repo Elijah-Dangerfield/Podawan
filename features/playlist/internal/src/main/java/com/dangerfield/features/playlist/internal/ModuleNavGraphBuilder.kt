@@ -5,47 +5,41 @@ import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
 import androidx.compose.runtime.setValue
-import androidx.compose.ui.window.Dialog
 import androidx.hilt.navigation.compose.hiltViewModel
 import androidx.lifecycle.compose.collectAsStateWithLifecycle
 import androidx.navigation.NavGraphBuilder
 import androidx.navigation.compose.composable
-import androidx.navigation.navArgument
 import com.dangerfield.features.blockingerror.navigateToGeneralErrorDialog
-import com.dangerfield.features.feed.toEpisodeDetails
-import com.dangerfield.features.playlist.addToPlaylistRoute
+import com.dangerfield.features.episodeDetails.registerEpisodeDetails
 import com.dangerfield.features.playlist.editPlaylistRoute
-import com.dangerfield.features.playlist.internal.AddToPlaylistViewModel.Action.Save
-import com.dangerfield.features.playlist.internal.AddToPlaylistViewModel.Action.UpdateChecked
 import com.dangerfield.features.playlist.navigateToAddToPlaylist
 import com.dangerfield.features.playlist.navigateToEditPlaylist
-import com.dangerfield.features.playlist.navigateToPlaylist
 import com.dangerfield.features.playlist.newPlaylistRoute
 import com.dangerfield.features.playlist.playlistIdArgument
 import com.dangerfield.features.playlist.playlistRoute
 import com.dangerfield.libraries.coreflowroutines.ObserveWithLifecycle
-import se.ansman.dagger.auto.AutoBindIntoSet
-import com.dangerfield.libraries.navigation.GlobalNavBuilder
 import com.dangerfield.libraries.navigation.LibraryTabNavBuilder
 import com.dangerfield.libraries.navigation.Router
-import com.dangerfield.libraries.navigation.bottomSheet
 import com.dangerfield.libraries.navigation.dialog
 import com.dangerfield.libraries.navigation.navArgument
 import com.dangerfield.libraries.navigation.screen
 import com.dangerfield.libraries.ui.showDeveloperMessage
 import com.dangerfield.libraries.ui.showMessage
 import com.dangerfield.ui.components.FullScreenLoader
-import com.dangerfield.ui.components.Screen
-import com.dangerfield.ui.components.dialog.bottomsheet.BottomSheet
 import com.dangerfield.ui.components.dialog.bottomsheet.rememberBottomSheetState
-import podawan.core.doNothing
 import podawan.core.showDebugSnack
+import se.ansman.dagger.auto.AutoBindIntoSet
 import javax.inject.Inject
 
 @AutoBindIntoSet
 class ModuleNavGraphBuilder @Inject constructor() : LibraryTabNavBuilder {
 
     override fun NavGraphBuilder.addDestinations(router: Router) {
+
+        registerEpisodeDetails(
+            router = router,
+            route = playlistEpisodeDetailsRoute
+        )
 
         dialog(
             route = newPlaylistRoute.navRoute,
@@ -83,6 +77,8 @@ class ModuleNavGraphBuilder @Inject constructor() : LibraryTabNavBuilder {
             )
         }
 
+
+
         composable(
             route = playlistRoute.navRoute,
             arguments = playlistRoute.navArguments
@@ -119,7 +115,7 @@ class ModuleNavGraphBuilder @Inject constructor() : LibraryTabNavBuilder {
                         viewModel.takeAction(PlaylistViewModel.Action.DownloadEpisode(it))
                     },
                     onClickEpisode = {
-                        router.toEpisodeDetails(it.id)
+                        router.toPlaylistEpisodeDetails(it.id)
                     },
                     onCurrentlyPlayingExitView = {
                         viewModel.takeAction(PlaylistViewModel.Action.CurrentlyPlayingNotShowing)

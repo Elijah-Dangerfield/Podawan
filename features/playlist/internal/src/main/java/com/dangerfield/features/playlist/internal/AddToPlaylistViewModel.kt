@@ -4,11 +4,11 @@ import androidx.lifecycle.SavedStateHandle
 import androidx.lifecycle.viewModelScope
 import com.dangerfield.features.playlist.Playlist
 import com.dangerfield.features.playlist.PlaylistRepository
-import com.dangerfield.features.playlist.episodeIdArgument
 import com.dangerfield.features.playlist.internal.AddToPlaylistViewModel.Action
 import com.dangerfield.features.playlist.internal.AddToPlaylistViewModel.Event
 import com.dangerfield.features.playlist.internal.AddToPlaylistViewModel.State
 import com.dangerfield.libraries.coreflowroutines.SEAViewModel
+import com.dangerfield.libraries.navigation.episodeIdArgument
 import com.dangerfield.libraries.navigation.navArgument
 import com.dangerfield.libraries.ui.Selectable
 import dagger.hilt.android.lifecycle.HiltViewModel

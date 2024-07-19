@@ -1,4 +1,4 @@
-package com.dangerfield.features.feed.internal
+package com.dangerfield.features.episodeDetails
 
 import androidx.compose.foundation.border
 import androidx.compose.foundation.layout.Column
@@ -19,7 +19,6 @@ import com.dangerfield.libraries.podcast.DisplayableEpisode
 import com.dangerfield.libraries.podcast.EpisodeImage
 import com.dangerfield.libraries.podcast.EpisodePlayback
 import com.dangerfield.libraries.podcast.isLoading
-import com.dangerfield.libraries.podcast.isPaused
 import com.dangerfield.libraries.podcast.isPlaying
 import com.dangerfield.libraries.ui.Dimension
 import com.dangerfield.libraries.ui.HorizontalSpacerD200

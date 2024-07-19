@@ -64,5 +64,4 @@ class GlobalNavGraphBuilder @Inject constructor() : GlobalNavBuilder {
             }
         }
     }
-
 }

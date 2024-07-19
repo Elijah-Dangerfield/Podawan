@@ -1,21 +1,19 @@
 package com.dangerfield.features.feed
 
-import androidx.navigation.NavType
-import androidx.navigation.navArgument
 import com.dangerfield.libraries.navigation.NavAnimType
 import com.dangerfield.libraries.navigation.Router
+import com.dangerfield.libraries.navigation.episodeIdArgument
 import com.dangerfield.libraries.navigation.fill
 import com.dangerfield.libraries.navigation.route
 
 
-fun Router.toEpisodeDetails(id: String) {
+fun Router.toFeedEpisodeDetails(id: String) {
     navigate(
-        episodeDetailsRoute.fill {
+        feedEpisodeDetails.fill {
             arg(episodeIdArgument, id)
         }
     )
 }
-
 
 fun Router.toShowDetails() {
     navigate(
@@ -29,11 +27,9 @@ val feedRoute = route("feed") {
     animTypeAlways(NavAnimType.None)
 }
 
-val episodeIdArgument = navArgument("episodeId") {
-    type = NavType.StringType
-}
 
-val episodeDetailsRoute = route("episodeDetails") {
+
+val feedEpisodeDetails = route("episodeDetails") {
      argument(episodeIdArgument)
 }
 

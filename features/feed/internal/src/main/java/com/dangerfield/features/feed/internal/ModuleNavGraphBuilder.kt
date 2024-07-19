@@ -6,9 +6,11 @@ import androidx.lifecycle.compose.collectAsStateWithLifecycle
 import androidx.navigation.NavGraphBuilder
 import androidx.navigation.compose.composable
 import com.dangerfield.features.blockingerror.navigateToGeneralErrorDialog
+import com.dangerfield.features.episodeDetails.registerEpisodeDetails
+import com.dangerfield.features.feed.feedEpisodeDetails
 import com.dangerfield.features.feed.feedRoute
 import com.dangerfield.features.feed.showDetailsRoute
-import com.dangerfield.features.feed.toEpisodeDetails
+import com.dangerfield.features.feed.toFeedEpisodeDetails
 import com.dangerfield.features.feed.toShowDetails
 import com.dangerfield.features.playlist.navigateToAddToPlaylist
 import com.dangerfield.libraries.coreflowroutines.ObserveWithLifecycle
@@ -24,6 +26,12 @@ import javax.inject.Inject
 class ModuleNavGraphBuilder @Inject constructor() : HomeTabNavBuilder {
 
     override fun NavGraphBuilder.addDestinations(router: Router) {
+
+        registerEpisodeDetails(
+            router = router,
+            route = feedEpisodeDetails
+        )
+
         composable(
             route = feedRoute.navRoute,
             arguments = feedRoute.navArguments
@@ -60,7 +68,7 @@ class ModuleNavGraphBuilder @Inject constructor() : HomeTabNavBuilder {
                         router.toShowDetails()
                     },
                     onClickEpisode = {
-                        router.toEpisodeDetails(it.id)
+                        router.toFeedEpisodeDetails(it.id)
                     },
                     onCurrentlyPlayingExitView = {
                         viewModel.takeAction(FeedViewModel.Action.CurrentlyPlayingNotShowing)

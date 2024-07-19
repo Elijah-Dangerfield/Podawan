@@ -3,9 +3,9 @@ package com.dangerfield.features.playback.internal.ui
 import androidx.lifecycle.SavedStateHandle
 import androidx.lifecycle.viewModelScope
 import com.dangerfield.features.playback.PlayerStateRepository
-import com.dangerfield.features.playback.episodeIdArgument
 import com.dangerfield.libraries.coreflowroutines.SEAViewModel
 import com.dangerfield.libraries.coreflowroutines.collectIn
+import com.dangerfield.libraries.navigation.episodeIdArgument
 import com.dangerfield.libraries.navigation.navArgument
 import com.dangerfield.libraries.podcast.CurrentlyPlaying
 import com.dangerfield.libraries.podcast.EpisodePlayback

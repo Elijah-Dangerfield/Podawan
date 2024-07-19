@@ -48,6 +48,11 @@ sealed class ColorResource(val color: Color, val designSystemName: String) {
     object Black500 : ColorResource(Color(0xFFAAAAAA), "black-500")
     object Black400 : ColorResource(Color(0xFFCCCCCC), "black-400")
     object Black300 : ColorResource(Color(0xFFEEEEEE), "black-300")
+    object Sky100 : ColorResource(Color(0xFFC5ECFF), "sky-100")
+    object Sky200 : ColorResource(Color(0xFF6DD7FF), "sky-200")
+    object Sky300 : ColorResource(Color(0xFF3CCFFF), "sky-300")
+    object Sky400 : ColorResource(Color(0xFF00BFFF), "sky-400")
+    object Sky600 : ColorResource(Color(0xFF00A0EF), "sky-600")
     object Black200 : ColorResource(Color(0xFFF6F6F6), "black-200")
     object Black100 : ColorResource(Color(0xFFFBFBFB), "black-100")
     object Purple900 : ColorResource(Color(0xFF270B68), "purple-900")
@@ -59,7 +64,6 @@ sealed class ColorResource(val color: Color, val designSystemName: String) {
     object PurpleGray300 : ColorResource(Color(0xFF8C79B8), "purple-300")
     object White900 : ColorResource(Color(0xFFFFFFFF), "white-900")
     object GrapeJelly500 : ColorResource(Color(0xFF9533C7), "grape-jelly-500")
-    object SkyDive400 : ColorResource(Color(0xFF00A0EF), "sky-dive-400")
     object MintyFresh300 : ColorResource(Color(0xFF2FD566), "minty-fresh-300")
     object TangerineTwist600 : ColorResource(Color(0xFFFF5800), "tangerine-twist-600")
     object CherryPop700 : ColorResource(Color(0xFFE3212F), "cherry-pop-700")
@@ -122,7 +126,7 @@ private val colors = listOf(
     ColorResource.PurpleGray300,
     ColorResource.White900,
     ColorResource.GrapeJelly500,
-    ColorResource.SkyDive400,
+    ColorResource.Sky600,
     ColorResource.MintyFresh300,
     ColorResource.TangerineTwist600,
     ColorResource.CherryPop700,

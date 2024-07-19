@@ -173,6 +173,8 @@ dependencies {
 	implementation(projects.features.playlist)
 	implementation(projects.features.playlist.internal)
 	implementation(projects.features.playlist.storage)
+	implementation(projects.features.episodeDetails)
+	implementation(projects.features.episodeDetails.internal)
     // STOP PROJECT MODULES (keep this line at the end of the project modules, used by ./create_module)
 
     testImplementation(libs.androidx.test.junit)
