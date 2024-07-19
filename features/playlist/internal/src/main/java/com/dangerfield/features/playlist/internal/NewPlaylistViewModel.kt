@@ -31,19 +31,20 @@ class NewPlaylistViewModel @Inject constructor(
 
     private suspend fun Action.UpdatePlaylistName.updatePlaylistName() {
         clearFormError()
+        val name = playlistName.take(100)
         // eagerly validate, but debounce the invalidation
-        if (playlistName.isValidPlaylistName()) {
-            updateState { it.copy(playlistNameFieldState = Valid(playlistName)) }
+        if (name.isValidPlaylistName()) {
+            updateState { it.copy(playlistNameFieldState = Valid(name)) }
         } else {
-            updateState { it.copy(playlistNameFieldState = Idle(playlistName)) }
+            updateState { it.copy(playlistNameFieldState = Idle(name)) }
         }
 
         updateStateDebounced(duration = 1.seconds) {
             when {
-                playlistName.isEmpty() -> it.copy(playlistNameFieldState = Idle(playlistName))
-                playlistName.isValidPlaylistName() -> it.copy(playlistNameFieldState = Valid(playlistName))
+                name.isEmpty() -> it.copy(playlistNameFieldState = Idle(name))
+                name.isValidPlaylistName() -> it.copy(playlistNameFieldState = Valid(name))
                 else -> {
-                    it.copy(playlistNameFieldState = Invalid(playlistName, "Playlists must be at least 3 characters long"))
+                    it.copy(playlistNameFieldState = Invalid(name, "Playlists must be at least 3 characters long"))
                 }
             }
         }
@@ -57,9 +58,9 @@ class NewPlaylistViewModel @Inject constructor(
         } else {
             updateState { it.copy(isLoading = true) }
             playlistRepository.createPlaylist(name)
-                .onSuccess {
+                .onSuccess { id ->
                     updateState { it.copy(isLoading = false) }
-                    sendEvent(Event.PlaylistCreated)
+                    sendEvent(Event.PlaylistCreated(id))
                 }
                 .onFailure { error ->
                     updateState { it.copy(isLoading = false) }
@@ -93,6 +94,6 @@ class NewPlaylistViewModel @Inject constructor(
 
     sealed class Event {
         class CreateFailed(val errorClass: String?) : Event()
-        object PlaylistCreated : Event()
+        class PlaylistCreated(val id: Int, ) : Event()
     }
 }

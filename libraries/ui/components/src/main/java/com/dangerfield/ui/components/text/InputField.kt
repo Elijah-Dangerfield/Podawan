@@ -1,5 +1,6 @@
 package com.dangerfield.ui.components.text
 
+
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.text.KeyboardActions
@@ -15,6 +16,7 @@ import com.dangerfield.libraries.ui.FieldState.Error
 import com.dangerfield.libraries.ui.FieldState.Invalid
 import com.dangerfield.libraries.ui.VerticalSpacerD100
 import com.dangerfield.libraries.ui.VerticalSpacerD300
+import com.dangerfield.libraries.ui.preview.Preview
 import com.dangerfield.ui.components.ErrorBehavior
 import com.dangerfield.ui.components.FormField
 import com.dangerfield.libraries.ui.theme.PodawanTheme
@@ -96,7 +98,7 @@ fun InputField(
     errorBehavior: ErrorBehavior = ErrorBehavior.Show,
     onFocusChanged: (Boolean) -> Unit = {},
 ) {
-    InputField(
+    OutlineInputField(
         title = { Text(text = title) },
         fieldState = fieldState,
         onFieldUpdated = onFieldUpdated,
@@ -115,7 +117,7 @@ fun InputField(
 @Composable
 @Preview
 private fun PreviewInputField() {
-    com.dangerfield.libraries.ui.preview.Preview {
+    Preview {
         InputField(
             title = "Title",
             fieldState = FieldState.Valid(""),
@@ -130,7 +132,7 @@ private fun PreviewInputField() {
 @Composable
 @Preview
 private fun PreviewInputFieldError() {
-    com.dangerfield.libraries.ui.preview.Preview {
+    Preview {
         InputField(
             title = "Title",
             fieldState = Invalid("Bad Input", "This input is bad, do better."),
@@ -145,7 +147,7 @@ private fun PreviewInputFieldError() {
 @Composable
 @Preview
 private fun PreviewInputFieldNotRequired() {
-    com.dangerfield.libraries.ui.preview.Preview {
+    Preview {
         InputField(
             title = "Title",
             fieldState = FieldState.Valid(""),
@@ -160,7 +162,7 @@ private fun PreviewInputFieldNotRequired() {
 @Composable
 @Preview
 private fun PreviewInputFieldNotRequiredWSub() {
-    com.dangerfield.libraries.ui.preview.Preview {
+    Preview {
         InputField(
             title = "Title",
             subtitle = "Some smaller descriptive text",

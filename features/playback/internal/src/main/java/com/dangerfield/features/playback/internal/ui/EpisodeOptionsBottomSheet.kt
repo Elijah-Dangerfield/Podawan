@@ -56,6 +56,7 @@ import kotlinx.collections.immutable.persistentListOf
 fun EpisodeOptionsBottomSheet(
     episode: DisplayableEpisode,
     bottomSheetState: BottomSheetState,
+    onAddToPlaylist: () -> Unit,
     onClose: () -> Unit,
 ) {
 
@@ -96,7 +97,7 @@ fun EpisodeOptionsBottomSheet(
                 Option(
                     icon = PodawanIcon.Add(""),
                     text = "Add to playlist",
-                    onClick = {}
+                    onClick = onAddToPlaylist
                 )
 
                 Option(
@@ -219,6 +220,7 @@ private fun PreviewEpisodeOptionsBottomSheet() {
                 playback = EpisodePlayback.None(),
             ),
             onClose = {},
+            onAddToPlaylist = {},
             bottomSheetState = rememberBottomSheetState(initialState = BottomSheetValue.Expanded),
         )
 

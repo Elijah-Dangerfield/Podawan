@@ -7,6 +7,7 @@ import com.dangerfield.libraries.podcast.PodcastShow
 import com.prof18.rssparser.RssParser
 import kotlinx.coroutines.withContext
 import podawan.core.Catching
+import podawan.core.ifLinkFormat
 import podawan.core.ifNotEmpty
 import se.ansman.dagger.auto.AutoBind
 import javax.inject.Inject
@@ -42,12 +43,17 @@ class DefaultPodcastNetworkDatasource @Inject constructor(
                             Episode(
                                 guid = identifier,
                                 title = it.title?.ifNotEmpty(),
-                                author = it.author?.ifNotEmpty(),
+                                author = it.author?.ifNotEmpty() ?: rssChannel.itunesChannelData?.author?.ifNotEmpty() ?: rssChannel.title,
                                 link = it.link?.ifNotEmpty(),
                                 pubDate = it.pubDate?.ifNotEmpty(),
                                 description = it.description?.ifNotEmpty(),
                                 content = it.content?.ifNotEmpty(),
-                                image = it.image?.ifNotEmpty(),
+                                images = listOfNotNull(
+                                    it.image?.ifNotEmpty()?.ifLinkFormat(),
+                                    it.itunesItemData?.image?.ifNotEmpty()?.ifLinkFormat(),
+                                    heroImage?.url?.ifLinkFormat(),
+                                    rssChannel.itunesChannelData?.image?.ifNotEmpty()?.ifLinkFormat()
+                                ),
                                 audio = it.audio?.ifNotEmpty(),
                                 video = it.video?.ifNotEmpty(),
                                 sourceName = it.sourceName?.ifNotEmpty(),
@@ -68,7 +74,6 @@ class DefaultPodcastNetworkDatasource @Inject constructor(
                                     )
                                 },
                                 commentsUrl = it.commentsUrl?.ifNotEmpty(),
-                                showHeroImage = heroImage,
                                 resumePoint = getResumePoint(identifier) ?: 0.seconds,
                                 totalDuration = null, // we don't know the total duration yet
                                 showRssFeedLink = rssFeedLink

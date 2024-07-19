@@ -24,7 +24,6 @@ class LibraryViewModel @Inject constructor(
     override suspend fun handleAction(action: Action) {
         when (action) {
             is Action.Load -> action.handleLoad()
-            is Action.RefreshPlaylists -> action.handleRefreshPlaylists()
         }
     }
 
@@ -32,8 +31,10 @@ class LibraryViewModel @Inject constructor(
         takeAction(Action.Load)
     }
 
-    private suspend fun Action.Load.handleLoad() {
-        updateState { it.copy(isLoading = true) }
+    private suspend fun Action.handleLoad(showLoading: Boolean = true) {
+        if (showLoading) {
+            updateState { it.copy(isLoading = true) }
+        }
         val playlistFlow = playlistRepository.getPlaylistsFlow().getOrNull()
 
         if (playlistFlow == null) {
@@ -51,11 +52,6 @@ class LibraryViewModel @Inject constructor(
             }
         }
     }
-
-    private suspend fun Action.RefreshPlaylists.handleRefreshPlaylists() {
-        takeAction(Action.Load)
-    }
-
     data class State(
         val playlists: List<Playlist> = emptyList(),
         val isLoading: Boolean = false
@@ -67,6 +63,5 @@ class LibraryViewModel @Inject constructor(
 
     sealed class Action {
         object Load : Action()
-        object RefreshPlaylists : Action()
     }
 }

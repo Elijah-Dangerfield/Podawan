@@ -25,5 +25,6 @@ dependencies {
     implementation(libs.androidx.media3.ui)
     implementation(libs.coil)
 
-    implementation("androidx.legacy:legacy-support-v4:1.0.0") // Needed MediaSessionCompat.Token
+    implementation("androidx.legacy:legacy-support-v4:1.0.0")
+    implementation(project(":features:playlist")) // Needed MediaSessionCompat.Token
 }

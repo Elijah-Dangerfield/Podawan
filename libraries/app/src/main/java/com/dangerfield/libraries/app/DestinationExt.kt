@@ -16,3 +16,11 @@ fun NavDestination.bottomTabRoute(): Route.Template? {
         this.hierarchy.any { it.route == tabRoute.navRoute }
     }
 }
+
+fun Route.Template?.toBottomTabName() =
+    when (this) {
+        homeGraphRoute -> "Home"
+        searchGraphRoute -> "Search"
+        libraryGraphRoute -> "Library"
+        else -> null
+    }

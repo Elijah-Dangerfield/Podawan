@@ -104,7 +104,7 @@ data class CheckboxColors (
     val disabledIndeterminateBorderColor: Color
 )
 
-private fun CheckboxColors.toMaterial() = androidx.compose.material3.CheckboxColors(
+internal fun CheckboxColors.toMaterial() = androidx.compose.material3.CheckboxColors(
     checkedCheckmarkColor = checkedCheckmarkColor,
     uncheckedCheckmarkColor = uncheckedCheckmarkColor,
     checkedBoxColor = checkedBoxColor,

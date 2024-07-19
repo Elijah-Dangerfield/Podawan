@@ -2,7 +2,6 @@ package com.dangerfield.features.auth.internal.login
 
 import androidx.compose.foundation.Image
 import androidx.compose.foundation.border
-import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Spacer
 import androidx.compose.foundation.layout.aspectRatio
@@ -13,16 +12,11 @@ import androidx.compose.foundation.text.KeyboardActions
 import androidx.compose.foundation.text.KeyboardOptions
 import androidx.compose.foundation.verticalScroll
 import androidx.compose.runtime.Composable
-import androidx.compose.runtime.derivedStateOf
-import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
-import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
-import androidx.compose.ui.Alignment.Companion.Center
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
-import androidx.compose.ui.focus.FocusManager
 import androidx.compose.ui.focus.FocusRequester
 import androidx.compose.ui.layout.ContentScale
 import androidx.compose.ui.platform.LocalFocusManager
@@ -52,10 +46,9 @@ import com.dangerfield.ui.components.button.Button
 import com.dangerfield.ui.components.button.ButtonStyle
 import com.dangerfield.ui.components.icon.IconButton
 import com.dangerfield.ui.components.icon.PodawanIcon
-import com.dangerfield.ui.components.text.InputField
+import com.dangerfield.ui.components.text.OutlineInputField
 import com.dangerfield.ui.components.text.Text
 import podawan.core.App
-import podawan.core.AppConfiguration
 
 @Composable
 fun LoginScreen(
@@ -218,7 +211,7 @@ private fun PasswordField(
         PodawanIcon.Visible(null)
     }
 
-    InputField(
+    OutlineInputField(
         title = {},
         trailingIcon = {
             IconButton(icon = icon, onClick = isPasswordVisible::toggle)
@@ -251,7 +244,7 @@ private fun EmailField(
     onEmailChanged: (String) -> Unit,
     passwordFocusRequester: FocusRequester
 ) {
-    InputField(
+    OutlineInputField(
         title = {},
         errorBorder = false,
         hint = "Email",

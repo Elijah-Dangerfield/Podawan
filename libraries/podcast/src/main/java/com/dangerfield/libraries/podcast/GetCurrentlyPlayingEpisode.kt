@@ -26,9 +26,15 @@ if I dont like this the alternative I can just have the feed update always but j
 /**
  * Use case to get the displayable episodes from a podcast show
  */
-interface GetDisplayableEpisodes {
+interface GetAllDisplayableEpisodes {
     suspend operator fun invoke(
         show: PodcastShow? = null
+    ): Catching<ImmutableList<DisplayableEpisode>>
+}
+
+interface MapEpisodesToDisplayable {
+    suspend operator fun invoke(
+        episodes: List<Episode>
     ): Catching<ImmutableList<DisplayableEpisode>>
 }
 

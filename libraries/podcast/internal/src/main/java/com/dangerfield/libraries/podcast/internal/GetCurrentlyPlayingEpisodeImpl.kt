@@ -39,7 +39,6 @@ class GetCurrentlyPlayingImpl @Inject constructor(
                 val currentlyPlayingShowEpisode = show.episodes
                     .firstOrNull { it.guid == currentlyPlayingId }
                     ?.toDisplayable(
-                        show = show,
                         playback = currentlyPlayingStatus
                     )
 

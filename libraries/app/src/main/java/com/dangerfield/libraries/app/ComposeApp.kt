@@ -11,6 +11,7 @@ import androidx.compose.material3.SnackbarHostState
 import androidx.compose.material3.SnackbarResult
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.LaunchedEffect
+import androidx.compose.runtime.derivedStateOf
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
@@ -21,6 +22,7 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.platform.LocalLifecycleOwner
 import androidx.lifecycle.compose.collectAsStateWithLifecycle
 import androidx.navigation.NavDestination
+import androidx.navigation.NavDestination.Companion.hierarchy
 import androidx.navigation.NavGraph.Companion.findStartDestination
 import androidx.navigation.compose.NavHost
 import androidx.navigation.compose.navigation
@@ -96,7 +98,8 @@ fun PodawanApp(
         )
     }
 
-    var currentSelectedTabRoute by remember { mutableStateOf(homeGraphRoute) }
+    var selectedTabInfo by remember { mutableStateOf(SelectedTabInfo(homeGraphRoute, null)) }
+
     var currentRouteInfo: RouteInfo by remember { mutableStateOf(filledStartingRoute.asRouteInfo()) }
     var prevRouteInfo: RouteInfo? by remember { mutableStateOf(null) }
 
@@ -109,48 +112,90 @@ fun PodawanApp(
             }
     }
 
+    fun updateSelectedTab(newTab: Route.Template) {
+        Timber.d(
+            """
+                
+                
+            Nav Log: updateSelectedTab
+            newTab: ${newTab.toBottomTabName()}
+            previousTab: ${selectedTabInfo.currentTab.toBottomTabName()}
+            
+            
+            
+            """.trimIndent()
+        )
+        selectedTabInfo = SelectedTabInfo(newTab, selectedTabInfo.currentTab)
+    }
+
     var previousDestination: NavDestination? by remember { mutableStateOf(null) }
     var currentDestination: NavDestination? by remember { mutableStateOf(null) }
 
     LaunchedEffect(Unit) {
+
         navController
             .currentBackStackEntryFlow
             .map { it.destination }
             .distinctUntilChanged()
             .collectWithPrevious { prev, curr ->
-                curr.bottomTabRoute()?.let { currentSelectedTabRoute = it }
+                curr.bottomTabRoute()?.let { updateSelectedTab(it) }
                 currentDestination = curr
                 previousDestination = prev
             }
     }
 
     val isSwitchingBottomTabs = allOrNone(
-        currentDestination?.bottomTabRoute(),
-        previousDestination?.bottomTabRoute()
+        currentDestination?.bottomTabRoute() ?: selectedTabInfo.currentTab,
+        previousDestination?.bottomTabRoute() ?: selectedTabInfo.previousTab
     ) { currentTab, previousTab ->
+        Timber.d(
+            """
+            Nav Log:
+            currentTab: $currentTab
+            previousTab: $previousTab
+        """.trimIndent()
+        )
         currentTab != previousTab
     } ?: false
+
+
 
     LaunchedEffect(currentRouteInfo, prevRouteInfo, currentDestination, previousDestination) {
         Timber.d(
             """
             ------------------------------------------------------
+            Nav Log: 
             currentRouteInfo: $currentRouteInfo
             prevRouteInfo: $prevRouteInfo
             
             isSwitchingBottomTabs: $isSwitchingBottomTabs
+            
+            currentDestinationBottomTab: ${currentDestination?.bottomTabRoute().toBottomTabName()}
+            previousDestinationBottomTab: ${previousDestination?.bottomTabRoute().toBottomTabName()}
+
+            currentSelectedTabRoute: ${selectedTabInfo.currentTab.toBottomTabName()}
+            previousSelectedTabRoute: ${selectedTabInfo.previousTab?.toBottomTabName()}
+            
             ------------------------------------------------------
         """.trimIndent()
         )
-
     }
 
-    val navAnim = determineNavAnimation(
-        to = currentRouteInfo,
-        from = prevRouteInfo,
-        currentDestination = currentDestination,
-        previousDestination = previousDestination
-    )
+    /*
+    we need to update the seleted tab on evey single route change to determine if that route change is
+    due to a bottom tab switch.
+
+     */
+
+    val navAnim by remember(currentRouteInfo, prevRouteInfo) {
+        derivedStateOf {
+            determineNavAnimation(
+                to = currentRouteInfo,
+                from = prevRouteInfo,
+                isSwitchingBottomTabs = isSwitchingBottomTabs
+            )
+        }
+    }
 
     LaunchedEffect(Unit) {
         SnackBarPresenter
@@ -247,7 +292,7 @@ fun PodawanApp(
                         exit = shrinkVertically(),
                     ) {
                         AppBottomBar(
-                            currentTabRoute = currentSelectedTabRoute,
+                            currentTabRoute = selectedTabInfo.currentTab,
                             onItemClick = { item ->
                                 actualRouter.navigate(
                                     item.fill {
@@ -262,6 +307,8 @@ fun PodawanApp(
                                         )
                                     }
                                 )
+
+                                updateSelectedTab(item)
                             }
                         )
                     }
@@ -324,3 +371,8 @@ fun PodawanApp(
         }
     }
 }
+
+data class SelectedTabInfo(
+    val currentTab: Route.Template,
+    val previousTab: Route.Template?
+)

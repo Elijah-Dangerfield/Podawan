@@ -19,4 +19,5 @@ dependencies {
     implementation(projects.libraries.ui)
     implementation(projects.libraries.resources)
     implementation(projects.libraries.podcast)
+    implementation(project(":features:playlist"))
 }

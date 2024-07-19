@@ -63,6 +63,17 @@ data class TypographyResource internal constructor(
             identifier = "${identifier}-bold"
         )
 
+    val ExtraBold: TypographyResource
+        get() = TypographyResource(
+            fontFamily = fontFamily,
+            fontWeight = FontWeight.ExtraBold,
+            fontSize = fontSize,
+            lineHeight = lineHeight,
+            lineBreak = lineBreak,
+            fontStyle = fontStyle,
+            identifier = "${identifier}-extrabold"
+        )
+
     val SemiBold: TypographyResource
         get() = TypographyResource(
             fontFamily = fontFamily,

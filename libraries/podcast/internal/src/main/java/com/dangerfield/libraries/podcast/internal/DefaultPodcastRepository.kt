@@ -50,6 +50,12 @@ class DefaultPodcastRepository @Inject constructor(
         show.episodes.first { it.guid == id }
     }
 
+    override suspend fun getEpisodes(ids: List<String>): Catching<List<Episode>> = Catching {
+        val idSet = ids.toSet()
+        val show = getPodcast().getOrThrow()
+        show.episodes.filter { it.guid in idSet }
+    }
+
     override suspend fun updateResumePoint(id: String, resumePoint: Duration): Catching<Unit> {
         return podcastCacheDatasource.updateResumePoint(id, resumePoint).ignoreValue()
     }

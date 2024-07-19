@@ -19,6 +19,7 @@ import com.dangerfield.features.playback.internal.ui.PlayerViewModel.Action.Play
 import com.dangerfield.features.playback.internal.ui.episodeOptions
 import com.dangerfield.features.playback.internal.ui.openEpisodeOptions
 import com.dangerfield.features.playback.playerRoute
+import com.dangerfield.features.playlist.navigateToAddToPlaylist
 import com.dangerfield.libraries.coreflowroutines.ObserveWithLifecycle
 import com.dangerfield.libraries.navigation.GlobalNavBuilder
 import com.dangerfield.libraries.navigation.Router
@@ -92,7 +93,10 @@ class ModuleNavGraphBuilder @Inject constructor(
                 else -> EpisodeOptionsBottomSheet(
                     episode = ep,
                     bottomSheetState = sheetState,
-                    onClose = { router.dismissSheet(sheetState) }
+                    onClose = { router.dismissSheet(sheetState) },
+                    onAddToPlaylist = {
+                        router.navigateToAddToPlaylist(id)
+                    }
                 )
             }
         }

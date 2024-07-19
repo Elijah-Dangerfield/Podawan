@@ -33,7 +33,7 @@ import com.dangerfield.ui.components.dialog.bottomsheet.BottomSheetValue.Expande
 import com.dangerfield.ui.components.dialog.bottomsheet.rememberBottomSheetState
 import com.dangerfield.ui.components.icon.IconButton
 import com.dangerfield.ui.components.icon.PodawanIcon
-import com.dangerfield.ui.components.text.InputField
+import com.dangerfield.ui.components.text.OutlineInputField
 import com.dangerfield.ui.components.text.Text
 
 @Composable
@@ -91,7 +91,7 @@ fun NewPlaylistScreen(
 
                     VerticalSpacerD1200()
 
-                    InputField(
+                    OutlineInputField(
                         focusRequester = focusRequester,
                         title = {},
                         errorBorder = false,

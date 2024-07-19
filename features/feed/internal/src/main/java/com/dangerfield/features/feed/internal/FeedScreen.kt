@@ -27,6 +27,7 @@ import coil.compose.rememberAsyncImagePainter
 import coil.request.ImageRequest
 import coil.size.Size
 import com.dangerfield.libraries.podcast.DisplayableEpisode
+import com.dangerfield.libraries.podcast.EpisodeItem
 import com.dangerfield.libraries.podcast.EpisodePlayback
 import com.dangerfield.libraries.ui.Dimension
 import com.dangerfield.libraries.ui.HorizontalSpacerD500

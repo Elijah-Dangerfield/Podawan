@@ -10,10 +10,10 @@
       </SelectionState>
       <SelectionState runConfigName="apps.theBenAndEmilShow">
         <option name="selectionMode" value="DROPDOWN" />
-        <DropdownSelection timestamp="2024-05-24T14:24:24.617024Z">
+        <DropdownSelection timestamp="2024-05-28T21:29:00.765635Z">
           <Target type="DEFAULT_BOOT">
             <handle>
-              <DeviceId pluginId="LocalEmulator" identifier="path=/Users/elijahjaydangerfield/.android/avd/Pixel_8_Pro_API_UpsideDownCakePrivacySandbox.avd" />
+              <DeviceId pluginId="LocalEmulator" identifier="path=/Users/elijahjaydangerfield/.android/avd/Pixel_8_Pro_API_UpsideDownCakePrivacySandbox_2.avd" />
             </handle>
           </Target>
         </DropdownSelection>

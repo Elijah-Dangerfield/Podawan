@@ -32,7 +32,7 @@ data class FileInfo(val id: String, val pathsToStore: List<String>)
 val releaseGoogleServicesFileInfo =
     FileInfo(
         // https://drive.google.com/file/d/1UwdN7W1Fmy4Hp1Q2w0BSiGEHJu74cWnQ/view?usp=drive_link
-        id = "1sdIrT2nVgUPR_gMayY1cubIWKuVyFepa",
+        id = "1Gc_xN1FrxB61j_7cJgyVV_M0xniN2TEJ",
         pathsToStore = listOf(
             "src/release/google-services.json",
             "src/qa/google-services.json",
@@ -51,9 +51,10 @@ val releaseServiceAccountKeyFileInfo =
     )
 
 // Used to talk to the debug firebase project
+
 val debugGoogleServicesFileInfo =
     FileInfo(
-        id = "1iynKy96WsSE6RlgDBWFqgGIxZhN-6d2k",
+        id = "1OCFEqJWoO-3xPNgKzW7fEboQ5FlR6DFa",
         pathsToStore = listOf("src/debug/google-services.json")
     )
 

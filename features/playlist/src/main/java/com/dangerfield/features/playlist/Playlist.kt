@@ -7,5 +7,13 @@ data class  Playlist(
     val name: String,
     val description: String,
     val imageUrl: String?,
+    val episodeIds: List<String>,
+)
+
+data class PlaylistWithEpisodes(
+    val id: Int,
+    val name: String,
+    val description: String,
+    val imageUrl: String?,
     val episodes: List<Episode>
 )

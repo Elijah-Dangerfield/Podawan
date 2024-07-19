@@ -16,6 +16,6 @@ dependencies {
 
     // Right now transitive dependencies need to be exposed to be used public functions/classes
     api(projects.apps.theBenAndEmilShow.config)
-    api(projects.apps.tmg.config)
+    api(projects.apps.fragmented.config)
     api(projects.apps.stuffYouShouldKnow.config)
 }

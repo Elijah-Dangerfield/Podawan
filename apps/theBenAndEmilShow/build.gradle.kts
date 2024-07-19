@@ -47,6 +47,9 @@ android {
                     "proguard-rules.pro"
                 )
             )
+
+            // Debug key signing is available to everyone.
+            signingConfig = signingConfigs.getByName("debug")
         }
 
         /*

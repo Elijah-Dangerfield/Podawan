@@ -30,7 +30,7 @@ data class Episode(
     val pubDate: String?,
     val description: String?,
     val content: String?,
-    val image: String?,
+    val images: List<String>,
     val audio: String?,
     val video: String?,
     val sourceName: String?,
@@ -39,7 +39,6 @@ data class Episode(
     val categories: List<String>,
     val itunesItemData: ItunesEpisodeData?,
     val commentsUrl: String?,
-    val showHeroImage: HeroImage?,
     val resumePoint: Duration,
     val totalDuration: Duration?
 )

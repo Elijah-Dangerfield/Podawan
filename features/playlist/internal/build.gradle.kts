@@ -18,4 +18,8 @@ dependencies {
     implementation(projects.libraries.common)
     implementation(projects.libraries.navigation)
     implementation(projects.libraries.ui)
+    implementation(project(":features:playback"))
+    implementation(project(":features:blockingError"))
+    implementation(project(":features:feed"))
+    implementation(project(":libraries:analytics"))
 }

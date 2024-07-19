@@ -12,6 +12,9 @@ interface HeroImageDao {
     @Insert(onConflict = OnConflictStrategy.REPLACE)
     suspend fun insertHeroImage(image: HeroImageEntity): Long
 
+    @Query("SELECT * FROM hero_images WHERE showRssFeedLink = :showRssFeedLink")
+    suspend fun getHeroImageForShow(showRssFeedLink: String): HeroImageEntity?
+
     @Update
     suspend fun updateHeroImage(image: HeroImageEntity)
 

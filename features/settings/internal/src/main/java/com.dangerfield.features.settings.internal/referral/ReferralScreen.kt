@@ -29,7 +29,7 @@ import com.dangerfield.ui.components.button.ButtonStyle
 import com.dangerfield.ui.components.header.Header
 import com.dangerfield.ui.components.icon.Icon
 import com.dangerfield.ui.components.icon.PodawanIcon
-import com.dangerfield.ui.components.text.InputField
+import com.dangerfield.ui.components.text.OutlineInputField
 import com.dangerfield.ui.components.text.Text
 import com.dangerfield.libraries.ui.theme.PodawanTheme
 
@@ -119,7 +119,7 @@ fun ReferralScreen(
 
             VerticalSpacerD1200()
 
-            InputField(
+            OutlineInputField(
                 title = "Redeem:",
                 subtitle = "Redeem another players code to earn you both rewards. You can only redeem ${maxRedemptions} codes.",
                 hint = "Enter a referral code",

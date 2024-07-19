@@ -2,6 +2,7 @@ package com.dangerfield.features.library.internal
 
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.fillMaxSize
+import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.foundation.lazy.items
@@ -52,7 +53,9 @@ fun LibraryScreen(
             ) {
                 items(playlists) {
                     PlaylistItem(
-                        modifier = Modifier.bounceClick { onPlaylistClick(it) },
+                        modifier = Modifier
+                            .fillMaxWidth()
+                            .bounceClick { onPlaylistClick(it) },
                         playlist = it
                     )
                 }
@@ -73,21 +76,21 @@ private fun PreviewLibraryScreen() {
                     name = "Playlist 2",
                     description = "Description 2",
                     id = 34,
-                    episodes = emptyList(),
+                    episodeIds = emptyList(),
                 ),
                 com.dangerfield.features.playlist.Playlist(
                     imageUrl = "https://via.placeholder.com/150",
                     name = "Playlist 2",
                     description = "Description 2",
                     id = 123,
-                    episodes = emptyList(),
+                    episodeIds = emptyList(),
                 ),
                 com.dangerfield.features.playlist.Playlist(
                     imageUrl = "https://via.placeholder.com/150",
                     name = "Playlist 2",
                     description = "Description 2",
                     id = 34,
-                    episodes = emptyList(),
+                    episodeIds = emptyList(),
                 ),
             ),
             onNewPlaylistClick = { -> },

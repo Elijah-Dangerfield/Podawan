@@ -14,7 +14,10 @@ import kotlinx.coroutines.launch
 import kotlinx.coroutines.withContext
 import podawan.core.Catching
 import se.ansman.dagger.auto.AutoBind
+import java.util.concurrent.ConcurrentHashMap
+import java.util.concurrent.ConcurrentMap
 import javax.inject.Inject
+import javax.inject.Singleton
 import kotlin.time.Duration
 
 interface PodcastCacheDatasource {
@@ -26,13 +29,14 @@ interface PodcastCacheDatasource {
 }
 
 @AutoBind
+@Singleton
 class RoomPodcastCacheDatasource @Inject constructor(
     private val podcastDao: PodcastShowDao,
     private val heroImageDao: HeroImageDao,
     private val itunesDataDao: ItunesDataDao,
     private val episodeDao: PodcastEpisodeDao,
     private val dispatcherProvider: DispatcherProvider,
-    @AppScope private val appScope: CoroutineScope
+    @AppScope private val appScope: CoroutineScope,
 ) : PodcastCacheDatasource {
 
     override suspend fun getPodcastWithRssFeedLink(rssFeedLink: String): Catching<PodcastShow> =
@@ -54,7 +58,6 @@ class RoomPodcastCacheDatasource @Inject constructor(
                         }
                         episodeEntity.toDomain(
                             itunesItemData = itunesItemData,
-                            showHeroImage = heroImageEntity?.toDomain()
                         )
                     }
 
@@ -75,7 +78,7 @@ class RoomPodcastCacheDatasource @Inject constructor(
     override suspend fun savePodcast(podcastShow: PodcastShow) {
         appScope.launch {
             val heroImageId =
-                podcastShow.heroImage?.let { heroImageDao.insertHeroImage(it.toEntity()) }
+                podcastShow.heroImage?.let { heroImageDao.insertHeroImage(it.toEntity(podcastShow.rssFeedLink)) }
             val itunesChannelDataId =
                 podcastShow.itunesShowData?.let { itunesDataDao.insertChannelData(it.toEntity()) }
 

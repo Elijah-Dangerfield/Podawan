@@ -2,11 +2,11 @@
   "formatVersion": 1,
   "database": {
     "version": 1,
-    "identityHash": "67e8cf8dc56ca03f58ac02443305a8c0",
+    "identityHash": "961f070773474874112090192cb1a6a5",
     "entities": [
       {
         "tableName": "podcast_episodes",
-        "createSql": "CREATE TABLE IF NOT EXISTS `${TABLE_NAME}` (`guid` TEXT NOT NULL, `showRssFeedLink` TEXT NOT NULL, `title` TEXT, `author` TEXT, `link` TEXT, `pubDate` TEXT, `description` TEXT, `categories` TEXT NOT NULL, `content` TEXT, `image` TEXT, `audio` TEXT, `video` TEXT, `sourceName` TEXT, `sourceUrl` TEXT, `itunesItemDataId` INTEGER, `commentsUrl` TEXT, `showHeroImageId` INTEGER, `resumePointSeconds` INTEGER NOT NULL, `totalDurationSeconds` INTEGER NOT NULL, PRIMARY KEY(`guid`), FOREIGN KEY(`showRssFeedLink`) REFERENCES `podcast_shows`(`rssFeedLink`) ON UPDATE NO ACTION ON DELETE CASCADE , FOREIGN KEY(`itunesItemDataId`) REFERENCES `itunes_episode_data`(`id`) ON UPDATE NO ACTION ON DELETE SET NULL , FOREIGN KEY(`showHeroImageId`) REFERENCES `hero_images`(`id`) ON UPDATE NO ACTION ON DELETE SET NULL )",
+        "createSql": "CREATE TABLE IF NOT EXISTS `${TABLE_NAME}` (`guid` TEXT NOT NULL, `showRssFeedLink` TEXT NOT NULL, `title` TEXT, `author` TEXT, `link` TEXT, `pubDate` TEXT, `description` TEXT, `categories` TEXT NOT NULL, `content` TEXT, `images` TEXT NOT NULL, `audio` TEXT, `video` TEXT, `sourceName` TEXT, `sourceUrl` TEXT, `itunesItemDataId` INTEGER, `commentsUrl` TEXT, `showHeroImageId` INTEGER, `resumePointSeconds` INTEGER NOT NULL, `totalDurationSeconds` INTEGER NOT NULL, PRIMARY KEY(`guid`), FOREIGN KEY(`showRssFeedLink`) REFERENCES `podcast_shows`(`rssFeedLink`) ON UPDATE NO ACTION ON DELETE CASCADE , FOREIGN KEY(`itunesItemDataId`) REFERENCES `itunes_episode_data`(`id`) ON UPDATE NO ACTION ON DELETE SET NULL , FOREIGN KEY(`showHeroImageId`) REFERENCES `hero_images`(`id`) ON UPDATE NO ACTION ON DELETE SET NULL )",
         "fields": [
           {
             "fieldPath": "guid",
@@ -63,10 +63,10 @@
             "notNull": false
           },
           {
-            "fieldPath": "image",
-            "columnName": "image",
+            "fieldPath": "images",
+            "columnName": "images",
             "affinity": "TEXT",
-            "notNull": false
+            "notNull": true
           },
           {
             "fieldPath": "audio",
@@ -345,7 +345,7 @@
       },
       {
         "tableName": "hero_images",
-        "createSql": "CREATE TABLE IF NOT EXISTS `${TABLE_NAME}` (`id` INTEGER PRIMARY KEY AUTOINCREMENT NOT NULL, `title` TEXT, `url` TEXT, `link` TEXT, `description` TEXT)",
+        "createSql": "CREATE TABLE IF NOT EXISTS `${TABLE_NAME}` (`id` INTEGER PRIMARY KEY AUTOINCREMENT NOT NULL, `title` TEXT, `url` TEXT, `link` TEXT, `description` TEXT, `showRssFeedLink` TEXT NOT NULL)",
         "fields": [
           {
             "fieldPath": "id",
@@ -376,6 +376,12 @@
             "columnName": "description",
             "affinity": "TEXT",
             "notNull": false
+          },
+          {
+            "fieldPath": "showRssFeedLink",
+            "columnName": "showRssFeedLink",
+            "affinity": "TEXT",
+            "notNull": true
           }
         ],
         "primaryKey": {
@@ -515,7 +521,7 @@
     "views": [],
     "setupQueries": [
       "CREATE TABLE IF NOT EXISTS room_master_table (id INTEGER PRIMARY KEY,identity_hash TEXT)",
-      "INSERT OR REPLACE INTO room_master_table (id,identity_hash) VALUES(42, '67e8cf8dc56ca03f58ac02443305a8c0')"
+      "INSERT OR REPLACE INTO room_master_table (id,identity_hash) VALUES(42, '961f070773474874112090192cb1a6a5')"
     ]
   }
 }

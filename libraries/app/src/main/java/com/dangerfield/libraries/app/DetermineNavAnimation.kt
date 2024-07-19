@@ -24,16 +24,9 @@ import podawan.core.allOrNone
 fun determineNavAnimation(
     to: RouteInfo,
     from: RouteInfo?,
-    currentDestination: NavDestination?,
-    previousDestination: NavDestination?
+    isSwitchingBottomTabs: Boolean,
 ): NavAnimation {
 
-    val isSwitchingBottomTabs = allOrNone(
-        currentDestination?.bottomTabRoute(),
-        previousDestination?.bottomTabRoute()
-    ) { currentTab, previousTab ->
-        currentTab != previousTab
-    } ?: false
 
     if (isSwitchingBottomTabs) {
         return NavAnimation(

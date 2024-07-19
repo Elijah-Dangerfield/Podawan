@@ -20,10 +20,12 @@ fun getCurrentlyPlayingDetails(playerState: PlayerState): Pair<String?, EpisodeP
             progress = playerState.progressSeconds.toDuration(DurationUnit.SECONDS),
             duration = playerState.durationSeconds.toDuration(DurationUnit.SECONDS)
         )
+
         is PlayerState.Paused -> playerState.episodeId to EpisodePlayback.Paused(
             progress = playerState.progressSeconds.toDuration(DurationUnit.SECONDS),
             duration = playerState.durationSeconds.toDuration(DurationUnit.SECONDS)
         )
+
         is PlayerState.ReadyToPlay -> playerState.episodeId to EpisodePlayback.Paused(
             progress = playerState.progressSeconds.toDuration(DurationUnit.SECONDS),
             duration = playerState.durationSeconds.toDuration(DurationUnit.SECONDS)
@@ -59,7 +61,6 @@ fun List<DisplayableEpisode>.updatedEpisode(
 }
 
 fun Episode.toDisplayable(
-    show: PodcastShow,
     playback: EpisodePlayback,
 ): DisplayableEpisode {
     val episode = this
@@ -67,15 +68,10 @@ fun Episode.toDisplayable(
     return DisplayableEpisode(
         title = episode.title.orEmpty().removeHtmlTags(),
         releaseDate = episode.readableDate(),
-        imageUrls = listOfNotNull(
-            itunesItemData?.image?.ifNotEmpty()?.ifLinkFormat(),
-            show.itunesShowData?.image?.ifNotEmpty()?.ifLinkFormat(),
-            image?.ifNotEmpty()?.ifLinkFormat(),
-            show.heroImage?.url?.ifNotEmpty()?.ifLinkFormat(),
-        ).toPersistentList(),
+        imageUrls = images.toPersistentList(),
         description = episode.description.orEmpty().removeHtmlTags(),
         isDownloaded = false, // TODO hook up with playback repo for download state
-        author = episode.author ?: show.title,
+        author = episode.author,
         id = episode.guid,
         playback = playback
     )

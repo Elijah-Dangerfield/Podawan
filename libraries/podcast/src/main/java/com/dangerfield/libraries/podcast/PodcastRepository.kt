@@ -6,8 +6,9 @@ import kotlin.time.Duration
 interface PodcastRepository {
     suspend fun getPodcast(): Catching<PodcastShow>
     suspend fun getEpisode(id: String): Catching<Episode>
-    suspend fun updateResumePoint(id: String, resumePoint: Duration): Catching<Unit>
+    suspend fun getEpisodes(ids: List<String>): Catching<List<Episode>>
 
+    suspend fun updateResumePoint(id: String, resumePoint: Duration): Catching<Unit>
     suspend fun updateDuration(episodeId: String, duration: Duration): Catching<Unit>
 }
 

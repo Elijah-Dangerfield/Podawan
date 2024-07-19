@@ -23,8 +23,8 @@ import com.dangerfield.podawan.apps.stuffYouShouldKnow.config.StuffYouShouldKnow
 import com.dangerfield.podawan.apps.stuffYouShouldKnow.config.StuffYouShouldKnowColors
 import com.dangerfield.podawan.apps.theBenAndEmilShow.config.BenAndEmilShowColors
 import com.dangerfield.podawan.apps.theBenAndEmilShow.config.TheBenAndEmilShowAppConfiguration
-import com.dangerfield.podawan.apps.tmg.config.TmgAppConfiguration
-import com.dangerfield.podawan.apps.tmg.config.TmgColors
+import com.dangerfield.podawan.apps.fragmented.config.FragmentedAppConfiguration
+import com.dangerfield.podawan.apps.fragmented.config.FragmentedColors
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.StateFlow
 import podawan.core.App
@@ -58,13 +58,13 @@ fun Preview(
 
 
     val appConfiguration = when (app) {
-        App.TMG -> TmgAppConfiguration(context)
+        App.TMG -> FragmentedAppConfiguration(context)
         App.TheBenAndEmilShow -> TheBenAndEmilShowAppConfiguration(context)
         App.StuffYouShouldKnow -> StuffYouShouldKnowAppConfiguration(context)
     }
 
     val colors = when (app) {
-        App.TMG -> TmgColors
+        App.TMG -> FragmentedColors
         App.TheBenAndEmilShow -> BenAndEmilShowColors
         App.StuffYouShouldKnow -> StuffYouShouldKnowColors
     }

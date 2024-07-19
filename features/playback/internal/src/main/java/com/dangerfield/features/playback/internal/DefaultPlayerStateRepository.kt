@@ -79,9 +79,7 @@ class DefaultPlayerStateRepository @Inject constructor(
 
             podcastRepository.getEpisode(episodeId)
                 .onSuccess { episode ->
-                    val imageToUse = episode.itunesItemData?.image?.ifLinkFormat()
-                        ?: episode.image?.ifLinkFormat()
-                        ?: episode.showHeroImage?.url?.ifLinkFormat()
+                    val imageToUse = episode.images.firstOrNull()
 
                     val mediaItem = MediaItem.Builder()
                         .setUri(episode.audio)

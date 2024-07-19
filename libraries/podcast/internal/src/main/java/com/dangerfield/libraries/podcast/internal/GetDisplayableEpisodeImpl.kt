@@ -19,8 +19,6 @@ class GetDisplayableEpisodeImpl @Inject constructor(
             .mapCatching { show ->
                 val episode = show.episodes.first { it.guid == id }
                 episode.toDisplayable(
-                    show = show,
-                    //playback = playerStateRepository.getPlaybackState(id)
                     playback = EpisodePlayback.None
                         (
                         progress = episode.resumePoint,

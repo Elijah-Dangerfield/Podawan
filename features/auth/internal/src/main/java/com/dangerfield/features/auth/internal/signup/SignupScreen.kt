@@ -25,7 +25,7 @@ import com.dangerfield.ui.components.Screen
 import com.dangerfield.ui.components.button.Button
 import com.dangerfield.ui.components.icon.IconButton
 import com.dangerfield.ui.components.icon.PodawanIcon
-import com.dangerfield.ui.components.text.InputField
+import com.dangerfield.ui.components.text.OutlineInputField
 import com.dangerfield.ui.components.text.Text
 import com.dangerfield.libraries.ui.theme.PodawanTheme
 
@@ -67,7 +67,7 @@ fun SignupScreen(
 
             VerticalSpacerD1000()
 
-            InputField(
+            OutlineInputField(
                 title = {},
                 errorBorder = false,
                 hint = "Email",
@@ -85,7 +85,7 @@ fun SignupScreen(
 
             VerticalSpacerD1000()
 
-            InputField(
+            OutlineInputField(
                 title = {},
                 errorBorder = true,
                 enabled = !isLoading,

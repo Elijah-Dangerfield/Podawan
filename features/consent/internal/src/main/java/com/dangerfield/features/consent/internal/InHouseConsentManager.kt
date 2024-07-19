@@ -9,6 +9,8 @@ import com.dangerfield.libraries.storage.datastore.getValueFlow
 import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.flow.first
 import kotlinx.coroutines.flow.map
+import kotlinx.coroutines.flow.onEach
+import timber.log.Timber
 import javax.inject.Inject
 import javax.inject.Singleton
 
@@ -35,6 +37,9 @@ class InHouseConsentManager @Inject constructor(
                 InHouseConsentState.NotAccepted,
                 null -> ConsentStatus.ConsentNeeded
             }
+        }
+        .onEach {
+            Timber.i("InHouseConsentManager consentStatus: $it")
         }
 
     suspend fun getConsentStatus(): ConsentStatus = consentStatusFlow.first()

@@ -35,7 +35,6 @@ fun NewPlaylistItem(
         CircleIcon(
             icon = PodawanIcon.Add(""),
             iconSize = IconSize.Medium,
-            modifier = Modifier.bounceClick(onClick = onClick)
         )
 
         HorizontalSpacerD500()

@@ -28,6 +28,7 @@ import org.junit.Rule
 import org.junit.Test
 import org.junit.runner.RunWith
 import org.robolectric.RobolectricTestRunner
+import podawan.core.App
 import java.time.Clock
 import java.time.Duration
 import java.time.Instant
@@ -57,7 +58,8 @@ class GetInAppUpdateAvailabilityImplTest {
         versionName = "1.3.2",
         packageName = "com.dangerfield.podawan",
         buildType = BuildType.RELEASE,
-        deviceName = "Pixel"
+        deviceName = "Pixel",
+        app = App.StuffYouShouldKnow,
     )
 
     @Before

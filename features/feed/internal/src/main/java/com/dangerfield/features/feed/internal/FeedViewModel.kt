@@ -11,7 +11,7 @@ import com.dangerfield.libraries.podcast.EpisodePlayback
 import com.dangerfield.libraries.podcast.EpisodePlayback.None
 import com.dangerfield.libraries.podcast.EpisodePlayback.Paused
 import com.dangerfield.libraries.podcast.GetCurrentlyPlaying
-import com.dangerfield.libraries.podcast.GetDisplayableEpisodes
+import com.dangerfield.libraries.podcast.GetAllDisplayableEpisodes
 import com.dangerfield.libraries.podcast.PodcastRepository
 import com.dangerfield.libraries.podcast.duration
 import com.dangerfield.libraries.podcast.isLoading
@@ -31,7 +31,7 @@ import javax.inject.Inject
 class FeedViewModel @Inject constructor(
     private val podcastRepository: PodcastRepository,
     private val playerStateRepository: PlayerStateRepository,
-    private val getDisplayableEpisodes: GetDisplayableEpisodes,
+    private val getAllDisplayableEpisodes: GetAllDisplayableEpisodes,
     private val getCurrentlyPlaying: GetCurrentlyPlaying,
     savedStateHandle: SavedStateHandle
 ) : SEAViewModel<FeedViewModel.State, FeedViewModel.Event, FeedViewModel.Action>(
@@ -39,7 +39,7 @@ class FeedViewModel @Inject constructor(
     State()
 ) {
 
-    private var observeAllCurrentlyPlayingUpdates: Boolean = false
+    private var shouldObserveCurrentlyPlayingUpdates: Boolean = false
 
     init {
         takeAction(Action.Load)
@@ -125,7 +125,7 @@ class FeedViewModel @Inject constructor(
         updateState { it.copy(isLoading = true) }
 
         podcastRepository.getPodcast().onSuccess { show ->
-            getDisplayableEpisodes(show)
+            getAllDisplayableEpisodes(show)
                 .map {
                     Timber.i("Feed Episodes updated. Playing id: ${it.firstOrNull { it.playback.isPlaying }?.id}")
                     updateState { state ->
@@ -149,7 +149,7 @@ class FeedViewModel @Inject constructor(
                 } ?: false
 
                 when {
-                    observeAllCurrentlyPlayingUpdates -> {
+                    shouldObserveCurrentlyPlayingUpdates -> {
                         updateState { it.copy(currentlyPlaying = cur) }
                     }
                     didEpisodeChange -> {
@@ -162,11 +162,11 @@ class FeedViewModel @Inject constructor(
     }
 
     private suspend fun Action.CurrentlyPlayingShowing.handleCurrentlyPlayingShowing() {
-        observeAllCurrentlyPlayingUpdates = true
+        shouldObserveCurrentlyPlayingUpdates = true
     }
 
     private suspend fun Action.CurrentlyPlayingNotShowing.handleCurrentlyPlayingNotShowing() {
-        observeAllCurrentlyPlayingUpdates = true
+        shouldObserveCurrentlyPlayingUpdates = true
     }
 
     data class State(
@@ -177,7 +177,7 @@ class FeedViewModel @Inject constructor(
         /**
          * Null if no episode is playing
          * this field updates
-         * 1. if being displayed = on every change
+         * 1. if being displayed = on every change/update
          * 2. if not being displayed = on every change of episode id
          */
         val currentlyPlaying: CurrentlyPlaying? = null,

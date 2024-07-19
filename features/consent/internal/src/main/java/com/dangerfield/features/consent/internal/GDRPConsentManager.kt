@@ -49,8 +49,6 @@ class GDRPConsentManager @Inject constructor(
         }
     }
 
-    private val hasInitializedAds = AtomicBoolean(false)
-
     private val consentStatusFlow = MutableStateFlow<ConsentStatus?>(null)
 
     fun getConsentStatusFlow(activity: Activity): Flow<ConsentStatus> {
@@ -112,6 +110,9 @@ class GDRPConsentManager @Inject constructor(
             consentStatusFlow.value = status
         }
     }
+        .onFailure {
+            consentStatusFlow.value = ConsentStatus.Unknown
+        }
 
     private suspend fun getStatusAsync(
         consentInformation: ConsentInformation,
@@ -124,7 +125,7 @@ class GDRPConsentManager @Inject constructor(
                 params,
                 {
                     if (consentInformation.canRequestAds()) {
-                       doNothing() // no ads by default
+                        doNothing() // no ads by default
                     }
                     Timber.d("Loading GDRP Consent status")
                     continuation.resume(consentInformation.toConsentStatus())

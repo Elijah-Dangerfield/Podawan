@@ -32,7 +32,6 @@ fun EpisodeItunesDataEntity.toDomain() =
 
 fun PodcastEpisodeEntity.toDomain(
     itunesItemData: ItunesEpisodeData?,
-    showHeroImage: HeroImage?
 ) = Episode(
     title = title?.ifNotEmpty(),
     description = description?.ifNotEmpty(),
@@ -41,7 +40,7 @@ fun PodcastEpisodeEntity.toDomain(
     guid = guid,
     author = author?.ifNotEmpty(),
     content = content?.ifNotEmpty(),
-    image = image?.ifNotEmpty(),
+    images = images,
     audio = audio?.ifNotEmpty(),
     video = video?.ifNotEmpty(),
     sourceName = sourceName?.ifNotEmpty(),
@@ -49,7 +48,6 @@ fun PodcastEpisodeEntity.toDomain(
     categories = categories,
     itunesItemData = itunesItemData,
     commentsUrl = commentsUrl?.ifNotEmpty(),
-    showHeroImage = showHeroImage,
     resumePoint = resumePointSeconds.toDuration(DurationUnit.SECONDS),
     totalDuration = totalDurationSeconds.toDuration(DurationUnit.SECONDS),
     showRssFeedLink = showRssFeedLink
@@ -106,7 +104,7 @@ fun Episode.toEntity(
     guid = guid,
     author = author?.ifNotEmpty(),
     content = content?.ifNotEmpty(),
-    image = image?.ifNotEmpty(),
+    images = images,
     audio = audio?.ifNotEmpty(),
     video = video?.ifNotEmpty(),
     sourceName = sourceName?.ifNotEmpty(),
@@ -120,11 +118,12 @@ fun Episode.toEntity(
     totalDurationSeconds = totalDuration?.inWholeSeconds?.toInt() ?: 0
 )
 
-fun HeroImage.toEntity() = HeroImageEntity(
+fun HeroImage.toEntity(showRssLink: String) = HeroImageEntity(
     title = title?.ifNotEmpty(),
     url = url?.ifNotEmpty(),
     link = link?.ifNotEmpty(),
-    description = description
+    description = description,
+    showRssFeedLink = showRssLink
 )
 
 fun ItunesShowData.toEntity() = ItunesChannelDataEntity(

@@ -40,7 +40,8 @@ data class HeroImageEntity(
     val title: String?,
     val url: String?,
     val link: String?,
-    val description: String?
+    val description: String?,
+    val showRssFeedLink: String,  // Foreign key to PodcastShow
 )
 
 @Entity(
@@ -76,7 +77,7 @@ data class PodcastEpisodeEntity(
     val description: String?,
     val categories: List<String>,
     val content: String?,
-    val image: String?,
+    val images: List<String>,
     val audio: String?,
     val video: String?,
     val sourceName: String?,

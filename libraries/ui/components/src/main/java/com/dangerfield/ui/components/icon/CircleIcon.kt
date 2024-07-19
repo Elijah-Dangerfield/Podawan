@@ -13,6 +13,7 @@ import com.dangerfield.ui.components.Surface
 import com.dangerfield.libraries.ui.theme.PodawanTheme
 import com.dangerfield.libraries.ui.Radii
 import com.dangerfield.libraries.ui.color.ColorResource
+import com.dangerfield.libraries.ui.thenIf
 
 @Composable
 fun CircleIcon(
@@ -31,9 +32,10 @@ fun CircleIcon(
         contentPadding = PaddingValues(padding),
         elevation = elevation,
         radius = Radii.Round,
-        modifier = modifier.clickable(enabled = onClick != null) {
-            onClick?.invoke()
-        }
+        modifier = modifier
+            .thenIf(onClick != null) {
+                clickable { onClick?.invoke() }
+            }
     ) {
         Icon(
             podawanIcon = icon,
