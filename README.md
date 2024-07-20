@@ -1,6 +1,10 @@
 # Welcome to Podawan!
 
-<img src="https://github.com/user-attachments/assets/a198b47b-17b9-4dd2-a4f6-ff2fce004466" width="400"/>
+
+<img src="https://github.com/user-attachments/assets/0155e64c-fad1-45a2-8869-aa84a43b934f" width="300"/>
+<img src="https://github.com/user-attachments/assets/bfe2231a-a550-4402-9add-ade8937b006c" width="400"/>
+<img src="https://github.com/user-attachments/assets/1f75b528-b903-4a80-917c-4a9381f44f2c" width="400"/>
+
 
 
 ## Description
