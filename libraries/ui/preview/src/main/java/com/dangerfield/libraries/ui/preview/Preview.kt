@@ -14,16 +14,16 @@ import androidx.compose.ui.tooling.preview.datasource.LoremIpsum
 import androidx.compose.ui.unit.dp
 import com.dangerfield.libraries.dictionary.Dictionary
 import com.dangerfield.libraries.dictionary.LocalDictionary
-import com.dangerfield.libraries.ui.LocalAppConfiguration
+import com.dangerfield.libraries.ui.LocalAppVariantConfiguration
 import com.dangerfield.libraries.ui.LocalAppState
 import com.dangerfield.libraries.ui.LocalColors
 import com.dangerfield.libraries.ui.theme.PodawanTheme
 import com.dangerfield.libraries.ui.thenIf
-import com.dangerfield.podawan.apps.stuffYouShouldKnow.config.StuffYouShouldKnowAppConfiguration
+import com.dangerfield.podawan.apps.stuffYouShouldKnow.config.StuffYouShouldKnowAppVariantConfiguration
 import com.dangerfield.podawan.apps.stuffYouShouldKnow.config.StuffYouShouldKnowColors
 import com.dangerfield.podawan.apps.theBenAndEmilShow.config.BenAndEmilShowColors
-import com.dangerfield.podawan.apps.theBenAndEmilShow.config.TheBenAndEmilShowAppConfiguration
-import com.dangerfield.podawan.apps.fragmented.config.FragmentedAppConfiguration
+import com.dangerfield.podawan.apps.theBenAndEmilShow.config.TheBenAndEmilShowAppVariantConfiguration
+import com.dangerfield.podawan.apps.fragmented.config.FragmentedAppVariantConfiguration
 import com.dangerfield.podawan.apps.fragmented.config.FragmentedColors
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.StateFlow
@@ -58,13 +58,13 @@ fun Preview(
 
 
     val appConfiguration = when (app) {
-        App.TMG -> FragmentedAppConfiguration(context)
-        App.TheBenAndEmilShow -> TheBenAndEmilShowAppConfiguration(context)
-        App.StuffYouShouldKnow -> StuffYouShouldKnowAppConfiguration(context)
+        App.Fragmented -> FragmentedAppVariantConfiguration(context)
+        App.TheBenAndEmilShow -> TheBenAndEmilShowAppVariantConfiguration(context)
+        App.StuffYouShouldKnow -> StuffYouShouldKnowAppVariantConfiguration(context)
     }
 
     val colors = when (app) {
-        App.TMG -> FragmentedColors
+        App.Fragmented -> FragmentedColors
         App.TheBenAndEmilShow -> BenAndEmilShowColors
         App.StuffYouShouldKnow -> StuffYouShouldKnowColors
     }
@@ -81,7 +81,7 @@ fun Preview(
 
     CompositionLocalProvider(
         LocalColors provides colors,
-        LocalAppConfiguration provides appConfiguration,
+        LocalAppVariantConfiguration provides appConfiguration,
         LocalContext provides context,
         LocalDictionary provides previewDictionary,
         LocalAppState provides appState

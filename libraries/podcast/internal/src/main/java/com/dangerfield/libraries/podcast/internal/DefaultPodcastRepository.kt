@@ -4,7 +4,7 @@ import com.dangerfield.libraries.podcast.Episode
 import com.dangerfield.libraries.podcast.PodcastRepository
 import com.dangerfield.libraries.podcast.PodcastShow
 import com.dangerfield.libraries.podcast.asLocalDateTime
-import podawan.core.AppConfiguration
+import podawan.core.AppVariantConfiguration
 import podawan.core.Catching
 import podawan.core.debugSnackOnError
 import podawan.core.ignoreValue
@@ -19,10 +19,10 @@ import kotlin.time.Duration
 class DefaultPodcastRepository @Inject constructor(
     private val podcastCacheDatasource: PodcastCacheDatasource,
     private val podcastNetworkDataSource: PodcastNetworkDataSource,
-    appConfiguration: AppConfiguration,
+    appVariantConfiguration: AppVariantConfiguration,
 ) : PodcastRepository {
 
-    private val rssLink = appConfiguration.rssFeedLink
+    private val rssLink = appVariantConfiguration.rssFeedLink
 
     override suspend fun getPodcast(): Catching<PodcastShow> {
        return podcastCacheDatasource

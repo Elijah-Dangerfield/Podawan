@@ -31,7 +31,7 @@ enum class BuildType {
 }
 
 enum class App {
-    TMG,
+    Fragmented,
     TheBenAndEmilShow,
     StuffYouShouldKnow
 }

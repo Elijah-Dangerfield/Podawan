@@ -26,7 +26,7 @@ fun NewPlaylistItem(
     Row(
         modifier = modifier
             .fillMaxWidth()
-            .padding(vertical = Dimension.D500)
+            .padding(vertical = Dimension.D800)
             .bounceClick(onClick = onClick)
         ,
         verticalAlignment = Alignment.CenterVertically

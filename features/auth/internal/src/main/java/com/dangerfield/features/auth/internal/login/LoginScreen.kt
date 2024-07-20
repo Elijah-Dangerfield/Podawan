@@ -32,7 +32,7 @@ import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import com.dangerfield.libraries.ui.Dimension
 import com.dangerfield.libraries.ui.FieldState
-import com.dangerfield.libraries.ui.LocalAppConfiguration
+import com.dangerfield.libraries.ui.LocalAppVariantConfiguration
 import com.dangerfield.libraries.ui.Radii
 import com.dangerfield.libraries.ui.VerticalSpacerD1000
 import com.dangerfield.libraries.ui.makeLookClickable
@@ -85,7 +85,7 @@ fun LoginScreen(
                         PodawanTheme.colors.border.color,
                         Radii.Card.shape
                     ),
-                painter = LocalAppConfiguration.current.appIcon.toPainter(),
+                painter = LocalAppVariantConfiguration.current.appIcon.toPainter(),
                 contentDescription = "",
                 contentScale = ContentScale.FillWidth,
             )
@@ -180,7 +180,7 @@ private fun SignupButton(
         onClick = onSignupClicked,
     ) {
         Text(
-            text = "New to ${LocalAppConfiguration.current.appName}? Sign up".makeLookClickable(
+            text = "New to ${LocalAppVariantConfiguration.current.appName}? Sign up".makeLookClickable(
                 linkText = "Sign up"
             ),
             maxLines = 2,
@@ -264,7 +264,7 @@ private fun EmailField(
 @Composable
 @Preview
 private fun PreviewScreen() {
-    com.dangerfield.libraries.ui.preview.Preview(app = App.TMG) {
+    com.dangerfield.libraries.ui.preview.Preview(app = App.Fragmented) {
         LoginScreen(
             emailFieldState = FieldState.Idle(""),
             passwordFieldState = FieldState.Idle("sdf"),

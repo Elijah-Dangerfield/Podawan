@@ -15,4 +15,6 @@ fun String.ifNotEmpty(): String? = this.takeIf { it.isNotEmpty() }
 
 fun String.ifLinkFormat(): String? = this.takeIf {
     it.matches(Regex("""\b(?:https?://|www\.)\S+\b"""))
+            || it.matches(Regex("""\b(?:http?://|www\.)\S+\b"""))
+
 }

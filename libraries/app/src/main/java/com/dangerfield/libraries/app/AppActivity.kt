@@ -6,7 +6,6 @@ import androidx.activity.ComponentActivity
 import androidx.activity.compose.setContent
 import androidx.activity.viewModels
 import androidx.compose.runtime.CompositionLocalProvider
-import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.derivedStateOf
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.remember
@@ -38,7 +37,7 @@ import com.dangerfield.libraries.navigation.internal.DelegatingRouter
 import com.dangerfield.libraries.navigation.Router
 import com.dangerfield.libraries.navigation.mainGraphRoute
 import com.dangerfield.libraries.network.NetworkMonitor
-import com.dangerfield.libraries.ui.LocalAppConfiguration
+import com.dangerfield.libraries.ui.LocalAppVariantConfiguration
 import com.dangerfield.libraries.ui.LocalAppState
 import com.dangerfield.libraries.ui.LocalBuildInfo
 import com.dangerfield.libraries.ui.LocalColors
@@ -47,7 +46,7 @@ import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.flow.first
 import kotlinx.coroutines.launch
 import kotlinx.coroutines.withContext
-import podawan.core.AppConfiguration
+import podawan.core.AppVariantConfiguration
 import podawan.core.BuildInfo
 import podawan.core.Message
 import podawan.core.SnackBarPresenter
@@ -82,7 +81,7 @@ open class AppActivity : ComponentActivity() {
     lateinit var networkMonitor: NetworkMonitor
 
     @Inject
-    lateinit var appConfiguration: AppConfiguration
+    lateinit var appVariantConfiguration: AppVariantConfiguration
 
     @Inject
     lateinit var router: Router
@@ -158,7 +157,7 @@ open class AppActivity : ComponentActivity() {
 
             CompositionLocalProvider(
                 LocalColors provides colors,
-                LocalAppConfiguration provides appConfiguration,
+                LocalAppVariantConfiguration provides appVariantConfiguration,
                 LocalMetricsTracker provides metricsTracker,
                 LocalDictionary provides dictionary,
                 LocalBuildInfo provides buildInfo,
@@ -172,7 +171,8 @@ open class AppActivity : ComponentActivity() {
                     currentlyPlayingEpisode = { state.currentlyPlayingEpisode },
                     onPauseEpisode = appViewModel::pauseEpisode,
                     onPlayEpisode = appViewModel::playEpisode,
-                    onClickBottomPlayerBar = router::openPlayer
+                    onClickBottomPlayerBar = router::openPlayer,
+                    appVariantConfiguration = appVariantConfiguration,
                 )
             }
         }

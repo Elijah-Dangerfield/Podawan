@@ -7,10 +7,10 @@ import com.dangerfield.libraries.app.ui.libraryGraphRoute
 import com.dangerfield.libraries.app.ui.searchGraphRoute
 import com.dangerfield.libraries.navigation.Route
 
-fun NavDestination.bottomTabRoute(): Route.Template? {
-    return listOf(
+fun NavDestination.bottomTabRoute(hasSearchTab: Boolean): Route.Template? {
+    return listOfNotNull(
         homeGraphRoute,
-        searchGraphRoute,
+        searchGraphRoute.takeIf { hasSearchTab },
         libraryGraphRoute
     ).find { tabRoute ->
         this.hierarchy.any { it.route == tabRoute.navRoute }

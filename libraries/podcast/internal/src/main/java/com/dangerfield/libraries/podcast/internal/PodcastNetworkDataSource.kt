@@ -49,8 +49,8 @@ class DefaultPodcastNetworkDatasource @Inject constructor(
                                 description = it.description?.ifNotEmpty(),
                                 content = it.content?.ifNotEmpty(),
                                 images = listOfNotNull(
-                                    it.image?.ifNotEmpty()?.ifLinkFormat(),
                                     it.itunesItemData?.image?.ifNotEmpty()?.ifLinkFormat(),
+                                    it.image?.ifNotEmpty()?.ifLinkFormat(),
                                     heroImage?.url?.ifLinkFormat(),
                                     rssChannel.itunesChannelData?.image?.ifNotEmpty()?.ifLinkFormat()
                                 ),

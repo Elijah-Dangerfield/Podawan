@@ -62,13 +62,14 @@ val libraryGraphRoute = route("libraryGraph") {
 fun AppBottomBar(
     modifier: Modifier = Modifier,
     currentTabRoute: Route.Template,
+    hasSearchTab: Boolean,
     onItemClick: (Route.Template) -> Unit
 ) {
     val isPlayingContent by LocalAppState.current.isPlayingContent.collectAsStateWithLifecycle()
 
-    val tabs = listOf(
+    val tabs = listOfNotNull(
         BottomBarItem.Home(currentTabRoute == homeGraphRoute),
-        BottomBarItem.Search(currentTabRoute == searchGraphRoute),
+        BottomBarItem.Search(currentTabRoute == searchGraphRoute).takeIf { hasSearchTab },
         BottomBarItem.Library(currentTabRoute == libraryGraphRoute)
     )
 
@@ -211,7 +212,8 @@ private fun BottomBarPreview() {
     Preview {
         AppBottomBar(
             currentTabRoute = homeGraphRoute,
-            onItemClick = {}
+            onItemClick = {},
+            hasSearchTab = true
         )
     }
 }
@@ -224,7 +226,8 @@ private fun BottomBarPreviewStuffYouShouldKnow() {
     ) {
         AppBottomBar(
             currentTabRoute = homeGraphRoute,
-            onItemClick = {}
+            onItemClick = {},
+            hasSearchTab = false
         )
     }
 }

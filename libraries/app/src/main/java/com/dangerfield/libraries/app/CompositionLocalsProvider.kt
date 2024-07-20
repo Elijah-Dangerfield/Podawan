@@ -10,10 +10,10 @@ import com.dangerfield.libraries.dictionary.LocalDictionary
 import com.dangerfield.libraries.network.NetworkMonitor
 import com.dangerfield.libraries.ui.LocalAppState
 import com.dangerfield.libraries.ui.LocalBuildInfo
-import com.dangerfield.libraries.ui.LocalAppConfiguration
+import com.dangerfield.libraries.ui.LocalAppVariantConfiguration
 import com.dangerfield.libraries.ui.LocalColors
 import com.dangerfield.libraries.ui.color.Colors
-import podawan.core.AppConfiguration
+import podawan.core.AppVariantConfiguration
 import podawan.core.BuildInfo
 import javax.inject.Inject
 
@@ -32,7 +32,7 @@ class CompositionLocalsProvider @Inject constructor(
     private val dictionary: Dictionary,
     private val colors: Colors,
     private val networkMonitor: NetworkMonitor,
-    private val appConfiguration: AppConfiguration
+    private val appVariantConfiguration: AppVariantConfiguration
 ){
 
     @Composable
@@ -42,7 +42,7 @@ class CompositionLocalsProvider @Inject constructor(
 
         CompositionLocalProvider(
             LocalColors provides colors,
-            LocalAppConfiguration provides appConfiguration,
+            LocalAppVariantConfiguration provides appVariantConfiguration,
             LocalMetricsTracker provides metricsTracker,
             LocalDictionary provides dictionary,
             LocalBuildInfo provides buildInfo,

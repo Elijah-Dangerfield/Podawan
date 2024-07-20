@@ -31,7 +31,7 @@ import com.dangerfield.libraries.podcast.EpisodeItem
 import com.dangerfield.libraries.podcast.EpisodePlayback
 import com.dangerfield.libraries.ui.Dimension
 import com.dangerfield.libraries.ui.HorizontalSpacerD500
-import com.dangerfield.libraries.ui.LocalAppConfiguration
+import com.dangerfield.libraries.ui.LocalAppVariantConfiguration
 import com.dangerfield.libraries.ui.Radii
 import com.dangerfield.libraries.ui.VerticalSpacerD1000
 import com.dangerfield.libraries.ui.VerticalSpacerD1200
@@ -203,7 +203,7 @@ private fun PreviewScreen() {
         )
 
     Preview {
-        val appName = LocalAppConfiguration.current.appName
+        val appName = LocalAppVariantConfiguration.current.appName
 
         FeedScreen(
             showDescription = loremIpsum(20),
@@ -239,7 +239,7 @@ private fun PreviewScreenSYSK() {
     Preview(
         app = App.StuffYouShouldKnow
     ) {
-        val appName = LocalAppConfiguration.current.appName
+        val appName = LocalAppVariantConfiguration.current.appName
 
         FeedScreen(
             showDescription = loremIpsum(20),

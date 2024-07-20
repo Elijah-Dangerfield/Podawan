@@ -15,26 +15,45 @@ import com.dangerfield.libraries.ui.Dimension
 import com.dangerfield.libraries.ui.VerticalSpacerD1200
 import com.dangerfield.libraries.ui.VerticalSpacerD300
 import com.dangerfield.libraries.ui.preview.Preview
+import com.dangerfield.libraries.ui.theme.PodawanTheme
 import com.dangerfield.ui.components.Screen
 import com.dangerfield.ui.components.button.Button
 import com.dangerfield.ui.components.text.Text
 
 @Composable
 fun EmptyLibraryScreen(
+    modifier: Modifier = Modifier,
     onNewPlaylistClicked: () -> Unit = {},
-    modifier: Modifier = Modifier
 ) {
-    Screen(modifier = modifier) { padding ->
-        Column(modifier = Modifier
-            .padding(padding)
-            .padding(horizontal = Dimension.D800),
+    Screen(
+        modifier = modifier,
+        topBar = {
+            Text(
+                modifier = Modifier.padding(Dimension.D800),
+                text = "Your Library",
+                textAlign = TextAlign.Center
+            )
+        }
+    ) { padding ->
+        Column(
+            modifier = Modifier
+                .padding(padding)
+                .padding(horizontal = Dimension.D800),
             verticalArrangement = Arrangement.Center,
             horizontalAlignment = Alignment.CenterHorizontally
         ) {
-           Text(
-               text = "Looks like you don't have any playlists yet.",
-               textAlign = TextAlign.Center
-           )
+            Text(
+                text = "Add Episodes",
+                textAlign = TextAlign.Center
+            )
+
+            VerticalSpacerD1200()
+
+            Text(
+                text = "Create playlists of your favorite episodes so you can come back to them easily.",
+                textAlign = TextAlign.Center,
+                typography = PodawanTheme.typography.Body.B600
+            )
 
             VerticalSpacerD1200()
 

@@ -9,11 +9,14 @@ import androidx.compose.runtime.CompositionLocalProvider
 import androidx.compose.runtime.ReadOnlyComposable
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.text.TextStyle
+import com.dangerfield.libraries.ui.LocalAppVariantConfiguration
 import com.dangerfield.libraries.ui.LocalColors
 import com.dangerfield.libraries.ui.LocalContentColor
 import com.dangerfield.libraries.ui.LocalTypography
 import com.dangerfield.libraries.ui.color.Colors
-import com.dangerfield.libraries.ui.typography.DefaultTypography
+import com.dangerfield.libraries.ui.typography.ConfiguredTypography
+import com.dangerfield.libraries.ui.typography.DefaultFontFamily
+import podawan.core.FontConfig
 
 object PodawanTheme {
     val colors: Colors
@@ -39,11 +42,13 @@ fun PodawanTheme(
         backgroundColor = colors.accent.color.copy(alpha = 0.4F)
     )
 
+    val fontConfig = LocalAppVariantConfiguration.current.fontConfig
+
     MaterialWrapper {
         CompositionLocalProvider(
             LocalContentColor provides colors.text,
             LocalTextSelectionColors provides textSelectionColors,
-            LocalTypography provides DefaultTypography(),
+            LocalTypography provides ConfiguredTypography(fontConfig),
             LocalMinimumInteractiveComponentEnforcement provides false,
             androidx.compose.material3.LocalContentColor provides colors.text.color,
             content = content

@@ -22,7 +22,6 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.platform.LocalLifecycleOwner
 import androidx.lifecycle.compose.collectAsStateWithLifecycle
 import androidx.navigation.NavDestination
-import androidx.navigation.NavDestination.Companion.hierarchy
 import androidx.navigation.NavGraph.Companion.findStartDestination
 import androidx.navigation.compose.NavHost
 import androidx.navigation.compose.navigation
@@ -39,9 +38,7 @@ import com.dangerfield.libraries.app.ui.libraryGraphRoute
 import com.dangerfield.libraries.app.ui.searchGraphRoute
 import com.dangerfield.libraries.coreflowroutines.collectWithPrevious
 import com.dangerfield.libraries.coreflowroutines.observeWithLifecycle
-import com.dangerfield.libraries.navigation.internal.DelegatingRouter
 import com.dangerfield.libraries.navigation.NavAnimType
-import com.dangerfield.libraries.navigation.internal.NavControllerRouter
 import com.dangerfield.libraries.navigation.NavGraphRegistry
 import com.dangerfield.libraries.navigation.Route
 import com.dangerfield.libraries.navigation.RouteInfo
@@ -49,6 +46,8 @@ import com.dangerfield.libraries.navigation.asRouteInfo
 import com.dangerfield.libraries.navigation.fill
 import com.dangerfield.libraries.navigation.floatingwindow.FloatingWindowHost
 import com.dangerfield.libraries.navigation.floatingwindow.FloatingWindowNavigator
+import com.dangerfield.libraries.navigation.internal.DelegatingRouter
+import com.dangerfield.libraries.navigation.internal.NavControllerRouter
 import com.dangerfield.libraries.navigation.mainGraphRoute
 import com.dangerfield.libraries.network.internal.OfflineBar
 import com.dangerfield.libraries.podcast.CurrentlyPlaying
@@ -61,6 +60,7 @@ import com.dangerfield.ui.components.Snackbar
 import com.dangerfield.ui.components.podawanSnackbarData
 import kotlinx.coroutines.flow.distinctUntilChanged
 import kotlinx.coroutines.flow.map
+import podawan.core.AppVariantConfiguration
 import podawan.core.SnackBarPresenter
 import podawan.core.allOrNone
 import timber.log.Timber
@@ -68,6 +68,7 @@ import timber.log.Timber
 @Composable
 fun PodawanApp(
     startingRouteTemplate: Route.Template,
+    appVariantConfiguration: AppVariantConfiguration,
     delegatingRouter: DelegatingRouter,
     updateStatus: () -> UpdateStatus?,
     currentlyPlayingEpisode: () -> CurrentlyPlaying?,
@@ -138,15 +139,15 @@ fun PodawanApp(
             .map { it.destination }
             .distinctUntilChanged()
             .collectWithPrevious { prev, curr ->
-                curr.bottomTabRoute()?.let { updateSelectedTab(it) }
+                curr.bottomTabRoute(appVariantConfiguration.hasSearchTab)?.let { updateSelectedTab(it) }
                 currentDestination = curr
                 previousDestination = prev
             }
     }
 
     val isSwitchingBottomTabs = allOrNone(
-        currentDestination?.bottomTabRoute() ?: selectedTabInfo.currentTab,
-        previousDestination?.bottomTabRoute() ?: selectedTabInfo.previousTab
+        currentDestination?.bottomTabRoute(appVariantConfiguration.hasSearchTab) ?: selectedTabInfo.currentTab,
+        previousDestination?.bottomTabRoute(appVariantConfiguration.hasSearchTab) ?: selectedTabInfo.previousTab
     ) { currentTab, previousTab ->
         Timber.d(
             """
@@ -170,8 +171,8 @@ fun PodawanApp(
             
             isSwitchingBottomTabs: $isSwitchingBottomTabs
             
-            currentDestinationBottomTab: ${currentDestination?.bottomTabRoute().toBottomTabName()}
-            previousDestinationBottomTab: ${previousDestination?.bottomTabRoute().toBottomTabName()}
+            currentDestinationBottomTab: ${currentDestination?.bottomTabRoute(appVariantConfiguration.hasSearchTab).toBottomTabName()}
+            previousDestinationBottomTab: ${previousDestination?.bottomTabRoute(appVariantConfiguration.hasSearchTab).toBottomTabName()}
 
             currentSelectedTabRoute: ${selectedTabInfo.currentTab.toBottomTabName()}
             previousSelectedTabRoute: ${selectedTabInfo.previousTab?.toBottomTabName()}
@@ -184,7 +185,6 @@ fun PodawanApp(
     /*
     we need to update the seleted tab on evey single route change to determine if that route change is
     due to a bottom tab switch.
-
      */
 
     val navAnim by remember(currentRouteInfo, prevRouteInfo) {
@@ -293,6 +293,7 @@ fun PodawanApp(
                     ) {
                         AppBottomBar(
                             currentTabRoute = selectedTabInfo.currentTab,
+                            hasSearchTab = appVariantConfiguration.hasSearchTab,
                             onItemClick = { item ->
                                 actualRouter.navigate(
                                     item.fill {

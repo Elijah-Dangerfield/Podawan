@@ -1,5 +1,12 @@
 package com.dangerfield.features.search.internal
 
+import androidx.compose.foundation.layout.Arrangement.Center
+import androidx.compose.foundation.layout.Column
+import androidx.compose.foundation.layout.fillMaxSize
+import androidx.compose.foundation.layout.padding
+import androidx.compose.ui.Alignment
+import androidx.compose.ui.Modifier
+import androidx.compose.ui.text.style.TextAlign
 import androidx.navigation.NavGraphBuilder
 import androidx.navigation.compose.composable
 import com.dangerfield.features.search.navigateToSearchA
@@ -11,8 +18,13 @@ import com.dangerfield.features.search.searchC
 import com.dangerfield.features.search.searchRoute
 import com.dangerfield.libraries.navigation.Router
 import com.dangerfield.libraries.navigation.SearchTabNavBuilder
+import com.dangerfield.libraries.ui.Dimension
+import com.dangerfield.libraries.ui.VerticalSpacerD1000
 import com.dangerfield.ui.components.Screen
 import com.dangerfield.ui.components.button.Button
+import com.dangerfield.ui.components.icon.Icon
+import com.dangerfield.ui.components.icon.IconSize
+import com.dangerfield.ui.components.icon.PodawanIcon
 import com.dangerfield.ui.components.text.Text
 import se.ansman.dagger.auto.AutoBindIntoSet
 import javax.inject.Inject
@@ -25,51 +37,31 @@ class ModuleNavGraphBuilder @Inject constructor(): SearchTabNavBuilder {
             route = searchRoute.navRoute,
             arguments = searchRoute.navArguments
         ) {
-            Screen {
-                Text(text = "Search")
-
-                Button(onClick = {
-                    router.navigateToSearchA()
-                }) {
-                    Text(text = "To Search A")
+            Screen(
+                topBar = {
+                    Text(
+                        modifier = Modifier.padding(Dimension.D800),
+                        text = "Search",
+                        textAlign = TextAlign.Center
+                    )
                 }
-            }
-        }
+            ) {
+                Column(
+                    modifier = Modifier.fillMaxSize(),
+                    verticalArrangement = Center,
+                    horizontalAlignment = Alignment.CenterHorizontally
+                ) {
 
-        composable(
-            route = searchA.navRoute,
-            arguments = searchA.navArguments
-        ) {
-            Screen {
-                Text("Search A")
-                Button(onClick = {
-                    router.navigateToSearchB()
-                }) {
-                    Text("To Search B")
+                    Icon(
+                        podawanIcon = PodawanIcon.Search(null),
+                        iconSize = IconSize.Large
+                    )
+
+                    VerticalSpacerD1000()
+
+                    Text(text = "This feature has not been implemented yet, ")
+
                 }
-            }
-        }
-
-        composable(
-            route = searchB.navRoute,
-            arguments = searchB.navArguments
-        ) {
-            Screen {
-                Text("Search B")
-                Button(onClick = {
-                    router.navigateToSearchC()
-                }) {
-                    Text("To Search C")
-                }
-            }
-        }
-
-        composable(
-            route = searchC.navRoute,
-            arguments = searchC.navArguments
-        ) {
-            Screen {
-                Text("Search C")
             }
         }
     }
