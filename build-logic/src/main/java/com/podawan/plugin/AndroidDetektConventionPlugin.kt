@@ -32,6 +32,7 @@ class AndroidDetektConventionPlugin : Plugin<Project> {
                 rootProject.tasks.register<Detekt>("detektAll") {
                     group = "verification"
                     description = "Check Kotlin code style for all files."
+                    dependsOn("clean")
                     setupCommonDetektSettings()
                 }
             }
