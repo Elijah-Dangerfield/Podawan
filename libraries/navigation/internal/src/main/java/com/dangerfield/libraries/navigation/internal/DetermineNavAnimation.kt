@@ -1,4 +1,4 @@
-package com.dangerfield.libraries.app
+package com.dangerfield.libraries.navigation.internal
 
 import androidx.compose.animation.AnimatedContentTransitionScope
 import androidx.compose.animation.EnterTransition
@@ -6,14 +6,12 @@ import androidx.compose.animation.ExitTransition
 import androidx.compose.animation.fadeIn
 import androidx.compose.animation.fadeOut
 import androidx.navigation.NavBackStackEntry
-import androidx.navigation.NavDestination
 import com.dangerfield.libraries.navigation.NavAnimType
 import com.dangerfield.libraries.navigation.RouteInfo
 import com.dangerfield.libraries.navigation.fadeInToEndAnim
 import com.dangerfield.libraries.navigation.fadeOutToStart
 import com.dangerfield.libraries.navigation.noAnimEnter
 import com.dangerfield.libraries.navigation.noAnimExit
-import podawan.core.allOrNone
 
 /**
  * Determines the animation to play when navigating between two screens

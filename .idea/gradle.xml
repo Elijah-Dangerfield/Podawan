@@ -21,12 +21,12 @@
           <set>
             <option value="$PROJECT_DIR$" />
             <option value="$PROJECT_DIR$/apps" />
+            <option value="$PROJECT_DIR$/apps/fragmented" />
+            <option value="$PROJECT_DIR$/apps/fragmented/config" />
             <option value="$PROJECT_DIR$/apps/stuffYouShouldKnow" />
             <option value="$PROJECT_DIR$/apps/stuffYouShouldKnow/config" />
             <option value="$PROJECT_DIR$/apps/theBenAndEmilShow" />
             <option value="$PROJECT_DIR$/apps/theBenAndEmilShow/config" />
-            <option value="$PROJECT_DIR$/apps/tmg" />
-            <option value="$PROJECT_DIR$/apps/tmg/config" />
             <option value="$PROJECT_DIR$/build-logic" />
             <option value="$PROJECT_DIR$/features" />
             <option value="$PROJECT_DIR$/features/auth" />
@@ -35,6 +35,8 @@
             <option value="$PROJECT_DIR$/features/blockingError/internal" />
             <option value="$PROJECT_DIR$/features/consent" />
             <option value="$PROJECT_DIR$/features/consent/internal" />
+            <option value="$PROJECT_DIR$/features/episodeDetails" />
+            <option value="$PROJECT_DIR$/features/episodeDetails/internal" />
             <option value="$PROJECT_DIR$/features/feed" />
             <option value="$PROJECT_DIR$/features/feed/internal" />
             <option value="$PROJECT_DIR$/features/forcedUpdate" />

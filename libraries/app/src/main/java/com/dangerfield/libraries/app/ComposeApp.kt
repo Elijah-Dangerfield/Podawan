@@ -48,6 +48,7 @@ import com.dangerfield.libraries.navigation.floatingwindow.FloatingWindowHost
 import com.dangerfield.libraries.navigation.floatingwindow.FloatingWindowNavigator
 import com.dangerfield.libraries.navigation.internal.DelegatingRouter
 import com.dangerfield.libraries.navigation.internal.NavControllerRouter
+import com.dangerfield.libraries.navigation.internal.determineNavAnimation
 import com.dangerfield.libraries.navigation.mainGraphRoute
 import com.dangerfield.libraries.network.internal.OfflineBar
 import com.dangerfield.libraries.podcast.CurrentlyPlaying
@@ -186,7 +187,6 @@ fun PodawanApp(
     we need to update the seleted tab on evey single route change to determine if that route change is
     due to a bottom tab switch.
      */
-
     val navAnim by remember(currentRouteInfo, prevRouteInfo) {
         derivedStateOf {
             determineNavAnimation(
